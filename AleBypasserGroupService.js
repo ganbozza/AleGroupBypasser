@@ -1,7 +1,7 @@
 // your_group_service.js
 import { app } from "../../../scripts/app.js";
 
-class FastGroupToggleService {
+class AleBypasserGroupService {
     constructor() {
         this.initialized = false;
         this.controllers = new Set();
@@ -80,4 +80,4 @@ class FastGroupToggleService {
     }
 }
 
-export const FAST_GROUP_SERVICE = new FastGroupToggleService();
+export const FAST_GROUP_SERVICE = new AleBypasserGroupService();
