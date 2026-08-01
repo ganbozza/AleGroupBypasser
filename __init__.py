@@ -1,12 +1,13 @@
 # __init__.py
 
 # 1. Define a dummy Python class structure so ComfyUI accepts the node
-class AleGroupBypassControllerPythonStub:
+class AleGroupBypasser:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {}}
     
     RETURN_TYPES = ()
+    RETURN_NAMES = ()
     FUNCTION = "noop"
     CATEGORY = "utils"
 
@@ -15,7 +16,7 @@ class AleGroupBypassControllerPythonStub:
 
 # 2. Map the Python backend stub to your exact JS frontend string identifier
 NODE_CLASS_MAPPINGS = {
-    "AleGroupBypassControllerNode": AleGroupBypassControllerPythonStub
+    "AleGroupBypassControllerNode": AleGroupBypasser
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
