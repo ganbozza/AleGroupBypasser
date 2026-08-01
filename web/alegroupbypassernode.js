@@ -6,7 +6,13 @@ function bindNode(node) {
     return;
   }
   node.__groupBypasserBound = true;
-
+  
+  const originalOnRemoved = node.onRemoved;
+  node.onRemoved = function () {
+    // Clean up service references safely when deleted from canvas
+    ALEGROUPBYPASSER_SERVICE.unregisterNode(this);
+    return originalOnRemoved?.apply(this, arguments);
+  };
 
 }
 
