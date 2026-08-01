@@ -1,9 +1,13 @@
 import { app } from "../../scripts/app.js";
 
+const MODE_ACTIVE = LiteGraph.ALWAYS;
+const MODE_BYPASS = 4;
+
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
         this.nodes = new Set();
+        this.group_collections = new Map();
     }
 
     init() {
@@ -18,7 +22,58 @@ class AleGroupBypasserService {
             return origDraw.apply(this, args);
         };
         console.log("AleGroupBypasser_Service initialized...");
+        run();
     }
+
+    function run() {
+        for (const graph of collectNestedGraphs()) {
+              for (const group of graph.groups) {
+                  const title = String(group.title || "").trim();
+                  if(!title) { 
+                      continue; 
+                  }
+                  const key = title.toLowerCase();
+                  if(!group_collections.has(key))
+                  {
+                      group_collections.set(key, {
+                      key,
+                      title,
+                      state = MODE_BYPASS; 
+                    }); 
+                  }
+                  if (group_collections.get(key).state==MODE_BYPASS) { // ignore if group already in active state
+                      group_collections.get(key).state = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
+                  }
+              }
+        }
+        //setTimeout(function(){ this.run(); }, 500);
+    }
+    
+    function collectNestedGraphs() {
+    
+      const collected = [];
+      const stack = [app.graph];
+      const seen = new Set();
+    
+      while (stack.length) {
+        const graph = stack.pop();
+        if (!graph || seen.has(graph)) {
+          continue;
+        }
+        seen.add(graph);
+        collected.push(graph);
+    
+        for (const graphNode of graph._nodes || []) {
+          const childGraph = graphNode?.subgraph;
+          if (childGraph && !seen.has(childGraph)) {
+            stack.push(childGraph);
+          }
+        }
+      }
+    
+      return collected;
+    }
+
 
     registerNode(node) {
         this.nodes.add(node);
