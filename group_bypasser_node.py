@@ -13,9 +13,9 @@ class AleGroupBypasser:
 
 
 NODE_CLASS_MAPPINGS = {
-    "Ale-Group-Bypasser": AleGroupBypasser,
+    "AleGroupBypasser": AleGroupBypasser,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Ale-Group-Bypasser": "Group Bypasser",
+    "AleGroupBypasser": "Group Bypasser",
 }
