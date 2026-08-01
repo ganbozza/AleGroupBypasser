@@ -39,7 +39,7 @@ app.registerExtension({
 
             onRemoved() {
                 // Clean up service references safely when deleted from canvas
-                ALEGROUPBYPASSER_SERVICE  .unregisterController(this);
+                ALEGROUPBYPASSER_SERVICE.unregisterController(this);
             }
         }
 
