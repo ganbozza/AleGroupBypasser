@@ -32,9 +32,10 @@ class AleGroupBypasserService {
         }
 
         // Intercept LiteGraph drawing loop
-        /*
+        
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
+            /*
             const available_groups = app.graph?._groups || [];
             for (const group of available_groups) {
                 if(group_collections.has(group.title)) {
@@ -51,10 +52,10 @@ class AleGroupBypasserService {
                     }
                 }
             }
-            
+            */
             return origDraw.apply(this, args);
         };
-        */
+        
         
         console.log("AleGroupBypasser_Service initialized...");
     }
