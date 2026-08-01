@@ -64,6 +64,10 @@ class AleGroupBypasserService {
         console.log("AleGroupBypasser_Service initialized...");
     }
 
+    findWidget(node, name) {
+      return (node.widgets || []).find((widget) => widget.name === name);
+    }
+    
     updateGroupCollection(available_groups) {
         if(this.group_collections.size > available_groups) {
             for (const group of group_collections)
@@ -75,11 +79,7 @@ class AleGroupBypasserService {
             }
         } 
     }
-    
-    findWidget(node, name) {
-      return (node.widgets || []).find((widget) => widget.name === name);
-    }
-    
+      
     addGroupToCollection(group) {
         const title = String(group.title || "").trim();
         if(!title) { 
@@ -93,9 +93,11 @@ class AleGroupBypasserService {
                 value = MODE_BYPASS; 
             }); 
         }
+        /*
         if (group_collections.get(key).value===MODE_BYPASS) { // ignore if group already in active state
             group_collections.get(key).value = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
         }
+        */
     }
     
     registerNode(node) {
