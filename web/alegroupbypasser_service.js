@@ -42,6 +42,7 @@ class AleGroupBypasserService {
                 }
                 addGroupToCollection(group);
             }
+            updateGroupCollection(available_groups);
             /*
             if(this.group_collections.size > available_groups) {
                 for (const group of group_collections)
@@ -60,6 +61,18 @@ class AleGroupBypasserService {
         console.log("AleGroupBypasser_Service initialized...");
     }
 
+    updateGroupCollection(available_groups) {
+        if(this.group_collections.size > available_groups) {
+            for (const group of group_collections)
+            {
+                if(!in_array(group.title, available_groups)) {
+                    group_collections.delete(group.key);
+                    console.log("Group removed from collection...");
+                }
+            }
+        } 
+    }
+    
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
