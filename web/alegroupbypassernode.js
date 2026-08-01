@@ -11,7 +11,6 @@ function bindNode(node) {
   node.onRemoved = function () {
     // Clean up service references safely when deleted from canvas
     ALEGROUPBYPASSER_SERVICE.unregisterNode(this);
-    console.log("Node removed...");
     return originalOnRemoved?.apply(this, arguments);
   };
 }
@@ -30,7 +29,6 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
-          console.log("Node created...");
           return result;
         }
 
