@@ -90,11 +90,11 @@ class AleGroupBypasserService {
             this.group_collections.set(key, {
                 key,
                 title,
-                value = MODE_BYPASS; 
+                value = MODE_BYPASS
             }); 
         }
     
-        if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
+        if (group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
             this.group_collections.get(key).value = (Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
         }
         
