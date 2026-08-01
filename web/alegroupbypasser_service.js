@@ -12,11 +12,58 @@ class AleGroupBypasserService {
 
     init() {
         if (this.initialized) return;
-        this.initialized = true;        
+        this.initialized = true;
+
+        if (typeof LGraphCanvas !== "undefined" && LGraphCanvas.onGroupAdd) {
+            const originalOnGroupAdd = LGraphCanvas.onGroupAdd;
+            LGraphCanvas.onGroupAdd = function(...args) {
+
+                // 3. Execute the original logic so the group is actually created
+                originalOnGroupAdd.apply(this, args);
+
+                // 4. Retrieve the newly created group (it's the last one in the list)
+                const newGroup = app.graph._groups[app.graph._groups.length - 1];
+
+                if (newGroup) {
+                    // add group to collection
+                }
+                console.log("A new group is being added to the canvas!");
+            };
+        }
+
+        // Intercept LiteGraph drawing loop
+        const origDraw = LGraphCanvas.prototype.draw;
+        LGraphCanvas.prototype.draw = function(...args) {
+            const available_groups = app.graph?._groups || [];
+            for (const group of available_groups) {
+                if(group_collections.has(group.title)) {
+                    continue;
+                }
+                addGroupToCollection(group);
+            }
+            if(group_collections.size > available_groups)
+            {
+                for (const group of group_collections)
+                {
+                    if(!in_array(group.title, available_groups) {
+                        group_collections.delete(group.key);
+                        console.log("Group removed from collection...");
+                    }
+                }
+            }
+            
+            return origDraw.apply(this, args);
+        };
+        
+        console.log("AleGroupBypasser_Service initialized...");
     }
 
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
+    }
+    
+    addGroupToCollection(group) {
+        
     }
     
     registerNode(node) {
