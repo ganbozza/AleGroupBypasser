@@ -13,7 +13,7 @@ class AleGroupBypasserService {
     init() {
         if (this.initialized) return;
         this.initialized = true;        
-
+/*
         if (typeof LGraphCanvas !== "undefined" && LGraphCanvas.onGroupAdd) {
             const originalOnGroupAdd = LGraphCanvas.onGroupAdd;
             LGraphCanvas.onGroupAdd = function(...args) {
@@ -57,6 +57,7 @@ class AleGroupBypasserService {
         
         console.log("AleGroupBypasser_Service initialized...");
         //run();
+        */
     }
     function addGroupToCollection(group) {
         
