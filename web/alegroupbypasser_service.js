@@ -38,10 +38,10 @@ class AleGroupBypasserService {
         LGraphCanvas.prototype.draw = function(...args) {
             const available_groups = app.graph?._groups || [];
             for (const group of available_groups) {
-                if(group_collections.has(group.title)) {
+                if(self.group_collections.has(group.title)) {
                     continue;
                 }
-                addGroupToCollection(group);
+                self.addGroupToCollection(group);
             }
             self.updateGroupCollection(available_groups);
             /*
