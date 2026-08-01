@@ -85,6 +85,7 @@ class AleGroupBypasserService {
         if(!title) { 
           return; 
         }
+        /*
         const key = title.toLowerCase();
         if(!group_collections.has(key)) {
             group_collections.set(key, {
@@ -93,7 +94,7 @@ class AleGroupBypasserService {
                 value = MODE_BYPASS; 
             }); 
         }
-        /*
+    
         if (group_collections.get(key).value===MODE_BYPASS) { // ignore if group already in active state
             group_collections.get(key).value = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
         }
