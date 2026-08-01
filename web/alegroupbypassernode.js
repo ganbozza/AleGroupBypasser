@@ -14,6 +14,10 @@ function bindNode(node) {
     return originalOnRemoved?.apply(this, arguments);
   };
 
+  const originalOnStateChanged = node.onStateChanged;
+  node.onStateChanged = function() {
+    console.log("State changed...");
+  }
 }
 
 app.registerExtension({
