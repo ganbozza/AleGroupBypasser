@@ -86,8 +86,8 @@ class AleGroupBypasserService {
           return; 
         }
         const key = title.toLowerCase();
-        if(!this.group_collections.has(key)) {
-            this.group_collections.set(key, {
+        if(!group_collections.has(key)) {
+            group_collections.set(key, {
                 key,
                 title,
                 value = MODE_BYPASS
