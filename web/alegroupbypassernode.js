@@ -14,14 +14,16 @@ app.registerExtension({
     name: "Ale.AleGroupBypasser",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
-        if (!isTargetNodeDef(nodeData)) {
+        if (!String(nodeData?.name || "") === NODE_NAME;) {
           return;
         }
     
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
-            ALEGROUPBYPASSER_SERVICE.init();
-             bindNode(this);
+          const result = originalOnNodeCreated?.apply(this, arguments);
+          ALEGROUPBYPASSER_SERVICE.init();
+          bindNode(this);
+          return result;
         });
     };
     /*
