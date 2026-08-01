@@ -90,13 +90,13 @@ class AleGroupBypasserService {
             group_collections.set(key, {
                 key,
                 title,
-                value = MODE_BYPASS
+                value : MODE_BYPASS
             }); 
         }
     
-       // if (group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-            //this.group_collections.get(key).value = (getGroupNodes(group).some((n) => n.mode === MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
-        //}
+        if (group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
+            group_collections.get(key).value = (getGroupNodes(group).some((n) => n.mode === MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
+        }
         
     }
     getGroupNodes(group) {
