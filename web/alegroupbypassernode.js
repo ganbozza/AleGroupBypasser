@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
+//import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 function bindNode(node) {
   if (node.__groupBypasserBound) {
@@ -20,7 +20,7 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          ALEGROUPBYPASSER_SERVICE.init();
+          //ALEGROUPBYPASSER_SERVICE.init();
           bindNode(this);
           return result;
         });
