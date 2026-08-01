@@ -11,6 +11,7 @@ function bindNode(node) {
   node.onRemoved = function () {
     // Clean up service references safely when deleted from canvas
     ALEGROUPBYPASSER_SERVICE.unregisterNode(this);
+    console.log("Node removed...");
     return originalOnRemoved?.apply(this, arguments);
   };
 }
@@ -20,7 +21,7 @@ app.registerExtension({
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (String(nodeData?.name || "") !== "AleGroupBypasser") {
-          console.log("OK: "+String(nodeData?.name || ""));
+          //console.log("OK: "+String(nodeData?.name || ""));
           return;
         }
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
@@ -29,6 +30,7 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
+          console.log("Node created...");
           return result;
         }
 
