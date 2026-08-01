@@ -32,17 +32,17 @@ class AleGroupBypasserService {
         }
 
         // Intercept LiteGraph drawing loop
+        /*
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
-            const available_groups = 0;//app.graph?._groups || [];
+            const available_groups = app.graph?._groups || [];
             for (const group of available_groups) {
                 if(group_collections.has(group.title)) {
                     continue;
                 }
                 addGroupToCollection(group);
             }
-            if(group_collections.size > available_groups)
-            {
+            if(group_collections.size > available_groups) {
                 for (const group of group_collections)
                 {
                     if(!in_array(group.title, available_groups) {
@@ -54,6 +54,7 @@ class AleGroupBypasserService {
             
             return origDraw.apply(this, args);
         };
+        */
         
         console.log("AleGroupBypasser_Service initialized...");
     }
