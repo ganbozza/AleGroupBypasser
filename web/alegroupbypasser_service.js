@@ -38,13 +38,22 @@ class AleGroupBypasserService {
                       group_collections.set(key, {
                       key,
                       title,
-                      state = MODE_BYPASS; 
+                      value = MODE_BYPASS; 
                     }); 
                   }
-                  if (group_collections.get(key).state==MODE_BYPASS) { // ignore if group already in active state
-                      group_collections.get(key).state = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
+                  if (group_collections.get(key).value===MODE_BYPASS) { // ignore if group already in active state
+                      group_collections.get(key).value = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
                   }
               }
+        }
+        for (const group of group_collections) {
+            for (const node of this.nodes) {
+                const widget = findWidget(node, group.title);
+                if (!widget) {
+                  continue;
+                }
+                widget.value = group.value;
+            }
         }
         //setTimeout(function(){ this.run(); }, 500);
     }
@@ -74,7 +83,9 @@ class AleGroupBypasserService {
       return collected;
     }
 
-
+    function findWidget(node, name) {
+      return (node.widgets || []).find((widget) => widget.name === name);
+    }
     registerNode(node) {
         this.nodes.add(node);
         console.log("Adding node...");
