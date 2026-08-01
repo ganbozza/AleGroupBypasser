@@ -3,7 +3,7 @@ import { app } from "../../scripts/app.js";
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
-        this.controllers = new Set();
+        this.nodes = new Set();
     }
 
     init() {
@@ -19,12 +19,12 @@ class AleGroupBypasserService {
         };
     }
 
-    registerController(node) {
-        this.controllers.add(node);
+    registerNode(node) {
+        this.nodes.add(node);
     }
 
-    unregisterController(node) {
-        this.controllers.delete(node);
+    unregisterNode(node) {
+        this.nodes.delete(node);
     }
 
     // Helper: Find which canvas group contains a node's position coordinates
@@ -48,30 +48,30 @@ class AleGroupBypasserService {
     updateAllGroupsState() {
         if (!app.graph) return;
 
-        this.controllers.forEach(controller => {
-            const targetGroup = this.getGroupContainingNode(controller);
+        this.nodes.forEach(node => {
+            const targetGroup = this.getGroupContainingNode(node);
             if (!targetGroup) return;
 
-            // Get target operational state from the controller's widget value
+            // Get target operational state from the node's widget value
             // Custom state logic: "Active" (0), "Mute" (2), "Bypass" (4)
-            const targetMode = controller.widgets[0].value; 
+            const targetMode = node.widgets[0].value; 
             
             const [gX, gY] = targetGroup.pos;
             const [gW, gH] = targetGroup.size;
             const allNodes = app.graph._nodes || [];
 
-            allNodes.forEach(node => {
+            allNodes.forEach(_node => {
                 // Ignore the controller itself to prevent infinite logic loops
-                if (node === controller) return;
+                if (_node === node) return;
 
-                const [nX, nY] = node.pos;
+                const [nX, nY] = _node.pos;
                 const isInside = nX >= gX && nX <= gX + gW && nY >= gY && nY <= gY + gH;
 
                 if (isInside) {
-                    const currentMode = node.mode ?? 0;
+                    const currentMode = _node.mode ?? 0;
                     if (currentMode !== targetMode) {
-                        node.mode = targetMode;
-                        node.setDirtyCanvas(true, true);
+                        _node.mode = targetMode;
+                        _node.setDirtyCanvas(true, true);
                     }
                 }
             });
