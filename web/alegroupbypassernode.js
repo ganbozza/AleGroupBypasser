@@ -14,6 +14,7 @@ app.registerExtension({
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (String(nodeData?.name || "") !== "AleGroupBypasser") {
+          console.log("OK: "+String(nodeData?.name || ""));
           return;
         }
     
