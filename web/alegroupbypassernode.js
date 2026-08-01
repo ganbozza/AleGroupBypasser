@@ -1,5 +1,4 @@
-// your_group_node.js
-import { app } from "../../../scripts/app.js";
+import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 function bindNode(node) {
