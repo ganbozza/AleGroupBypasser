@@ -23,7 +23,7 @@ app.registerExtension({
           //ALEGROUPBYPASSER_SERVICE.init();
           bindNode(this);
           return result;
-        });
+        }
     },
   loadedGraphNode(node) {
     console.log("AAAAA");
