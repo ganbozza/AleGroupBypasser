@@ -29,7 +29,7 @@ app.registerExtension({
           const result = originalOnNodeCreated?.apply(this, arguments);
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
-          //ALEGROUPBYPASSER_SERVICE.registerNode(this);
+          ALEGROUPBYPASSER_SERVICE.registerNode(this);
           return result;
         }
     },
