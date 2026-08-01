@@ -17,7 +17,7 @@ app.registerExtension({
           console.log("OK: "+String(nodeData?.name || ""));
           return;
         }
-    
+    console.log("BBBB");
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
