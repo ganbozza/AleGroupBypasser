@@ -15,7 +15,7 @@ class AleGroupBypasserService {
         this.initialized = true;        
     }
 
-    function findWidget(node, name) {
+    findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
     
