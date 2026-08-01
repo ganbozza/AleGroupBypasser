@@ -1,16 +1,16 @@
 // your_group_node.js
 import { app } from "../../../scripts/app.js";
-import { ALEBYPASSER_GROUP_SERVICE } from "./alebypasser_groupservice.js";
+import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 app.registerExtension({
     name: "Ale.AleGroupBypasser",
     
     init() {
-        ALEBYPASSER_GROUP_SERVICE.init();
+        ALEGROUPBYPASSER_SERVICE.init();
     },
 
     registerCustomNodes() {
-        class AleBypassControllerNode {
+        class AleGroupBypasserControllerNode {
             constructor() {
                 this.title = "Group Toggle Node";
                 this.size =;
@@ -29,20 +29,20 @@ app.registerExtension({
                 );
 
                 // Instantly register with our global manager
-                ALEBYPASSER_GROUP_SERVICE.registerController(this);
+                ALEGROUPBYPASSER_SERVICE.registerController(this);
             }
 
             onStateChanged(newValue) {
                 // Refresh the engine immediately when user changes the dropdown
-                ALEBYPASSER_GROUP_SERVICE.updateAllGroupsState();
+                ALEGROUPBYPASSER_SERVICE.updateAllGroupsState();
             }
 
             onRemoved() {
                 // Clean up service references safely when deleted from canvas
-                ALEBYPASSER_GROUP_SERVICE  .unregisterController(this);
+                ALEGROUPBYPASSER_SERVICE  .unregisterController(this);
             }
         }
 
-        LiteGraph.registerNodeType("AleBypassControllerNode", AleBypassControllerNode);
+        LiteGraph.registerNodeType("AleGroupBypasserControllerNode", AleGroupBypasserControllerNode);
     }
 });
