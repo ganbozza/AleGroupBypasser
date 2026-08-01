@@ -14,6 +14,11 @@ class AleGroupBypasserService {
         if (this.initialized) return;
         this.initialized = true;        
     }
+
+    function findWidget(node, name) {
+      return (node.widgets || []).find((widget) => widget.name === name);
+    }
+    
     registerNode(node) {
         this.nodes.add(node);
         console.log("Adding node...");
