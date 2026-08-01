@@ -11,7 +11,7 @@ function bindNode(node) {
 }
 
 app.registerExtension({
-    name: "Ale.AleGroupBypasser",
+    name: "ale.group.bypasser",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (!String(nodeData?.name || "") === "AleGroupBypasser") {
@@ -25,7 +25,10 @@ app.registerExtension({
           bindNode(this);
           return result;
         });
-    };
+    },
+  loadedGraphNode(node) {
+    console.log("AAAAA");
+  },
     /*
     init() {
         ALEGROUPBYPASSER_SERVICE.init();
