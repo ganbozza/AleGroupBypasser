@@ -7,6 +7,12 @@ function bindNode(node) {
   }
   node.__groupBypasserBound = true;
 
+  const originalOnRemoved = node.onRemoved;
+  node.onRemoved = function () {
+    // Clean up service references safely when deleted from canvas
+    ALEGROUPBYPASSER_SERVICE.unregisterNode(this);
+    return originalOnRemoved?.apply(this, arguments);
+  };
 }
 
 app.registerExtension({
@@ -20,8 +26,9 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          ALEGROUPBYPASSER_SERVICE.init();
           bindNode(this);
+          ALEGROUPBYPASSER_SERVICE.init();
+          ALEGROUPBYPASSER_SERVICE.registerNode(this);
           return result;
         }
 
