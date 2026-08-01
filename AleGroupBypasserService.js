@@ -1,7 +1,7 @@
 // your_group_service.js
 import { app } from "../../../scripts/app.js";
 
-class AleBypasserGroupService {
+class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
         this.controllers = new Set();
@@ -80,4 +80,4 @@ class AleBypasserGroupService {
     }
 }
 
-export const FAST_GROUP_SERVICE = new AleBypasserGroupService();
+export const ALEGROUPBYPASSER_SERVICE = new AleGroupBypasserService();
