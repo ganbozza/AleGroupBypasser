@@ -10,7 +10,7 @@ function bindNode(node) {
 }
 
 app.registerExtension({
-    name: "comfy.group.bypasser",
+    name: "ale.group.bypasser",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (String(nodeData?.name || "") !== "AleGroupBypasser") {
