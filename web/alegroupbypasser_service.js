@@ -23,10 +23,11 @@ class AleGroupBypasserService {
                 originalOnGroupAdd.apply(this, args);
 
                 // 4. Retrieve the newly created group (it's the last one in the list)
-                const newGroup = app.graph._groups[app.graph._groups.length - 1];
+                const group = app.graph._groups[app.graph._groups.length - 1];
 
-                if (newGroup) {
+                if (group) {
                     // add group to collection
+                    self.addGroupToCollection(group);
                 }
                 console.log("A new group is being added to the canvas!");
             };
@@ -41,6 +42,7 @@ class AleGroupBypasserService {
                 if(self.group_collections.has(group.title)) {
                     continue;
                 }
+                 // add group to collection
                 self.addGroupToCollection(group);
             }
             self.updateGroupCollection(available_groups);
@@ -79,7 +81,21 @@ class AleGroupBypasserService {
     }
     
     addGroupToCollection(group) {
-      
+        const title = String(group.title || "").trim();
+        if(!title) { 
+          return; 
+        }
+        const key = title.toLowerCase();
+        if(!group_collections.has(key)) {
+            group_collections.set(key, {
+                key,
+                title,
+                value = MODE_BYPASS; 
+            }); 
+        }
+        if (group_collections.get(key).value===MODE_BYPASS) { // ignore if group already in active state
+            group_collections.get(key).value = Array.from(group._children).filter((c) => c instanceof LGraphNode).some((n) => n.mode === MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
+        }
     }
     
     registerNode(node) {
