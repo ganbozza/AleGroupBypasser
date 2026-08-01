@@ -1,5 +1,4 @@
-// your_group_service.js
-import { app } from "../../../scripts/app.js";
+import { app } from "../../scripts/app.js";
 
 class AleGroupBypasserService {
     constructor() {
