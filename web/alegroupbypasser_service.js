@@ -42,7 +42,7 @@ class AleGroupBypasserService {
                 }
                 addGroupToCollection(group);
             }
-            updateGroupCollection(available_groups);
+            that.updateGroupCollection(available_groups);
             /*
             if(this.group_collections.size > available_groups) {
                 for (const group of group_collections)
