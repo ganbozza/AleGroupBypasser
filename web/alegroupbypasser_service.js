@@ -8,7 +8,7 @@ class AleGroupBypasserService {
 
     init() {
         if (this.initialized) return;
-        this.initialized = true;
+        this.initialized = true;        
 
         // Intercept LiteGraph drawing loop to sync toggle states in real-time
         const origDraw = LGraphCanvas.prototype.draw;
@@ -17,14 +17,17 @@ class AleGroupBypasserService {
             self.updateAllGroupsState();
             return origDraw.apply(this, args);
         };
+        console.log("AleGroupBypasser_Service initialized...");
     }
 
     registerNode(node) {
         this.nodes.add(node);
+        console.log("Adding node...");
     }
 
     unregisterNode(node) {
         this.nodes.delete(node);
+        console.log("Removing node...");
     }
 
     // Helper: Find which canvas group contains a node's position coordinates
