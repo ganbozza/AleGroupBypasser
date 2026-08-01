@@ -2,9 +2,29 @@
 import { app } from "../../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
+function bindNode(node) {
+  if (node.__groupBypasserBound) {
+    return;
+  }
+  node.__groupBypasserBound = true;
+
+}
+
 app.registerExtension({
     name: "Ale.AleGroupBypasser",
+
+    async beforeRegisterNodeDef(nodeType, nodeData) {
+        if (!isTargetNodeDef(nodeData)) {
+          return;
+        }
     
+        const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
+        nodeType.prototype.onNodeCreated = function () {
+            ALEGROUPBYPASSER_SERVICE.init();
+             bindNode(this);
+        });
+    };
+    /*
     init() {
         ALEGROUPBYPASSER_SERVICE.init();
     },
@@ -45,4 +65,5 @@ app.registerExtension({
 
         LiteGraph.registerNodeType("AleGroupBypasserControllerNode", AleGroupBypasserControllerNode);
     }
+    */
 });
