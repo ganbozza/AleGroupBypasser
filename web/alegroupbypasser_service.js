@@ -94,9 +94,9 @@ class AleGroupBypasserService {
             }); 
         }
     
-        if (group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
+       // if (group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
             //this.group_collections.get(key).value = (getGroupNodes(group).some((n) => n.mode === MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
-        }
+        //}
         
     }
     getGroupNodes(group) {
