@@ -42,17 +42,15 @@ class AleGroupBypasserService {
                 }
                 addGroupToCollection(group);
             }
-            /*
-            if(group_collections.size > available_groups) {
+            if(this.group_collections.size > available_groups) {
                 for (const group of group_collections)
                 {
-                    if(!in_array(group.title, available_groups) {
+                    if(!in_array(group.title, available_groups)) {
                         group_collections.delete(group.key);
                         console.log("Group removed from collection...");
                     }
                 }
             }
-            */
             return origDraw.apply(this, args);
         };
         
