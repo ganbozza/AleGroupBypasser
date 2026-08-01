@@ -42,6 +42,7 @@ class AleGroupBypasserService {
                 }
                 addGroupToCollection(group);
             }
+            /*
             if(this.group_collections.size > available_groups) {
                 for (const group of group_collections)
                 {
@@ -51,6 +52,7 @@ class AleGroupBypasserService {
                     }
                 }
             }
+            */
             return origDraw.apply(this, args);
         };
         
