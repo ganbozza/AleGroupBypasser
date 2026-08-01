@@ -11,8 +11,9 @@ class AleGroupBypasserService {
     }
 
     init() {
-        if (this.initialized) return;
-        this.initialized = true;
+        const self = this;
+        if (self.initialized) return;
+        self.initialized = true;
 
         if (typeof LGraphCanvas !== "undefined" && LGraphCanvas.onGroupAdd) {
             const originalOnGroupAdd = LGraphCanvas.onGroupAdd;
@@ -42,7 +43,7 @@ class AleGroupBypasserService {
                 }
                 addGroupToCollection(group);
             }
-            that.updateGroupCollection(available_groups);
+            self.updateGroupCollection(available_groups);
             /*
             if(this.group_collections.size > available_groups) {
                 for (const group of group_collections)
