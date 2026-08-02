@@ -66,17 +66,7 @@ function bindNode(node) {
   node.onStateChanged = function() {
     console.log("State changed...");
   }
-  node.onNodeConnectionChange = function(slotType, slotIndex, isConnected, linkInfo, inputInfo) {
-      // slotType: 1 means Input Slot, 2 means Output Slot
-      if (slotType === 1 && isConnected) {
-          console.log(`Slot ${slotIndex} connected to an upstream wire!`);
-          
-          // Note: You cannot read the live data value instantly here 
-          // because values are calculated during execution time.
-      } else if (slotType === 1 && !isConnected) {
-          console.log(`Slot ${slotIndex} disconnected. Reverting to widget control.`);
-      }
-  };  
+ 
 }
 
 app.registerExtension({
@@ -165,6 +155,29 @@ app.registerExtension({
           */
           return result;
         }
+
+      const origOnConnectionsChange = nodeType.prototype.onConnectionsChange;
+      // 2. Override the prototype method for all nodes of this type
+      nodeType.prototype.onConnectionsChange = function (side, slot, connect, link_info, output) {
+          
+          // 3. Always run the original LiteGraph/Comfy logic first to prevent UI breaking
+          const result = origOnConnectionsChange?.apply(this, arguments);
+
+          // --- Put your custom UI logic below this line ---
+          
+          // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
+          // 'connect': true if a wire was plugged in, false if a wire was removed
+          if (side === 1) { 
+              if (connect) {
+                  console.log(`Wire plugged into input slot index: ${slot}`);
+              } else {
+                  console.log(`Wire removed from input slot index: ${slot}`);
+              }
+          }
+
+          // Always return the original execution result
+          return result;
+      };
     },
   loadedGraphNode(node) {
     console.log("AAAAA");
