@@ -95,7 +95,7 @@ class AleGroupBypasserService {
         }
     
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-            if (groupHasActiveNode(group))
+            if (this.groupHasActiveNode(group))
                 this.group_collections.get(key).value =  MODE_ACTIVE;
         }
         
