@@ -74,7 +74,7 @@ app.registerExtension({
           */
           // Initialize counter on the node instance
           this.booleanCount = this.booleanCount || 0;
-
+          const node = this;
           // Function to handle slot generation cleanly
           this.addDynamicBooleanInput = function(slotIndex) {
               const inputName = `boolean_${slotIndex}`;
