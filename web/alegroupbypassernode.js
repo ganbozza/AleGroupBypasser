@@ -66,7 +66,7 @@ app.registerExtension({
           refreshNode(this);
           return result;
         }
-      
+        const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function () {
           const result = originalOnConfigure?.apply(this, arguments);
           console.log("CCC");
