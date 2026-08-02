@@ -75,8 +75,8 @@ class AleGroupBypasserService {
     updateGroupCollection(available_groups) {
         if(this.group_collections.size > available_groups.length) {
           const ag_titles = [];
-          for (const title of available_groups) {
-            ag_titles.push(title);
+          for (const ag of available_groups) {
+            ag_titles.push(ag.title);
           }
           for (const [key, val] of this.group_collections)
           {
