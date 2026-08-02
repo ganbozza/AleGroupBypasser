@@ -1,6 +1,28 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
+function refreshNode(node) {
+  if(node._refreshInProgress) return;
+  node._refreshInProgress = true;
+  for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
+    const widget = node.addWidget(
+      "toggle",
+      widgetName,
+      isBypassed,
+      (value) => {
+        const bypassed = Boolean(value);
+        const latestEntry = getEntryByKey(node, entry.key);
+        if (!latestEntry) {
+          return;
+        }
+        stateStore[entry.key] = bypassed;
+        applyModeToGroupTitle(node, latestEntry, bypassed);
+      },
+    );
+  }
+  node._refreshInProgress = false;
+}
+
 function bindNode(node) {
   if (node.__groupBypasserBound) {
     return;
@@ -34,6 +56,7 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
+          refreshNode(this);
           return result;
         }
     },
