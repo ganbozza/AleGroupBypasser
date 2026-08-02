@@ -56,7 +56,7 @@ class AleGroupBypasserService {
           for (const node of self.nodes) {
             if(node.widgets) {
               for(const widget of node.widgets) {
-                const group = self.group_collections.get(normalizeTitle(widget.name));
+                const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
                 if(group)
                 {
                   if(widget.value!==group.value) {
