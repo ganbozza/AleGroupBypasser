@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
-function refreshNode(node) {
+function refreshWidgets(node) {
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
@@ -20,8 +20,8 @@ function refreshNode(node) {
       },
     );    
   }
-  node.setSize([node.size[0], node.computeSize()[1]]);
-  app.graph?.setDirtyCanvas?.(true, true);
+  //node.setSize([node.size[0], node.computeSize()[1]]);
+  //app.graph?.setDirtyCanvas?.(true, true);
   node._refreshInProgress = false;
   /*
   setTimeout(() => {
@@ -63,7 +63,7 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
-          //refreshNode(this);
+          refreshWidget(this);
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
