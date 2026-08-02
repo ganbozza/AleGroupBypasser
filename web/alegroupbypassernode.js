@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
+
 function refreshWidgets(node) {
   var updated = false;
   if(node._refreshInProgress) return;
@@ -15,6 +16,7 @@ function refreshWidgets(node) {
         val.value,
         (value) => {
           // Optional: callback when toggle changes
+          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = value;
         },
         { serialize: true }
       );
