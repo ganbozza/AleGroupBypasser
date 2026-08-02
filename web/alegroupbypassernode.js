@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { api } from "../../scripts/api.js";
+
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 
@@ -193,37 +193,27 @@ app.registerExtension({
       };
       */
     },
+    async setup() {
+        // Listen to your exact custom keyword
+        app.api.addEventListener("my_custom_node_finished", (event) => {
+            const data = event.detail; 
+            
+            const targetNode = app.graph.getNodeById(data.node_id);
+            if (targetNode) {
+                const widget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
+                if (widget) {
+                    widget.value = data.resolved_value;
+                    if (typeof widget.callback === "function") {
+                        widget.callback(data.resolved_value); // Force the callback to run
+                    }
+                    targetNode.setDirtyCanvas(true, true);
+                }
+            }
+        });
+    },
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
 });
 
-// FIX: Listen to ComfyUI execution cycles globally to sync frontend widgets
-api.addEventListener("executed", (event) => {
-    const data = event.detail;
-    
-    // Find our specific node instance on the canvas using the execution node ID
-    const targetNode = app.graph.getNodeById(data.node);
-    
-    if (targetNode && targetNode.comfyClass === "AleGroupBypasser") {
-        // Find the widget linked to our dynamic input slot
-        const inputWidget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
-        
-        if (inputWidget) {
-            // 1. Fetch the absolute resolved runtime value from the execution history
-            // Note: Adjust the path if your Python node outputs the evaluated state in a specific key
-            const resolvedValue = data.output?.STRING?.[0] || false; 
 
-            // 2. Update the visual state of the widget on screen
-            inputWidget.value = resolvedValue;
-
-            // 3. Explicitly trigger the callback function that ComfyUI bypassed
-            if (typeof inputWidget.callback === "function") {
-                inputWidget.callback(resolvedValue);
-            }
-            
-            // Refresh the node layout to paint the changes
-            targetNode.setDirtyCanvas(true, true);
-        }
-    }
-});
