@@ -12,6 +12,7 @@ class AleGroupBypasser:
     RETURN_TYPES = ()
     FUNCTION = "execute"
     CATEGORY = "custom"
+    OUTPUT_NODE = True # CRITICAL FIX 2: Tells the engine this node handles terminal UI routing
 
     # FIX 1: This forces ComfyUI to run the node every single time, bypassing the cache
     @classmethod
