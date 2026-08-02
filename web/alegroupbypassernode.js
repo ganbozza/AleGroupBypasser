@@ -75,13 +75,31 @@ app.registerExtension({
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
-          
-          this.addInput(`boolean_1`, "BOOLEAN",{
-                widget: { 
-                    name: "boolean_1", 
-                    config: ["BOOLEAN", { default: true }] 
-                }
-            });
+          // Keep track of how many dynamic slots we have created
+          this.booleanCount = this.booleanCount || 0;
+          this.addWidget(
+                "button", 
+                "Add Boolean Input", 
+                null, 
+                () => {
+                    node.booleanCount++;
+                    const inputName = `boolean_${this.booleanCount}`;
+
+                    // Add the boolean input slot with default True configuration
+                    this.addInput(inputName, "BOOLEAN", {
+                        widget: { 
+                            name: inputName, 
+                            config: ["BOOLEAN", { default: true }] 
+                        }
+                    });
+
+                    // Force the node to resize nicely around the new inputs
+                    this.setSize(this.computeSize());
+                    // Trigger a UI redraw
+                    this.setDirtyCanvas(true, true);
+                },
+                { serialize: false } // Prevent the button widget state itself from being saved
+            );
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
