@@ -8,7 +8,7 @@ function refreshWidgets(node) {
     const widget = node.addWidget(
       "toggle",
       "aha",
-      isBypassed,
+      false,
       (value) => {
         const bypassed = Boolean(value);
         const latestEntry = getEntryByKey(node, entry.key);
