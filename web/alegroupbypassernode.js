@@ -79,20 +79,24 @@ app.registerExtension({
           this.addDynamicBooleanInput = function(slotIndex) {
               const inputName = `boolean_${slotIndex}`;
               
-              // Use a fallback wildcard type "*" so ComfyUI doesn't immediately drop it
-              const newInput = node.addInput(inputName, "*");
-              // Manually attach custom metadata properties so ComfyUI validates it
-              if (newInput) {
-                  newInput.widget = { 
-                                name: inputName, 
-                                config: ["INT", { 
-                                    default: 0, 
-                                    min: 0, 
-                                    max: 10000, 
-                                    step: 1 
-                                }] 
-                            };
-              }
+              // 1. Create the link connection point on the left side
+            node.addInput(inputName, "BOOLEAN");
+
+            // 2. Create the toggle switch widget inside the node body
+            // Arguments: (Widget Type, Name, Default Value, Callback)
+            const boolWidget = node.addWidget(
+                "toggle", 
+                inputName, 
+                false, 
+                function(value) {
+                    console.log("Toggle changed to:", value);
+                }
+            );
+
+            // 3. Link the input slot to the widget.
+            // This hides the checkbox/toggle UI when a link wire is attached.
+            node.inputs[node.inputs.length - 1].widget = boolWidget;
+            
           };
 
           // Add the trigger button widget
@@ -102,7 +106,8 @@ app.registerExtension({
               null, 
               () => {
                   this.booleanCount++;
-                  //this.addDynamicBooleanInput(this.booleanCount);
+                  this.addDynamicBooleanInput(this.booleanCount);
+                /*
                   const inputSlotName = "dynamic_bool_input";
 
             // 1. Create the link connection point on the left side
@@ -122,7 +127,7 @@ app.registerExtension({
             // 3. Link the input slot to the widget.
             // This hides the checkbox/toggle UI when a link wire is attached.
             node.inputs[node.inputs.length - 1].widget = boolWidget;
-
+              */
                 
                   // Redraw and scale bounding boxes safely
                   this.setSize(this.computeSize());
