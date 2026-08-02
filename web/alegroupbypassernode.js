@@ -77,6 +77,29 @@ function widgetCallback(value) {
     // Put your frontend UI update properties logic here!
 }
 
+// Hook directly into the global websocket stream
+api.addEventListener("my_custom_node_finished", (event) => {
+    const data = event.detail;
+    console.log("[FRONTEND WEB EVENT RECEIVED]", data);
+    
+    if (!data || !data.node_id) return;
+
+    const targetNode = app.graph.getNodeById(data.node_id);
+    if (targetNode) {
+        const widget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
+        if (widget) {
+            // Force synchronize the state values
+            widget.value = data.resolved_value;
+            
+            // Execute your custom widget properties trigger logic manually
+            if (typeof widget.callback === "function") {
+                widget.callback(data.resolved_value);
+            }
+            targetNode.setDirtyCanvas(true, true);
+        }
+    }
+});
+
 app.registerExtension({
     name: "ale.group.bypasser",
 
@@ -194,6 +217,7 @@ app.registerExtension({
       };
       */
     },
+    /*
    // Use init() to attach the socket listener early in the boot lifecycle
     async init() {
         console.log("Custom extension initialized. Listening for WebSocket events...");
@@ -222,6 +246,7 @@ app.registerExtension({
             }
         });
     },
+    */
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
