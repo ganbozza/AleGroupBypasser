@@ -13,12 +13,20 @@ class AleGroupBypasser:
     FUNCTION = "execute"
     CATEGORY = "custom"
 
+    # FIX 1: This forces ComfyUI to run the node every single time, bypassing the cache
+    @classmethod
+    def IS_CHANGED(s, **kwargs):
+        return random.random()
+        
     def execute(self, unique_id, **kwargs):
-        print(f"Backend executed! Sending UI event for node {unique_id}...")
-        # FIX: Directly broadcast a custom socket event to the web interface
+        is_enabled = kwargs.get("dynamic_bool_input", False)
+        
+        print(f"!!! Python executing for node ID: {unique_id} !!!")
+
+        # FIX 2: Send data via PromptServer instance using the api structure
         PromptServer.instance.send_sync("my_custom_node_finished", {
-            "node": unique_id,
-            "resolved_value": false
+            "node_id": unique_id,
+            "resolved_value": is_enabled
         })
         return ()
 
