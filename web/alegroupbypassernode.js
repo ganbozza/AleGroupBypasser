@@ -7,7 +7,7 @@ function refreshWidgets(node) {
   for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
     const widget = node.addWidget(
       "toggle",
-      widgetName,
+      "aha",
       isBypassed,
       (value) => {
         const bypassed = Boolean(value);
