@@ -67,6 +67,12 @@ app.registerExtension({
           refreshNode();
           return result;
         }
+      
+        nodeType.prototype.onConfigure = function () {
+          const result = originalOnConfigure?.apply(this, arguments);
+          console.log("CCC");
+          return result;
+        }
     },
   loadedGraphNode(node) {
     console.log("AAAAA");
