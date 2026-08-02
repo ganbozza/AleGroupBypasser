@@ -119,7 +119,7 @@ class AleGroupBypasserService {
        const available_groups = app.graph?._groups || [];
        for (const group of available_groups) {
           if(normalizeTitle(group.title)===title) {
-              processNodeInsideGroup(group, mode, true);
+              this.processNodeInsideGroup(group, mode, true);
           }
        }
     }
