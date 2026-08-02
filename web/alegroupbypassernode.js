@@ -106,7 +106,7 @@ app.registerExtension({
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
-        nodeType.prototype.onConfigure = function () {
+        nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
           
           // Read how many inputs existed when the workflow was saved
