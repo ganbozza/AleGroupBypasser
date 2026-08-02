@@ -72,42 +72,60 @@ app.registerExtension({
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
           */
+          // Initialize counter on the node instance
           this.booleanCount = this.booleanCount || 0;
-          // Create the button widget
+
+          // Function to handle slot generation cleanly
+          this.addDynamicBooleanInput = function(slotIndex) {
+              const inputName = `boolean_${slotIndex}`;
+              
+              // Add connection slot with default mapping
+              this.addInput(inputName, "BOOLEAN", {
+                  widget: { 
+                      name: inputName, 
+                      config: ["BOOLEAN", { default: true }] 
+                  }
+              });
+          };
+
+          // Add the trigger button widget
           this.addWidget(
               "button", 
               "Add Boolean Input", 
               null, 
               () => {
                   this.booleanCount++;
-                  const inputName = `boolean_${this.booleanCount}`;
+                  this.addDynamicBooleanInput(this.booleanCount);
 
-                  // Add the connection slot with its internal mapping
-                  this.addInput(inputName, "BOOLEAN", {
-                      widget: { 
-                          name: inputName, 
-                          config: ["BOOLEAN", { default: true }] 
-                      }
-                  });
-
-                  // CRITICAL: Overwrite LiteGraph internal height calculations
-                  // Otherwise, new inputs hide beneath the node background
+                  // Redraw and scale bounding boxes safely
                   this.setSize(this.computeSize());
-                  
-                  // FIX: Proper canvas layout state redraw triggers
                   this.setDirtyCanvas(true, true);
-                  if (app.canvas && typeof app.canvas.draw === "function") {
-                      app.canvas.draw(true, true);
-                  }
               },
-              { serialize: false }
+              { serialize: false } // Do not serialize the button configuration itself
           );
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function () {
           const result = originalOnConfigure?.apply(this, arguments);
-          console.log("CCC");
+          
+          // Read how many inputs existed when the workflow was saved
+          if (info.inputs && info.inputs.length > 0) {
+              // Reset the node slot memory to clear any defaults
+              this.inputs = []; 
+              this.booleanCount = 0;
+
+              // Rebuild the programmatic inputs matching the exact count saved in JSON
+              for (const inputInfo of info.inputs) {
+                  if (inputInfo.name.startsWith("boolean_")) {
+                      this.booleanCount++;
+                      this.addDynamicBooleanInput(this.booleanCount);
+                  }
+              }
+              
+              // Ensure size updates after slots are generated
+              this.setSize(this.computeSize());
+          }
           return result;
         }
     },
