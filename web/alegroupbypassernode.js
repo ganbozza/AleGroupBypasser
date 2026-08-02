@@ -4,20 +4,15 @@ import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 function refreshWidgets(node) {
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
-  for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
+  for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     const widget = node.addWidget(
       "toggle",
-      "aha",
-      false,
+      val.title,
+      val.value,
       (value) => {
-        const bypassed = Boolean(value);
-        const latestEntry = getEntryByKey(node, entry.key);
-        if (!latestEntry) {
-          return;
-        }
-        stateStore[entry.key] = bypassed;
-        applyModeToGroupTitle(node, latestEntry, bypassed);
+        // Optional: callback when toggle changes
       },
+      { serialize: true }
     );    
   }
   //node.setSize([node.size[0], node.computeSize()[1]]);
