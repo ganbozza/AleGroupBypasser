@@ -1,3 +1,5 @@
+from server import PromptServer
+
 class AleGroupBypasser:
     @classmethod
     def INPUT_TYPES(s):
@@ -8,16 +10,10 @@ class AleGroupBypasser:
     CATEGORY = "Example"
 
     def execute(self, **kwargs):
-        # 1. Safely extract the boolean state. 
-        # It automatically resolves to the wire's value (if connected) 
-        # or falls back to the manual widget toggle state (if unconnected).
-        is_enabled = kwargs.get("dynamic_bool_input", False)
-        
-        # 2. Adapt your execution logic directly based on the True/False state
-        if is_enabled:
-            print("[Backend] Logic running in TRUE mode.")
-        else:
-            print("[Backend] Logic running in FALSE mode.")
+        # FIX: Directly broadcast a custom socket event to the web interface
+        PromptServer.instance.send_sync("my_custom_node_finished", {
+            "resolved_value": false
+        })
         return ()
 
 
