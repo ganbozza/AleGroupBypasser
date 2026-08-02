@@ -94,9 +94,11 @@ app.registerExtension({
                   // Otherwise, new inputs hide beneath the node background
                   this.setSize(this.computeSize());
                   
-                  // Force structural canvas update loops
+                  // FIX: Proper canvas layout state redraw triggers
                   this.setDirtyCanvas(true, true);
-                  app.canvas.requestDraw();
+                  if (app.canvas && typeof app.canvas.draw === "function") {
+                      app.canvas.draw(true, true);
+                  }
               },
               { serialize: false }
           );
