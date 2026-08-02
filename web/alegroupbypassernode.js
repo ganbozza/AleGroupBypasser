@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { api } from "../../scripts/api.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 
@@ -24,13 +25,14 @@ function refreshWidgets(node) {
         "toggle",
         val.title,
         (val.value===MODE_BYPASS) ? true : false,
-        (value) => {
+        widgetCallback,
+        /*(value) => {
           // Optional: callback when toggle changes
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
           const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
           gc.value = mode_val;
           ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-        },
+        },*/
         { serialize: true }
       );
       // This hides the checkbox/toggle UI when a link wire is attached.
@@ -80,7 +82,11 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          
+          // Define your callback clearly
+          const widgetCallback = function(value) {
+              console.log("Widget callback explicitly executed with value:", value);
+              // Put your frontend UI update properties logic here!
+          };
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
@@ -155,7 +161,7 @@ app.registerExtension({
           */
           return result;
         }
-
+      /*
       const origOnConnectionsChange = nodeType.prototype.onConnectionsChange;
       // 2. Override the prototype method for all nodes of this type
       nodeType.prototype.onConnectionsChange = function (side, slot, connect, link_info, output) {
@@ -178,8 +184,39 @@ app.registerExtension({
           // Always return the original execution result
           return result;
       };
+      */
     },
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
+});
+
+// FIX: Listen to ComfyUI execution cycles globally to sync frontend widgets
+api.addEventListener("executed", (event) => {
+    const data = event.detail;
+    
+    // Find our specific node instance on the canvas using the execution node ID
+    const targetNode = app.graph.getNodeById(data.node);
+    
+    if (targetNode && targetNode.comfyClass === "YourCustomBoolPythonNode") {
+        // Find the widget linked to our dynamic input slot
+        const inputWidget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
+        
+        if (inputWidget) {
+            // 1. Fetch the absolute resolved runtime value from the execution history
+            // Note: Adjust the path if your Python node outputs the evaluated state in a specific key
+            const resolvedValue = data.output?.STRING?.[0] || false; 
+
+            // 2. Update the visual state of the widget on screen
+            inputWidget.value = resolvedValue;
+
+            // 3. Explicitly trigger the callback function that ComfyUI bypassed
+            if (typeof inputWidget.callback === "function") {
+                inputWidget.callback(resolvedValue);
+            }
+            
+            // Refresh the node layout to paint the changes
+            targetNode.setDirtyCanvas(true, true);
+        }
+    }
 });
