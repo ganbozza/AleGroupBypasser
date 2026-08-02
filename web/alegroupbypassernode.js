@@ -76,5 +76,7 @@ app.registerExtension({
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
-    
+  _refreshNode() {
+    refreshNode(this); 
+  }
 });
