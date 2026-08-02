@@ -41,38 +41,46 @@ class AleGroupBypasserService {
         
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
-            const available_groups = app.graph?._groups || [];
-            for (const group of available_groups) {
-                if(self.group_collections.has(normalizeTitle(group.title))) {
-                    continue;
+          const available_groups = app.graph?._groups || [];
+           for (const group of available_groups) {
+              if(self.group_collections.has(normalizeTitle(group.title))) {
+                  continue;
+              }
+              // add group to collection
+              self.addGroupToCollection(group);
+          }
+          self.updateGroupCollectionList(available_groups);
+            
+          // update widget state in each node
+
+          for (const node of this.nodes) {
+            for(const widget of node.widgets) {
+              const group = findGroupInCollectionByKey(normalizedTitle(widget.name));
+              if(group)
+              {
+                if(widget.value!==group.value) {
+                  console.log("Changing value for "+widget.name);
                 }
-                 // add group to collection
-                self.addGroupToCollection(group);
+                widget.value = group.value;
+              }
             }
-            self.updateGroupCollection(available_groups);
-            /*
-            if(this.group_collections.size > available_groups) {
-                for (const group of group_collections)
-                {
-                    if(!in_array(group.title, available_groups)) {
-                        group_collections.delete(group.key);
-                        console.log("Group removed from collection...");
-                    }
-                }
-            }
-            */
-            return origDraw.apply(this, args);
+          }
+          return origDraw.apply(this, args);
         };
         
         
         console.log("AleGroupBypasser_Service initialized...");
     }
 
+    findGroupInCollectionByKey(key) {
+      return (this.group_collections).find((g) => g.key === key) || null;
+    }
+  
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
     
-    updateGroupCollection(available_groups) {
+    updateGroupCollectionList(available_groups) {
         if(this.group_collections.size > available_groups.length) {
           const ag_titles = [];
           for (const ag of available_groups) {
