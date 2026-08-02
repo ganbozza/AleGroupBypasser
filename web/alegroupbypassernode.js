@@ -70,11 +70,12 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          
+          /*
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
+          */
           // Keep track of how many dynamic slots we have created
           this.booleanCount = this.booleanCount || 0;
           this.addWidget(
