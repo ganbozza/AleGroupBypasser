@@ -70,7 +70,7 @@ class AleGroupBypasserService {
           return origDraw.apply(this, args);
         };
         
-        this.refreshBypasserNode();
+        //this.refreshBypasserNode();
         console.log("AleGroupBypasser_Service initialized...");
     }
 
