@@ -8,10 +8,7 @@ function refreshWidgets(node) {
   node._refreshInProgress = true;
   
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-    try
-    {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-      /*
       const widget = node.addWidget(
         "toggle",
         val.title,
@@ -25,25 +22,8 @@ function refreshWidgets(node) {
         },
         { serialize: true }
       );
-      */
-// Keep track of how many dynamic slots we have created
-          node.booleanCount = node.booleanCount || 0;
-
-          node.booleanCount++;
-          const inputName = `boolean_${node.booleanCount}`;
-
-          // Add the boolean input slot with default True configuration
-          node.addInput(inputName, "BOOLEAN", {
-              widget: { 
-                  name: inputName, 
-                  config: ["BOOLEAN", { default: true }] 
-              }
-          });
                
       updated = true;
-    }
-    } catch(e) {
-      console.log('ZZZZZZZZZZZZZZZZZZZ');
     }
   }
   if(updated) {
@@ -86,12 +66,40 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          
+          /*
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
-          
+          */
+          this.booleanCount = this.booleanCount || 0;
+          // Create the button widget
+          this.addWidget(
+              "button", 
+              "Add Boolean Input", 
+              null, 
+              () => {
+                  this.booleanCount++;
+                  const inputName = `boolean_${this.booleanCount}`;
+
+                  // Add the connection slot with its internal mapping
+                  this.addInput(inputName, "BOOLEAN", {
+                      widget: { 
+                          name: inputName, 
+                          config: ["BOOLEAN", { default: true }] 
+                      }
+                  });
+
+                  // CRITICAL: Overwrite LiteGraph internal height calculations
+                  // Otherwise, new inputs hide beneath the node background
+                  this.setSize(this.computeSize());
+                  
+                  // Force structural canvas update loops
+                  this.setDirtyCanvas(true, true);
+                  app.canvas.requestDraw();
+              },
+              { serialize: false }
+          );
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
