@@ -99,6 +99,15 @@ class AleGroupBypasserService {
         }
         
     }
+    findActiveInsideNodeForGroup(group) {
+         if (app.canvas.isDragging)
+            return;
+        
+        for (const nodes of group.graph.nodes) {
+            console.log("CCC");
+        }
+        return false;
+    }
     getGroupNodes(group) {
         return Array.from(group._children).filter((c) => c instanceof LGraphNode);
     }
