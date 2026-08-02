@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { api } from "../../scripts/api.js";
 
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
@@ -195,7 +196,7 @@ app.registerExtension({
     },
     async setup() {
         // Listen to your exact custom keyword
-        app.api.addEventListener("my_custom_node_finished", (event) => {
+        api.addEventListener("my_custom_node_finished", (event) => {
             const data = event.detail; 
             
             const targetNode = app.graph.getNodeById(data.node_id);
