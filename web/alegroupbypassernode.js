@@ -133,7 +133,7 @@ app.registerExtension({
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
-          
+          /*
           // Read how many inputs existed when the workflow was saved
           if (info.inputs && info.inputs.length > 0) {
               // Reset the node slot memory to clear any defaults
@@ -151,6 +151,7 @@ app.registerExtension({
               // Ensure size updates after slots are generated
               this.setSize(this.computeSize());
           }
+          */
           return result;
         }
     },
