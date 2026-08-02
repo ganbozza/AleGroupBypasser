@@ -2,21 +2,29 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 function refreshWidgets(node) {
+  const updated = false;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
+  
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-    const widget = node.addWidget(
-      "toggle",
-      val.title,
-      val.value,
-      (value) => {
-        // Optional: callback when toggle changes
-      },
-      { serialize: true }
-    );    
+    if(!node.widgets.find((w) => w.name === val.title))
+    {
+      const widget = node.addWidget(
+        "toggle",
+        val.title,
+        val.value,
+        (value) => {
+          // Optional: callback when toggle changes
+        },
+        { serialize: true }
+      );
+      updated = true;
+    }
   }
-  //node.setSize([node.size[0], node.computeSize()[1]]);
-  //app.graph?.setDirtyCanvas?.(true, true);
+  if(updated) {
+    node.setSize([node.size[0], node.computeSize()[1]]);
+    app.graph?.setDirtyCanvas?.(true, true);
+  }
   node._refreshInProgress = false;
   setTimeout(() => {
     refreshWidgets(node);
