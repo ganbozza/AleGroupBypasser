@@ -1,20 +1,13 @@
 class AleGroupBypasser:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {},
-            "optional": {}
-        }
+        return {"required": {}}
 
     RETURN_TYPES = ()
     FUNCTION = "execute"
-    CATEGORY = "utils"
+    CATEGORY = "Example"
 
     def execute(self, **kwargs):
-        print("Received dynamic inputs:")
-        for key, value in kwargs.items():
-            if key.startswith("boolean_"):
-                print(f"-> {key}: {value} (Type: {type(value)})")
         return ()
 
 
