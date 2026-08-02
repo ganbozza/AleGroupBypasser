@@ -66,6 +66,17 @@ function bindNode(node) {
   node.onStateChanged = function() {
     console.log("State changed...");
   }
+  node.onNodeConnectionChange = function(slotType, slotIndex, isConnected, linkInfo, inputInfo) {
+      // slotType: 1 means Input Slot, 2 means Output Slot
+      if (slotType === 1 && isConnected) {
+          console.log(`Slot ${slotIndex} connected to an upstream wire!`);
+          
+          // Note: You cannot read the live data value instantly here 
+          // because values are calculated during execution time.
+      } else if (slotType === 1 && !isConnected) {
+          console.log(`Slot ${slotIndex} disconnected. Reverting to widget control.`);
+      }
+  };  
 }
 
 app.registerExtension({
@@ -154,18 +165,6 @@ app.registerExtension({
           */
           return result;
         }
-      
-      nodeType.prototype.onNodeConnectionChange = function(slotType, slotIndex, isConnected, linkInfo, inputInfo) {
-          // slotType: 1 means Input Slot, 2 means Output Slot
-          if (slotType === 1 && isConnected) {
-              console.log(`Slot ${slotIndex} connected to an upstream wire!`);
-              
-              // Note: You cannot read the live data value instantly here 
-              // because values are calculated during execution time.
-          } else if (slotType === 1 && !isConnected) {
-              console.log(`Slot ${slotIndex} disconnected. Reverting to widget control.`);
-          }
-      };
     },
   loadedGraphNode(node) {
     console.log("AAAAA");
