@@ -73,11 +73,11 @@ class AleGroupBypasserService {
     }
     
     updateGroupCollection(available_groups) {
-        if(this.group_collections.size > available_groups) {
+        if(this.group_collections.size > available_groups.length) {
             for (const group of this.group_collections)
             {
                 if(!in_array(group.title, available_groups)) {
-                    group_collections.delete(group.key);
+                    this.group_collections.delete(group.key);
                     console.log("Group removed from collection...");
                 }
             }
