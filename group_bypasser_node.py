@@ -15,7 +15,7 @@ class AleGroupBypasser:
     def execute(self, unique_id, **kwargs):
         # FIX: Directly broadcast a custom socket event to the web interface
         PromptServer.instance.send_sync("my_custom_node_finished", {
-            "node_id": unique_id,
+            "node": unique_id,
             "resolved_value": false
         })
         return ()
