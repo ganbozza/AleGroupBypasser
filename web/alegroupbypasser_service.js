@@ -79,7 +79,7 @@ class AleGroupBypasserService {
       {
         node.refreshNode();
       }
-      setTimeout(() => { refreshBypasserNode(); }, 400);
+      setTimeout(() => { this.refreshBypasserNode(); }, 400);
     }
   
     findGroupInCollectionByKey(key) {
