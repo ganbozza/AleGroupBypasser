@@ -82,7 +82,7 @@ app.registerExtension({
                 "Add Boolean Input", 
                 null, 
                 () => {
-                    node.booleanCount++;
+                    this.booleanCount++;
                     const inputName = `boolean_${this.booleanCount}`;
 
                     // Add the boolean input slot with default True configuration
