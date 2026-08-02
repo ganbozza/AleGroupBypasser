@@ -149,8 +149,8 @@ class AleGroupBypasserService {
                 }
             }
         }
-        if(!is_set)
-          console.log("all bypassed...");
+        //if(!is_set)
+        //  console.log("all bypassed...");
         return false;
     }
     
