@@ -1,17 +1,16 @@
 class AleGroupBypasser:
     @classmethod
-    def INPUT_TYPES(cls):
+    def INPUT_TYPES(s):
         return {
             "required": {},
             "optional": {}
         }
 
     RETURN_TYPES = ()
-    RETURN_NAMES = ()
-    FUNCTION = "noop"
+    FUNCTION = "execute"
     CATEGORY = "utils"
 
-    def noop(self, **kwargs):
+    def execute(self, **kwargs):
         print("Received dynamic inputs:")
         for key, value in kwargs.items():
             if key.startswith("boolean_"):
