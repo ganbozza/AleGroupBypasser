@@ -119,13 +119,12 @@ class AleGroupBypasserService {
         }
     
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-            if (this.groupHasActiveNode(group))
-                this.group_collections.get(key).value =  MODE_ACTIVE;
+          this.group_collections.get(key).value =  (this.nodeInsideGroup(group, MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
         }
         
     }
     
-    groupHasActiveNode(group) {
+    nodeInsideGroup(group, mode, is_set=false) {
          if (app.canvas.isDragging)
             return;
 
@@ -138,9 +137,15 @@ class AleGroupBypasserService {
                 if (nodeCenter[0] >= grouBounds[0] &&
                     nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
                     nodeCenter[1] >= grouBounds[1] &&
-                    nodeCenter[1] < grouBounds[1] + grouBounds[3] && node.mode!==MODE_BYPASS) {
-                    console.log("has Active...");
-                    return true;
+                    nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
+                    if(node.mode!==mode) {
+                      if(!is_set) {
+                        console.log("has Active...");
+                        return true;
+                      }
+                    } else {
+                      node.mode = mode;
+                    }
                 }
             }
         }
