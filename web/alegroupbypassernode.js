@@ -102,8 +102,33 @@ app.registerExtension({
               null, 
               () => {
                   this.booleanCount++;
-                  this.addDynamicBooleanInput(this.booleanCount);
+                  //this.addDynamicBooleanInput(this.booleanCount);
+                  const inputSlotName = "dynamic_int_input";
+                  node.addInput(inputSlotName, "INT");
+                  
+                  // 2. Add the corresponding visual widget inside the node body
+                  // Arguments: (Widget Type, Name, Default Value, Callback function)
+                  const intWidget = node.addWidget(
+                      "number", 
+                      inputSlotName, 
+                      0, 
+                      function(value) {
+                          // Triggers when user manual scrolls/types a value in the widget box
+                          console.log("Widget changed to:", value);
+                      }, 
+                      { 
+                          step: 10,   // Scroll steps by 1 integers
+                          round: true, // Forces integer instead of float values
+                          precision: 0 
+                      }
+                  );
+                  
+                  // 3. Keep slot and widget linked (Hides widget box if wire is plugged in)
+                  // This replicates ComfyUI native behavior
+                  intWidget.widget; 
+                  node.inputs[node.inputs.length - 1].widget = intWidget;
 
+                
                   // Redraw and scale bounding boxes safely
                   this.setSize(this.computeSize());
                   this.setDirtyCanvas(true, true);
