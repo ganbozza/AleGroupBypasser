@@ -11,6 +11,7 @@ function refreshWidgets(node) {
     try
     {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
+      /*
       const widget = node.addWidget(
         "toggle",
         val.title,
@@ -24,6 +25,21 @@ function refreshWidgets(node) {
         },
         { serialize: true }
       );
+      */
+// Keep track of how many dynamic slots we have created
+          node.booleanCount = node.booleanCount || 0;
+
+          node.booleanCount++;
+          const inputName = `boolean_${node.booleanCount}`;
+
+          // Add the boolean input slot with default True configuration
+          node.addInput(inputName, "BOOLEAN", {
+              widget: { 
+                  name: inputName, 
+                  config: ["BOOLEAN", { default: true }] 
+              }
+          });
+               
       updated = true;
     }
     } catch(e) {
@@ -70,37 +86,12 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          /*
+          
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
-          */
-          // Keep track of how many dynamic slots we have created
-          this.booleanCount = this.booleanCount || 0;
-          this.addWidget(
-                "button", 
-                "Add Boolean Input", 
-                null, 
-                () => {
-                    this.booleanCount++;
-                    const inputName = `boolean_${this.booleanCount}`;
-
-                    // Add the boolean input slot with default True configuration
-                    this.addInput(inputName, "BOOLEAN", {
-                        widget: { 
-                            name: inputName, 
-                            config: ["BOOLEAN", { default: true }] 
-                        }
-                    });
-
-                    // Force the node to resize nicely around the new inputs
-                    this.setSize(this.computeSize());
-                    // Trigger a UI redraw
-                    this.setDirtyCanvas(true, true);
-                },
-                { serialize: false } // Prevent the button widget state itself from being saved
-            );
+          
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
