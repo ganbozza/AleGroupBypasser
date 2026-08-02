@@ -3,6 +3,10 @@ import { app } from "../../scripts/app.js";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 
+function normalizeTitle(title) {
+  return String(title || "").trim();
+}
+
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
@@ -39,7 +43,7 @@ class AleGroupBypasserService {
         LGraphCanvas.prototype.draw = function(...args) {
             const available_groups = app.graph?._groups || [];
             for (const group of available_groups) {
-                if(self.group_collections.has(group.title)) {
+                if(self.group_collections.has(normalizeTitle(group.title))) {
                     continue;
                 }
                  // add group to collection
@@ -81,7 +85,7 @@ class AleGroupBypasserService {
     }
       
     addGroupToCollection(group) {
-        const title = String(group.title || "").trim();
+        const title = normalizeTitle(group.title);
         if(!title) { 
           return; 
         }
