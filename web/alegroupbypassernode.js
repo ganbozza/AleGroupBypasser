@@ -77,10 +77,11 @@ app.registerExtension({
           refreshWidgets(this);
           
           this.addInput(`boolean_1`, "BOOLEAN",{
-    widget: { 
-        name: "boolean_1", 
-        config: ["BOOLEAN", { default: true }] 
-    });
+                widget: { 
+                    name: "my_boolean_input", 
+                    config: ["BOOLEAN", { default: true }] 
+                }
+            });
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
