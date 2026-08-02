@@ -59,10 +59,11 @@ class AleGroupBypasserService {
                 const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
                 if(group)
                 {
-                  if(widget.value!==group.value) {
+                  const group_toggle_value = (group.value===MODE_ACTIVE) ? 1 : 0;
+                  if(widget.value!==group_toggle_value) {
                     console.log("Changing value for "+widget.name);
                   }
-                  widget.value = group.value;
+                  widget.value = group_toggle_value;
                 }
               }
             }
