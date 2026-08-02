@@ -8,6 +8,7 @@ class AleGroupBypasser:
     CATEGORY = "Example"
 
     def execute(self, **kwargs):
+        print(f"Processed dynamic workflow toggles")
         return ()
 
 
