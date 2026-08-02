@@ -53,7 +53,7 @@ class AleGroupBypasserService {
             
           // update widget state in each node
 
-          for (const node of this.nodes) {
+          for (const node of self.nodes) {
             for(const widget of node.widgets) {
               const group = findGroupInCollectionByKey(normalizedTitle(widget.name));
               if(group)
