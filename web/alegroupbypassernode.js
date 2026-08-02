@@ -79,13 +79,16 @@ app.registerExtension({
           this.addDynamicBooleanInput = function(slotIndex) {
               const inputName = `boolean_${slotIndex}`;
               
-              // Add connection slot with default mapping
-              this.addInput(inputName, "BOOLEAN", {
-                  widget: { 
+              // Use a fallback wildcard type "*" so ComfyUI doesn't immediately drop it
+              const newInput = node.addInput(inputName, "*");
+
+              // Manually attach custom metadata properties so ComfyUI validates it
+              if (newInput) {
+                  newInput.widget = { 
                       name: inputName, 
                       config: ["BOOLEAN", { default: true }] 
-                  }
-              });
+                  };
+              }
           };
 
           // Add the trigger button widget
