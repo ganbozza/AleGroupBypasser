@@ -111,17 +111,23 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          /*
-          // Define your callback clearly
+
+          const inputSlotName = "dynamic_bool_input";
+          const inputSlot = this.addInput(inputSlotName, "BOOLEAN");
+          
           const widgetCallback = function(value) {
-              console.log("Widget callback explicitly executed with value:", value);
-              // Put your frontend UI update properties logic here!
+              console.log("Widget Callback Executed! State:", value);
+              // Add visual modifications here (e.g., node.color)
           };
-          */
+
+          const boolWidget = this.addWidget("toggle", inputSlotName, false, widgetCallback);
+          inputSlot.widget = boolWidget;
+          /*
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
+          */
           /*
           // Initialize counter on the node instance
           this.booleanCount = this.booleanCount || 0;
