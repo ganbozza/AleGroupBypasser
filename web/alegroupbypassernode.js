@@ -23,11 +23,9 @@ function refreshWidgets(node) {
   //node.setSize([node.size[0], node.computeSize()[1]]);
   //app.graph?.setDirtyCanvas?.(true, true);
   node._refreshInProgress = false;
-  /*
   setTimeout(() => {
-    refreshNode(node);
+    refreshWidgets(node);
   }, 400);
-  */
 }
 
 function bindNode(node) {
