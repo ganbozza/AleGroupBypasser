@@ -78,7 +78,7 @@ app.registerExtension({
           
           this.addInput(`boolean_1`, "BOOLEAN",{
                 widget: { 
-                    name: "my_boolean_input", 
+                    name: "boolean_1", 
                     config: ["BOOLEAN", { default: true }] 
                 }
             });
