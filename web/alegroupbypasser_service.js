@@ -83,7 +83,9 @@ class AleGroupBypasserService {
     }
   
     findGroupInCollectionByKey(key) {
-      return (this.group_collections).find((g) => g.key === key) || null;
+            console.log('E');
+      return null;
+      //return (this.group_collections).find((g) => g.key === key) || null;
     }
   
     findWidget(node, name) {
