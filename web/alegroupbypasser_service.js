@@ -71,19 +71,10 @@ class AleGroupBypasserService {
           return origDraw.apply(this, args);
         };
         
-        //this.refreshBypasserNode();
         console.log("AleGroupBypasser_Service initialized...");
     }
 
-    refreshBypasserNode() {
-      for(const node of this.nodes)
-      {
-        node.refreshWidgets();
-      }
-      setTimeout(() => { this.refreshBypasserNode(); }, 400);
-    }
-  
-  
+ 
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
@@ -119,7 +110,7 @@ class AleGroupBypasserService {
         }
     
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-          this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
+          this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
         }
         
     }
