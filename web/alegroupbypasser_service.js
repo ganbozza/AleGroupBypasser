@@ -70,10 +70,18 @@ class AleGroupBypasserService {
           return origDraw.apply(this, args);
         };
         
-        
+        this.refreshBypasserNode();
         console.log("AleGroupBypasser_Service initialized...");
     }
 
+    refreshBypasserNode() {
+      for(const node of this.nodes)
+      {
+        node.refresh(node);
+      }
+      setTimeout(() => { refreshBypasserNode(); }, 400);
+    }
+  
     findGroupInCollectionByKey(key) {
       return (this.group_collections).find((g) => g.key === key) || null;
     }
