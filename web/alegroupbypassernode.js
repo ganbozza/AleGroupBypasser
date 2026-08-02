@@ -103,30 +103,25 @@ app.registerExtension({
               () => {
                   this.booleanCount++;
                   //this.addDynamicBooleanInput(this.booleanCount);
-                  const inputSlotName = "dynamic_int_input";
-                  node.addInput(inputSlotName, "INT");
-                  
-                  // 2. Add the corresponding visual widget inside the node body
-                  // Arguments: (Widget Type, Name, Default Value, Callback function)
-                  const intWidget = node.addWidget(
-                      "number", 
-                      inputSlotName, 
-                      0, 
-                      function(value) {
-                          // Triggers when user manual scrolls/types a value in the widget box
-                          console.log("Widget changed to:", value);
-                      }, 
-                      { 
-                          step: 10,   // Scroll steps by 1 integers
-                          round: true, // Forces integer instead of float values
-                          precision: 0 
-                      }
-                  );
-                  
-                  // 3. Keep slot and widget linked (Hides widget box if wire is plugged in)
-                  // This replicates ComfyUI native behavior
-                  intWidget.widget; 
-                  node.inputs[node.inputs.length - 1].widget = intWidget;
+                  const inputSlotName = "dynamic_bool_input";
+
+            // 1. Create the link connection point on the left side
+            node.addInput(inputSlotName, "BOOLEAN");
+
+            // 2. Create the toggle switch widget inside the node body
+            // Arguments: (Widget Type, Name, Default Value, Callback)
+            const boolWidget = node.addWidget(
+                "toggle", 
+                inputSlotName, 
+                false, 
+                function(value) {
+                    console.log("Toggle changed to:", value);
+                }
+            );
+
+            // 3. Link the input slot to the widget.
+            // This hides the checkbox/toggle UI when a link wire is attached.
+            node.inputs[node.inputs.length - 1].widget = boolWidget;
 
                 
                   // Redraw and scale bounding boxes safely
