@@ -155,7 +155,7 @@ app.registerExtension({
           return result;
         }
       
-      node.onNodeConnectionChange = function(slotType, slotIndex, isConnected, linkInfo, inputInfo) {
+      nodeType.prototype.onNodeConnectionChange = function(slotType, slotIndex, isConnected, linkInfo, inputInfo) {
           // slotType: 1 means Input Slot, 2 means Output Slot
           if (slotType === 1 && isConnected) {
               console.log(`Slot ${slotIndex} connected to an upstream wire!`);
