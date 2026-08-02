@@ -77,7 +77,7 @@ class AleGroupBypasserService {
     refreshBypasserNode() {
       for(const node of this.nodes)
       {
-        node._refreshNode();
+        node.refreshWidgets();
       }
       setTimeout(() => { this.refreshBypasserNode(); }, 400);
     }
