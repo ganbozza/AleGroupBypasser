@@ -5,6 +5,7 @@ class AleGroupBypasser:
     def INPUT_TYPES(s):
         return {
             "required": {},
+            "optional": { "dynamic_bool_input": ("BOOLEAN", {"default": False}) },
             "hidden": { "unique_id": "UNIQUE_ID" } # Captures node ID
         }
 
