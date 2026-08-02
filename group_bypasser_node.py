@@ -10,7 +10,7 @@ class AleGroupBypasser:
 
     RETURN_TYPES = ()
     FUNCTION = "execute"
-    CATEGORY = "Example"
+    CATEGORY = "custom"
 
     def execute(self, unique_id, **kwargs):
         # FIX: Directly broadcast a custom socket event to the web interface
