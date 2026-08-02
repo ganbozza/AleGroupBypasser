@@ -13,6 +13,7 @@ class AleGroupBypasser:
     CATEGORY = "custom"
 
     def execute(self, unique_id, **kwargs):
+        print(f"Backend executed! Sending UI event for node {unique_id}...")
         # FIX: Directly broadcast a custom socket event to the web interface
         PromptServer.instance.send_sync("my_custom_node_finished", {
             "node": unique_id,
