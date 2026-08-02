@@ -10,7 +10,7 @@ function refreshWidgets(node) {
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     try
     {
-    if(!node.widgets.find((w) => w.name === val.title)) {
+    if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
       const widget = node.addWidget(
         "toggle",
         val.title,
