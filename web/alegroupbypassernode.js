@@ -2,7 +2,7 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 function refreshNode(node) {
-  const node = this;
+  const nodea = this;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
