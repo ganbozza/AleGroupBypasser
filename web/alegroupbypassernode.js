@@ -194,19 +194,29 @@ app.registerExtension({
       };
       */
     },
-    async setup() {
-        // Listen to your exact custom keyword
+   // Use init() to attach the socket listener early in the boot lifecycle
+    async init() {
+        console.log("Custom extension initialized. Listening for WebSocket events...");
+
         api.addEventListener("my_custom_node_finished", (event) => {
+            // ComfyUI pushes payloads into event.detail
             const data = event.detail; 
+            console.log(">>> WebSocket custom event received! Data:", data);
             
+            if (!data || !data.node_id) return;
+
             const targetNode = app.graph.getNodeById(data.node_id);
             if (targetNode) {
                 const widget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
                 if (widget) {
+                    // Update frontend state
                     widget.value = data.resolved_value;
+                    
+                    // Manually fire the callback that ComfyUI naturally silences
                     if (typeof widget.callback === "function") {
-                        widget.callback(data.resolved_value); // Force the callback to run
+                        widget.callback(data.resolved_value); 
                     }
+                    
                     targetNode.setDirtyCanvas(true, true);
                 }
             }
