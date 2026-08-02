@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
-function refreshNode() {
+function refreshNode(node) {
   const node = this;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
