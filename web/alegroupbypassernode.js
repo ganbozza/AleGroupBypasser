@@ -13,7 +13,7 @@ function refreshWidgets(node) {
       const widget = node.addWidget(
         "toggle",
         val.title,
-        val.value,
+        (val.value==ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE) ? 1 : 0,
         (value) => {
           // Optional: callback when toggle changes
           ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = value;
