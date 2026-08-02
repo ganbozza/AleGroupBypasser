@@ -16,7 +16,10 @@ function refreshWidgets(node) {
         (val.value===MODE_BYPASS) ? true : false,
         (value) => {
           // Optional: callback when toggle changes
-          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+          const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+          gc.value = mode_val;
+          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.Title, mode_val);
         },
         { serialize: true }
       );
