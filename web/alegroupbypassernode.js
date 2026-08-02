@@ -63,7 +63,7 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
-          refreshWidget(this);
+          refreshWidgets(this);
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
