@@ -9,7 +9,18 @@ function refreshWidgets(node) {
   
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-      const widget = node.addWidget(
+      node.addInput(val.title, "BOOLEAN");
+      /*
+      const boolWidget = node.addWidget(
+                "toggle", 
+                inputName, 
+                false, 
+                function(value) {
+                    console.log("Toggle changed to:", value);
+                }
+            );
+      */
+      const boolWidget = node.addWidget(
         "toggle",
         val.title,
         (val.value===MODE_BYPASS) ? true : false,
@@ -22,6 +33,8 @@ function refreshWidgets(node) {
         },
         { serialize: true }
       );
+      // This hides the checkbox/toggle UI when a link wire is attached.
+      node.inputs[node.inputs.length - 1].widget = boolWidget;
                
       updated = true;
     }
@@ -66,12 +79,12 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          /*
+          
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
-          */
+          /*
           // Initialize counter on the node instance
           this.booleanCount = this.booleanCount || 0;
           const node = this;
@@ -107,27 +120,6 @@ app.registerExtension({
               () => {
                   this.booleanCount++;
                   this.addDynamicBooleanInput(this.booleanCount);
-                /*
-                  const inputSlotName = "dynamic_bool_input";
-
-            // 1. Create the link connection point on the left side
-            node.addInput(inputSlotName, "BOOLEAN");
-
-            // 2. Create the toggle switch widget inside the node body
-            // Arguments: (Widget Type, Name, Default Value, Callback)
-            const boolWidget = node.addWidget(
-                "toggle", 
-                inputSlotName, 
-                false, 
-                function(value) {
-                    console.log("Toggle changed to:", value);
-                }
-            );
-
-            // 3. Link the input slot to the widget.
-            // This hides the checkbox/toggle UI when a link wire is attached.
-            node.inputs[node.inputs.length - 1].widget = boolWidget;
-              */
                 
                   // Redraw and scale bounding boxes safely
                   this.setSize(this.computeSize());
@@ -135,6 +127,7 @@ app.registerExtension({
               },
               { serialize: false } // Do not serialize the button configuration itself
           );
+          */
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
