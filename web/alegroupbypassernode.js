@@ -1,7 +1,8 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
-function refreshNode(node) {
+function refreshNode() {
+  node = this;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   for(const group of ALEGROUPBYPASSER_SERVICE.group_collections) {
@@ -63,7 +64,7 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
-          refreshNode(this);
+          refreshNode();
           return result;
         }
     },
