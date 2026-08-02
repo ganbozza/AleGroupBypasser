@@ -148,17 +148,18 @@ class AleGroupBypasserService {
                     nodeCenter[1] >= grouBounds[1] &&
                     nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
                     if(node.mode!==mode) {
-                      if(!is_set) {
+                      if(is_set) {
+                        node.mode = mode;
+                      } else {
                         console.log("has Active...");
                         return true;
-                      }
-                    } else {
-                      node.mode = mode;
                     }
+                  }
                 }
             }
         }
-        console.log("all bypassed...");
+        if(!is_set)
+          console.log("all bypassed...");
         return false;
     }
     
