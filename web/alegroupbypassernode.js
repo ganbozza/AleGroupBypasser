@@ -81,15 +81,18 @@ app.registerExtension({
               
               // Use a fallback wildcard type "*" so ComfyUI doesn't immediately drop it
               const newInput = node.addInput(inputName, "*");
-              /*
               // Manually attach custom metadata properties so ComfyUI validates it
               if (newInput) {
                   newInput.widget = { 
-                      name: inputName, 
-                      config: ["BOOLEAN", { default: true }] 
-                  };
+                                name: inputName, 
+                                config: ["INT", { 
+                                    default: 0, 
+                                    min: 0, 
+                                    max: 10000, 
+                                    step: 1 
+                                }] 
+                            };
               }
-              */
           };
 
           // Add the trigger button widget
