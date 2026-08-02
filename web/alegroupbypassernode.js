@@ -8,8 +8,9 @@ function refreshWidgets(node) {
   node._refreshInProgress = true;
   
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-    if(!node.widgets.find((w) => w.name === val.title))
+    try
     {
+    if(!node.widgets.find((w) => w.name === val.title)) {
       const widget = node.addWidget(
         "toggle",
         val.title,
@@ -24,6 +25,9 @@ function refreshWidgets(node) {
         { serialize: true }
       );
       updated = true;
+    }
+    } catch(e) {
+      console.log('ZZZZZZZZZZZZZZZZZZZ');
     }
   }
   if(updated) {
