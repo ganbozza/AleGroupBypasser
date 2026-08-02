@@ -76,7 +76,11 @@ app.registerExtension({
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
           
-          this.addInput(`boolean_1`, "BOOLEAN", {"default": True, "label_on": "Enabled", "label_off": "Disabled"});
+          this.addInput(`boolean_1`, "BOOLEAN",{
+    widget: { 
+        name: "boolean_1", 
+        config: ["BOOLEAN", { default: true }] 
+    });
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
