@@ -70,10 +70,13 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
+          /*
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
+          */
+          this.addInput(`boolean_1`, "BOOLEAN");
           return result;
         }
         const originalOnConfigure = nodeType.prototype.onConfigure;
@@ -86,7 +89,4 @@ app.registerExtension({
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
-  _refreshNode() {
-    refreshNode(this); 
-  }
 });
