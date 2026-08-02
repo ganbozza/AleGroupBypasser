@@ -59,7 +59,7 @@ class AleGroupBypasserService {
                 const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
                 if(group)
                 {
-                  const group_toggle_value = (group.value===MODE_ACTIVE) ? 1 : 0;
+                  const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
                   if(widget.value!==group_toggle_value) {
                     console.log("Changing value for "+widget.name);
                   }
