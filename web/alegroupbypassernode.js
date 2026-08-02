@@ -2,7 +2,7 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 
 function refreshWidgets(node) {
-  const updated = false;
+  var updated = false;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   
