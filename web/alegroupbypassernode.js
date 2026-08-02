@@ -71,6 +71,11 @@ function bindNode(node) {
  
 }
 
+function widgetCallback(value) {
+    console.log("Widget callback explicitly executed with value:", value);
+    // Put your frontend UI update properties logic here!
+}
+
 app.registerExtension({
     name: "ale.group.bypasser",
 
@@ -82,11 +87,13 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
+          /*
           // Define your callback clearly
           const widgetCallback = function(value) {
               console.log("Widget callback explicitly executed with value:", value);
               // Put your frontend UI update properties logic here!
           };
+          */
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
@@ -198,7 +205,7 @@ api.addEventListener("executed", (event) => {
     // Find our specific node instance on the canvas using the execution node ID
     const targetNode = app.graph.getNodeById(data.node);
     
-    if (targetNode && targetNode.comfyClass === "YourCustomBoolPythonNode") {
+    if (targetNode && targetNode.comfyClass === "AleGroupBypasser") {
         // Find the widget linked to our dynamic input slot
         const inputWidget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
         
