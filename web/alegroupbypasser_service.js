@@ -138,7 +138,7 @@ class AleGroupBypasserService {
                 if (nodeCenter[0] >= grouBounds[0] &&
                     nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
                     nodeCenter[1] >= grouBounds[1] &&
-                    nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
+                    nodeCenter[1] < grouBounds[1] + grouBounds[3] && node.mode!==MODE_BYPASS) {
                     console.log("has Active...");
                     return true;
                 }
