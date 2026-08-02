@@ -19,7 +19,7 @@ function refreshWidgets(node) {
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
           const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
           gc.value = mode_val;
-          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.Title, mode_val);
+          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         },
         { serialize: true }
       );
