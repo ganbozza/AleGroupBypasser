@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
-
+const MODE_BYPASS = 4;
 
 function refreshWidgets(node) {
   var updated = false;
@@ -13,10 +13,10 @@ function refreshWidgets(node) {
       const widget = node.addWidget(
         "toggle",
         val.title,
-        (val.value===ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE) ? 1 : 0,
+        (val.value===MODE_BYPASS) ? true : false,
         (value) => {
           // Optional: callback when toggle changes
-          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = (value===1) ? ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE : ALEGROUPBYPASSER_SERVICE.MODE_BYPASS;
+          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
         },
         { serialize: true }
       );
