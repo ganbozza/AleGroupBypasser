@@ -105,9 +105,22 @@ class AleGroupBypasserService {
          if (app.canvas.isDragging)
             return;
 
-        for (const nodes of group.graph.nodes) {
-            console.log("CCC");
+        for (const node of group.graph.nodes) {
+            const nodeBounding = node.getBounding();
+            const nodeCenter = nodeBounding &&
+                [nodeBounding[0] + nodeBounding[2] * 0.5, nodeBounding[1] + nodeBounding[3] * 0.5];
+            if (nodeCenter) {
+                const grouBounds = group._bounding;
+                if (nodeCenter[0] >= grouBounds[0] &&
+                    nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
+                    nodeCenter[1] >= grouBounds[1] &&
+                    nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
+                    console.log("has Active...");
+                    return true;
+                }
+            }
         }
+        console.log("all bypassed...");
         return false;
     }
     
