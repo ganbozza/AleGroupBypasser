@@ -1,7 +1,13 @@
 class AleGroupBypasser:
     @classmethod
     def INPUT_TYPES(cls):
-        return {"required": {}}
+        return {
+            "required": {},
+            "optional": {
+                # Ensure backend system recognizes the incoming js connection string
+                "boolean_1": ("BOOLEAN", {"default": True}),
+            }
+        }
 
     RETURN_TYPES = ()
     RETURN_NAMES = ()
