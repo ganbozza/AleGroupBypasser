@@ -3,10 +3,7 @@ class AleGroupBypasser:
     def INPUT_TYPES(cls):
         return {
             "required": {},
-            "optional": {
-                # Ensure backend system recognizes the incoming js connection string
-                "boolean_1": ("BOOLEAN", {"default": True}),
-            }
+            "optional": {}
         }
 
     RETURN_TYPES = ()
@@ -14,7 +11,11 @@ class AleGroupBypasser:
     FUNCTION = "noop"
     CATEGORY = "utils"
 
-    def noop(self):
+    def noop(self, **kwargs):
+        print("Received dynamic inputs:")
+        for key, value in kwargs.items():
+            if key.startswith("boolean_"):
+                print(f"-> {key}: {value} (Type: {type(value)})")
         return ()
 
 
