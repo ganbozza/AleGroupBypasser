@@ -13,10 +13,10 @@ function refreshWidgets(node) {
       const widget = node.addWidget(
         "toggle",
         val.title,
-        (val.value==ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE) ? 1 : 0,
+        (val.value===ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE) ? 1 : 0,
         (value) => {
           // Optional: callback when toggle changes
-          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = value;
+          ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = (value===1) ? ALEGROUPBYPASSER_SERVICE.MODE_ACTIVE : ALEGROUPBYPASSER_SERVICE.MODE_BYPASS;
         },
         { serialize: true }
       );
