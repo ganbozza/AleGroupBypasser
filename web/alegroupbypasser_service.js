@@ -95,22 +95,26 @@ class AleGroupBypasserService {
         }
     
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-            this.group_collections.get(key).value = (this.getGroupNodes(group).some((n) => n.mode === MODE_ACTIVE)) ? MODE_ACTIVE : MODE_BYPASS;
+            if (groupHasActiveNode(group))
+                this.group_collections.get(key).value =  MODE_ACTIVE;
         }
         
     }
-    findActiveInsideNodeForGroup(group) {
+    
+    groupHasActiveNode(group) {
          if (app.canvas.isDragging)
             return;
-        
+
         for (const nodes of group.graph.nodes) {
             console.log("CCC");
         }
         return false;
     }
+    
     getGroupNodes(group) {
         return Array.from(group._children).filter((c) => c instanceof LGraphNode);
     }
+    
     registerNode(node) {
         this.nodes.add(node);
         console.log("Adding node...");
