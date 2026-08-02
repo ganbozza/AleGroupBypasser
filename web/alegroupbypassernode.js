@@ -71,12 +71,12 @@ function bindNode(node) {
   }
  
 }
-
+/*
 function widgetCallback(value) {
     console.log("Widget callback explicitly executed with value:", value);
     // Put your frontend UI update properties logic here!
 }
-
+*/
 // Hook directly into the global websocket stream
 api.addEventListener("my_custom_node_finished", (event) => {
     const data = event.detail;
