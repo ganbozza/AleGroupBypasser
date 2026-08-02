@@ -56,7 +56,7 @@ class AleGroupBypasserService {
           for (const node of self.nodes) {
             if(node.widgets) {
               for(const widget of node.widgets) {
-                const group = self.findGroupInCollectionByKey(normalizeTitle(widget.name));
+                const group = this.group_collections.get(normalizeTitle(widget.name));
                 if(group)
                 {
                   if(widget.value!==group.value) {
@@ -82,11 +82,6 @@ class AleGroupBypasserService {
       setTimeout(() => { this.refreshBypasserNode(); }, 400);
     }
   
-    findGroupInCollectionByKey(key) {
-            console.log('E');
-      return null;
-      //return (this.group_collections).find((g) => g.key === key) || null;
-    }
   
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
