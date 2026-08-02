@@ -80,7 +80,7 @@ class AleGroupBypasserService {
           }
           for (const [key, val] of this.group_collections)
           {
-            if(!in_array(val.title, ag_titles)) {
+            if(!ag_titles.find(val.title)) {
               this.group_collections.delete(key);              
               console.log("Group removed from collection...");
             }
