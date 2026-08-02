@@ -18,9 +18,16 @@ function refreshNode(node) {
         stateStore[entry.key] = bypassed;
         applyModeToGroupTitle(node, latestEntry, bypassed);
       },
-    );
+    );    
   }
+  node.setSize([node.size[0], node.computeSize()[1]]);
+  app.graph?.setDirtyCanvas?.(true, true);
   node._refreshInProgress = false;
+  /*
+  setTimeout(() => {
+    refreshNode(node);
+  }, 400);
+  */
 }
 
 function bindNode(node) {
