@@ -119,12 +119,21 @@ class AleGroupBypasserService {
         }
     
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-          this.group_collections.get(key).value =  (this.nodeInsideGroup(group, MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
+          this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
         }
         
     }
-    
-    nodeInsideGroup(group, mode, is_set=false) {
+
+    updateNodeInsideGroupByTitle(title, mode) {
+       const available_groups = app.graph?._groups || [];
+       for (const group of available_groups) {
+          if(normalizeTitle(group.title)===title) {
+              processNodeInsideGroup(group, mode, true);
+          }
+       }
+    }
+  
+    processNodeInsideGroup(group, mode, is_set=false) {
          if (app.canvas.isDragging)
             return;
 
