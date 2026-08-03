@@ -3,22 +3,6 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 
-function addBooleanWidget(node, title, cvalue, key) {
-  return node.addWidget(
-        "toggle",
-        title,
-        (cvalue===MODE_BYPASS) ? true : false,
-        (value) => {
-          // Optional: callback when toggle changes
-          const mode_val = (cvalue===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
-          gc.value = mode_val;
-          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-        },
-        { serialize: true }
-      );
-}
-
 function refreshWidgets(node) {
   var updated = false;
   if(node._refreshInProgress) return;
@@ -143,6 +127,22 @@ app.registerExtension({
           //console.log("OK: "+String(nodeData?.name || ""));
           return;
         }
+
+function addBooleanWidget(node, title, cvalue, key) {
+  return node.addWidget(
+        "toggle",
+        title,
+        (cvalue===MODE_BYPASS) ? true : false,
+        (value) => {
+          // Optional: callback when toggle changes
+          const mode_val = (cvalue===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+          gc.value = mode_val;
+          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+        },
+        { serialize: true }
+      );
+}      
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
