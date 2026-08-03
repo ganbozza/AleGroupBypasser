@@ -210,7 +210,7 @@ app.registerExtension({
               );
               this.inputs[i].widget = boolWidget;
             if(info.inputs[i].link) {
-              //boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
+              boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
           }
           /*
