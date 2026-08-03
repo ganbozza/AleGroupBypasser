@@ -3,6 +3,25 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 
+function findNodeInAllGraphs(currentGraph, nodeId) {
+    // 1. Check the current graph level
+    let node = currentGraph.getNodeById(nodeId);
+    if (node) return node;
+
+    // 2. Iterate through all nodes on this level to find subgraphs
+    for (const topNode of currentGraph._nodes) {
+        // Check if the node acts as a subgraph container
+        if (topNode.subgraph) {
+            // Recursively search inside the subgraph
+            node = findNodeInAllGraphs(topNode.subgraph, nodeId);
+            if (node) return node;
+        }
+    }
+
+    // 3. Return null if not found anywhere in this branch
+    return null;
+}
+
 function addBooleanWidgetToNode(node, title, cvalue, key) {
   return node.addWidget(
         "toggle",
@@ -57,7 +76,8 @@ function refreshWidgets(node) {
          var upstreamNode;
          var upstreamWidget;
         try {
-        upstreamNode = app.graph.getNodeById(widget._inputslot_origin_id);
+        //upstreamNode = app.graph.getNodeById(widget._inputslot_origin_id);
+        upstreamNode = findNodeInAllGraphs(app.graph, widget._inputslot_origin_id);
         upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
          if (upstreamWidget && typeof upstreamWidget.value !== undefined) {
            const upstreamValue = upstreamWidget.value;
