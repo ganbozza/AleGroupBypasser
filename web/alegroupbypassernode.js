@@ -208,7 +208,7 @@ app.registerExtension({
               const boolWidget = this.addWidget(
                 "toggle",
                 info.inputs[i].name,
-                info.widgets_value[i],
+                info.widgets_values[i],
                 (value) => {
                   // Optional: callback when toggle changes
                   const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
