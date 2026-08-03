@@ -201,6 +201,8 @@ app.registerExtension({
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
+
+          info.inputs[0].widget._inputslot_origin_id = app.graph.links[info.inputs[0].link];
           /*
           // Read how many inputs existed when the workflow was saved
           if (info.inputs && info.inputs.length > 0) {
