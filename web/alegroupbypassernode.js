@@ -215,7 +215,7 @@ app.registerExtension({
           for(let i=0;i<info.inputs.length;i++) {
             
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
-            const boolWidget = this.addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
+            const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
             /*
               const boolWidget = this.addWidget(
                 "toggle",
