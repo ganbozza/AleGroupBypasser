@@ -102,7 +102,12 @@ class AleGroupBypasserService {
               console.log("Group removed from collection...");
             }
           }
-        } 
+        }
+      for (const group of this.group_collections) {
+        if (group.value === MODE_BYPASS) { // ignore if group already in active state
+          group.value =  (processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
+        }
+      }
     }
       
     addGroupToCollection(group) {
@@ -118,11 +123,11 @@ class AleGroupBypasserService {
                 value : MODE_BYPASS
             }); 
         }
-    
+    /*
         if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
           this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
         }
-        
+      */  
     }
 
     updateNodeInsideGroupByTitle(title, mode) {
