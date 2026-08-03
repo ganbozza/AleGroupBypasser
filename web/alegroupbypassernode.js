@@ -312,7 +312,7 @@ app.registerExtension({
           
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
-          if (side === 1 && output.node && output.widget) { 
+          if (side === 1 && output.node.widgets && output.widget) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
               const realWidget = output.node.widgets.find((w) => { return w.name===output.widget.name; });
               if (connect) {
