@@ -237,7 +237,8 @@ app.registerExtension({
           if (side === 1) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
               if (connect) {
-                output.widget._inputslot_origin_id = link_info.origin_id;
+                if(link_info)
+                  output.widget._inputslot_origin_id = link_info.origin_id;
                 if(typeof output.widget.callback === "function") 
                   output.widget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
                   console.log(`Wire plugged into input slot index: ${slot}`);
