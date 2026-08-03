@@ -201,18 +201,6 @@ app.registerExtension({
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
-
-          // If it's an input side link (side === 1) and it's being linked or restored
-          if (side === 1 && this.inputs[slotIndex]) {
-              const slotName = this.inputs[slotIndex].name;
-              
-              // Find the matching widget by name
-              const matchingWidget = this.widgets.find(w => w.name === slotName);
-              if (matchingWidget) {
-                  // Re-bind the reference that ComfyUI's loading routine broken
-                  this.inputs[slotIndex].widget = matchingWidget;
-              }
-          }
           /*
           // Read how many inputs existed when the workflow was saved
           if (info.inputs && info.inputs.length > 0) {
