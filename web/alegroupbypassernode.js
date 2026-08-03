@@ -48,11 +48,11 @@ function refreshWidgets(node) {
         const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
          if (upstreamWidget && typeof upstreamWidget.value !== undefined) {
            const upstreamValue = upstreamWidget.value;
-           if(widget.value!=upstreamWidget.value) {
-             widget.value=upstreamWidget.value;
+           if(widget.value!=upstreamValue) {
+             widget.value=upstreamValue;
              updated = true;
             if (typeof widget.callback === "function") {
-                localWidget.callback(upstreamValue);
+                widget.callback(upstreamValue);
             }
            }
          }
