@@ -45,8 +45,10 @@ function booleanWidgetCallback(value, key)
 {
     const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
     const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
-    gc.value = mode_val;
-    ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+    if(gc) {
+        gc.value = mode_val;
+        ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+    }
 }
 
 function refreshWidgets(node) {
