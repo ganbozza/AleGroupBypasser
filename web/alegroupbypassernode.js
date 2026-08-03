@@ -8,7 +8,7 @@ function refreshWidgets(node) {
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   
-/*
+
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
       node.addInput(val.title, "BOOLEAN");
@@ -49,7 +49,7 @@ function refreshWidgets(node) {
       }
     }
   }
-  */
+  
   if(updated) {
     node.setSize([node.size[0], node.computeSize()[1]]);
     app.graph?.setDirtyCanvas?.(true, true);
