@@ -257,7 +257,9 @@ app.registerExtension({
           const result = originalOnConfigure?.apply(this, arguments);
           
           for(let i=0;i<info.inputs.length;i++) {
-            
+
+            if (this.widgets.find((w) => { return w._ref_hash===info.inputs[i].widget._ref_hash; })) continue;
+              
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
             const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
             /*
