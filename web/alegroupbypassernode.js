@@ -3,6 +3,22 @@ import { app } from "../../scripts/app.js";
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 
+function addBooleanWidget(node, title, cvalue, key) {
+  return node.addWidget(
+        "toggle",
+        title,
+        (cvalue===MODE_BYPASS) ? true : false,
+        (value) => {
+          // Optional: callback when toggle changes
+          const mode_val = (cvalue===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+          gc.value = mode_val;
+          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+        },
+        { serialize: true }
+      );
+}
+
 function refreshWidgets(node) {
   var updated = false;
   if(node._refreshInProgress) return;
@@ -12,6 +28,8 @@ function refreshWidgets(node) {
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
       node.addInput(val.title, "BOOLEAN");
+      const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
+      /*
       const boolWidget = node.addWidget(
         "toggle",
         val.title,
@@ -26,6 +44,7 @@ function refreshWidgets(node) {
         { serialize: true }
       );
       // This hides the checkbox/toggle UI when a link wire is attached.
+      */
       node.inputs[node.inputs.length - 1].widget = boolWidget;
                
       updated = true;
@@ -194,7 +213,10 @@ app.registerExtension({
           const result = originalOnConfigure?.apply(this, arguments);
           
           for(let i=0;i<info.inputs.length;i++) {
-              //this.addInput(info.inputs[i].name, info.inputs[i].type);
+            
+            //this.addInput(info.inputs[i].name, info.inputs[i].type);
+            const boolWidget = this.addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
+            /*
               const boolWidget = this.addWidget(
                 "toggle",
                 info.inputs[i].name,
@@ -208,7 +230,8 @@ app.registerExtension({
                 },
                 { serialize: true }
               );
-              this.inputs[i].widget = boolWidget;
+            */
+            this.inputs[i].widget = boolWidget;
             if(info.inputs[i].link) {
               boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
