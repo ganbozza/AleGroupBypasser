@@ -27,6 +27,8 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         "toggle",
         title,
         (cvalue===MODE_BYPASS) ? true : false,
+      booleanWidgetCallback(value, key),
+      /*
         (value) => {
           // Optional: callback when toggle changes
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
@@ -34,8 +36,17 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
           gc.value = mode_val;
           ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         },
+        */
         { serialize: true }
       );
+}
+
+function booleanWidgetCallback(value, key)
+{
+    const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+    const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+    gc.value = mode_val;
+    ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
 }
 
 function refreshWidgets(node) {
