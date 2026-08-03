@@ -208,9 +208,9 @@ app.registerExtension({
                 },
                 { serialize: true }
               );
+              this.inputs[this.inputs.length - 1].widget = boolWidget;
             if(info.inputs[i].link) {
               //boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
-              //this.inputs[this.inputs.length - 1].widget = boolWidget;
             }
           }
           /*
