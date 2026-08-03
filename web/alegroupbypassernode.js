@@ -54,9 +54,11 @@ function refreshWidgets(node) {
   if(node.widgets) {
     for(const widget of node.widgets) {
       if(widget._inputslot_origin_id) {
+         const upstreamNode;
+         const upstreamWidget;
         try {
-        const upstreamNode = app.graph.getNodeById(widget._inputslot_origin_id);
-        const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
+        upstreamNode = app.graph.getNodeById(widget._inputslot_origin_id);
+        upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
          if (upstreamWidget && typeof upstreamWidget.value !== undefined) {
            const upstreamValue = upstreamWidget.value;
            if(widget.value!=upstreamValue) {
