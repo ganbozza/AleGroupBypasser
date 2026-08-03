@@ -76,6 +76,7 @@ function widgetCallback(value) {
     // Put your frontend UI update properties logic here!
 }
 */
+/*
 // Hook directly into the global websocket stream
 api.addEventListener("my_custom_node_finished", (event) => {
     const data = event.detail;
@@ -98,7 +99,7 @@ api.addEventListener("my_custom_node_finished", (event) => {
         }
     }
 });
-
+*/
 app.registerExtension({
     name: "ale.group.bypasser",
 
