@@ -63,7 +63,15 @@ class AleGroupBypasserService {
                   if(widget.value!==group_toggle_value) {
                     console.log("Changing value for "+widget.name);
                   }
-                  widget.value = group_toggle_value;
+                  if(widget._inputslot_origin_id) {
+                    const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
+                    const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.;
+                    if (slotWidget && slotWidget.value !== undefined) {
+                      slotWidget.value =  group_toggle_value;
+                    }
+                  } else {
+                    widget.value = group_toggle_value;
+                  }
                 }
               }
             }
