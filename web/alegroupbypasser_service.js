@@ -103,9 +103,12 @@ class AleGroupBypasserService {
             }
           }
         }
-      for (const group of this.group_collections) {
-        if (group[1].value === MODE_BYPASS) { // ignore if group already in active state
-          group[1].value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
+      for (const group of available_groups) {
+        for (const [key, val] of this.group_collections) {
+          if (group.title==val.title && val.value === MODE_BYPASS) { // ignore if group already in active state
+            val.value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
+            break;
+          }
         }
       }
     }
