@@ -164,7 +164,7 @@ class AleGroupBypasserService {
                       if(is_set) {
                         node.mode = mode;
                       } else {
-                        console.log("found opposite of mode : "+mode+" ...");
+                        //console.log("found opposite of mode : "+mode+" ...");
                         return true;
                     }
                   }
