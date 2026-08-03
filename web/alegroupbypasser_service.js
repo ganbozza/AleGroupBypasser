@@ -66,7 +66,7 @@ class AleGroupBypasserService {
                   if(widget._inputslot_origin_id) {
                     const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
                     const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
-                    if (slotWidget && slotWidget.value !== undefined) {
+                    if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
                       slotWidget.value =  group_toggle_value;
                     }
                   } else {
