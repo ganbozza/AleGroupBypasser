@@ -201,8 +201,27 @@ app.registerExtension({
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
-          if(info.inputs[0].link)
-            info.inputs[0].widget._inputslot_origin_id = app.graph.links[info.inputs[0].link].origin_id;
+          
+          for(i=0;i<info.inputs.length;i++) {
+            if(info.inputs[i].link) {
+              const _input = this.addInput(info.inputs[i].name, info.inputs[i].type);
+              const boolWidget = this.addWidget(
+                "toggle",
+                info.inputs[i].name,
+                info.widgets_value[i],
+                (value) => {
+                  // Optional: callback when toggle changes
+                  const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+                  const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+                  gc.value = mode_val;
+                  ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+                },
+                { serialize: true }
+              );
+             //boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
+              this.inputs[this.inputs.length - 1].widget = boolWidget;
+            }
+          }
           /*
           // Read how many inputs existed when the workflow was saved
           if (info.inputs && info.inputs.length > 0) {
