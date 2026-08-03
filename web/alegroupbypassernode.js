@@ -27,7 +27,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         "toggle",
         title,
         (cvalue===MODE_BYPASS) ? true : false,
-          function() { booleanWidgetCallback(cvalue, key); },
+          function(value) { booleanWidgetCallback(value, key); },
       /*
         (value) => {
           // Optional: callback when toggle changes
