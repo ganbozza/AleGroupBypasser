@@ -45,7 +45,8 @@ function refreshWidgets(node) {
       );
       // This hides the checkbox/toggle UI when a link wire is attached.
       */
-      node.inputs[node.inputs.length - 1].widget = boolWidget;
+      //node.inputs[node.inputs.length - 1].widget = boolWidget;
+      node.inputs[node.inputs.length - 1].widget = { name: val.title};
                
       updated = true;
     } 
@@ -232,7 +233,8 @@ app.registerExtension({
                 { serialize: true }
               );
             */
-            this.inputs[i].widget = boolWidget;
+            //this.inputs[i].widget = boolWidget;
+            this.inputs[i].widget = { name: info.inputs[i].name };
             if(info.inputs[i].link) {
               boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
