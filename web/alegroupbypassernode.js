@@ -210,9 +210,9 @@ app.registerExtension({
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
           if (side === 1) { 
-            if(typeof output.widget.callback === "function")
-              output.widget.callback();
               if (connect) {
+                if(typeof output.widget.callback === "function")
+                  output.widget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
                   console.log(`Wire plugged into input slot index: ${slot}`);
               } else {
                   console.log(`Wire removed from input slot index: ${slot}`);
