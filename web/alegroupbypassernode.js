@@ -81,7 +81,7 @@ function refreshWidgets(node) {
       */
       //node.inputs[node.inputs.length - 1].widget = boolWidget;
       //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
-        node.inputs[node.inputs.length - 1].widget = { name : val.title, _ref_hash : boolWidget._ref_hash };
+      node.inputs[node.inputs.length - 1].widget = {  _ref_hash : boolWidget._ref_hash };
                
       updated = true;
     } 
@@ -280,7 +280,7 @@ app.registerExtension({
             }
             //this.inputs[i].widget = boolWidget;
             //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
-            this.inputs[i].widget = {{ name : info.inputs[i].name, _ref_hash : boolWidget._ref_hash };
+            this.inputs[i].widget = { _ref_hash : boolWidget._ref_hash };
             //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
           }
           /*
