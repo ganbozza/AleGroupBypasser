@@ -281,7 +281,7 @@ app.registerExtension({
             //this.inputs[i].widget = boolWidget;
             //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
             this.inputs[i].widget = { _ref_hash : boolWidget._ref_hash };
-            this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
+            //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
           }
           /*
           // Read how many inputs existed when the workflow was saved
