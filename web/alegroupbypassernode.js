@@ -320,11 +320,12 @@ app.registerExtension({
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
               const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
               if (connect) {
-                if(link_info)
-                 realWidget._inputslot_origin_id = link_info.origin_id;
-                if(typeof realWidget.callback === "function") 
-                  realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
-                  console.log(`Wire plugged into input slot index: ${slot}`);
+                if(link_info) {
+                    realWidget._inputslot_origin_id = link_info.origin_id;
+                    if(typeof realWidget.callback === "function") 
+                      realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
+                }
+                console.log(`Wire plugged into input slot index: ${slot}`);
               } else {
                   //const realWidget = output.node.widgets.find((w) => { return w.name===output.widget.name; });
                   delete realWidget._inputslot_origin_id;
