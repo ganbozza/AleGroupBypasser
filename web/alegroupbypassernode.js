@@ -100,6 +100,13 @@ api.addEventListener("my_custom_node_finished", (event) => {
     }
 });
 */
+function slotConnectionChange(connected, origin_id, target_widget) {
+  if(connected)
+  {
+    
+  }
+}
+
 app.registerExtension({
     name: "ale.group.bypasser",
 
@@ -210,11 +217,14 @@ app.registerExtension({
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
           if (side === 1) { 
+              //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
               if (connect) {
-                if(typeof output.widget.callback === "function")
+                output.widget._inputslot_origin_id = link_info.origin_id;
+                if(typeof output.widget.callback === "function") 
                   output.widget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
                   console.log(`Wire plugged into input slot index: ${slot}`);
               } else {
+                  delete output.widget._inputslot_origin_id;
                   console.log(`Wire removed from input slot index: ${slot}`);
               }
           }
