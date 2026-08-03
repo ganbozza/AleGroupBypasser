@@ -202,7 +202,7 @@ app.registerExtension({
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
           
-          for(i=0;i<info.inputs.length;i++) {
+          for(let i=0;i<info.inputs.length;i++) {
             if(info.inputs[i].link) {
               const _input = this.addInput(info.inputs[i].name, info.inputs[i].type);
               const boolWidget = this.addWidget(
