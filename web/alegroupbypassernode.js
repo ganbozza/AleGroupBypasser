@@ -8,24 +8,14 @@ function refreshWidgets(node) {
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
   
+/*
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
       node.addInput(val.title, "BOOLEAN");
-      /*
-      const boolWidget = node.addWidget(
-                "toggle", 
-                inputName, 
-                false, 
-                function(value) {
-                    console.log("Toggle changed to:", value);
-                }
-            );
-      */
       const boolWidget = node.addWidget(
         "toggle",
         val.title,
         (val.value===MODE_BYPASS) ? true : false,
-        /*widgetCallback,*/
         (value) => {
           // Optional: callback when toggle changes
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
@@ -59,6 +49,7 @@ function refreshWidgets(node) {
       }
     }
   }
+  */
   if(updated) {
     node.setSize([node.size[0], node.computeSize()[1]]);
     app.graph?.setDirtyCanvas?.(true, true);
