@@ -312,16 +312,18 @@ app.registerExtension({
           
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
-          if (side === 1) { 
+          if (side === 1 && output.node && output.widget) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
+              const realWidget = output.node.widgets.find((w) => { return w.name===output.widget.name; });
               if (connect) {
                 if(link_info)
-                  output.widget._inputslot_origin_id = link_info.origin_id;
-                if(output.widget && typeof output.widget.callback === "function") 
-                  output.widget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
+                 realWidget._inputslot_origin_id = link_info.origin_id;
+                if(typeof realWidget.callback === "function") 
+                  realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
                   console.log(`Wire plugged into input slot index: ${slot}`);
               } else {
-                  delete output.widget._inputslot_origin_id;
+                  //const realWidget = output.node.widgets.find((w) => { return w.name===output.widget.name; });
+                  delete realWidget._inputslot_origin_id;
                   console.log(`Wire removed from input slot index: ${slot}`);
               }
           }
