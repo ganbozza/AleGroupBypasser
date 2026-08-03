@@ -202,7 +202,7 @@ app.registerExtension({
                 (value) => {
                   // Optional: callback when toggle changes
                   const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-                  const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(normalizeTitle(info.inputs[i].name).toLowerCase());
+                  const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(this.normalizeTitle(info.inputs[i].name).toLowerCase());
                   gc.value = mode_val;
                   ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
                 },
