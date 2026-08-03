@@ -49,7 +49,7 @@ class AleGroupBypasserService {
               // add group to collection
               self.addGroupToCollection(group);
           }
-          self.updateGroupCollectionList(available_groups);
+          self.processGroupCollection(available_groups);
             
           // update widget state in each node
 
@@ -89,25 +89,29 @@ class AleGroupBypasserService {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
     
-    updateGroupCollectionList(available_groups) {
-        if(this.group_collections.size > available_groups.length) {
-          const ag_titles = [];
-          for (const ag of available_groups) {
-            ag_titles.push(ag.title);
-          }
-          for (const [key, val] of this.group_collections)
-          {
-            if(!ag_titles.includes(val.title)) {
-              this.group_collections.delete(key);              
-              console.log("Group removed from collection...");
-            }
+    processGroupCollection(available_groups) {
+      if(this.group_collections.size > available_groups.length) {
+        const ag_titles = [];
+        for (const ag of available_groups) {
+          ag_titles.push(ag.title);
+        }
+        for (const [key, val] of this.group_collections) {
+          if(!ag_titles.includes(val.title)) {
+            this.group_collections.delete(key);              
+            console.log("Group removed from collection...");
           }
         }
-      for (const group of available_groups) {
-        for (const [key, val] of this.group_collections) {
-          if (group.title==val.title && val.value === MODE_BYPASS) { // ignore if group already in active state
-            val.value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
-            break;
+      }
+      
+      for (const [key, val] of this.group_collections) {
+        for (const group of available_groups) {
+          if (group.title==val.title) {
+            const oppositeMode = this.processNodeInsideGroup(group, val.value);
+            if((val.value===MODE_BYPASS && oppositeMode) || (val.value===MODE_ACTIVE && !oppositeMode))
+            {
+              val.value = (val.value===MODE_BYPASS) ? MODE_ACTIVE : MODE_BYPASS;
+              break;
+            }
           }
         }
       }
@@ -160,7 +164,7 @@ class AleGroupBypasserService {
                       if(is_set) {
                         node.mode = mode;
                       } else {
-                        console.log("has Active...");
+                        console.log("found opposite of mode : "+mode+" ...");
                         return true;
                     }
                   }
