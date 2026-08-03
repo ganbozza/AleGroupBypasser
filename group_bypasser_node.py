@@ -1,33 +1,13 @@
-from server import PromptServer
-
 class AleGroupBypasser:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {},
-            "hidden": { "unique_id": "UNIQUE_ID" } # Captures node ID
-        }
+        return {"required": {}}
 
     RETURN_TYPES = ()
-    FUNCTION = "execute"
+    FUNCTION = "anis"
     CATEGORY = "custom"
-    OUTPUT_NODE = True # CRITICAL FIX 2: Tells the engine this node handles terminal UI routing
-
-    # FIX 1: This forces ComfyUI to run the node every single time, bypassing the cache
-    @classmethod
-    def IS_CHANGED(s, **kwargs):
-        return random.random()
-        
-    def execute(self, unique_id, **kwargs):
-        is_enabled = kwargs.get("dynamic_bool_input", False)
-        
-        print(f"!!! Python executing for node ID: {unique_id} !!!")
-
-        # FIX 2: Send data via PromptServer instance using the api structure
-        PromptServer.instance.send_sync("my_custom_node_finished", {
-            "node_id": unique_id,
-            "resolved_value": is_enabled
-        })
+       
+    def anis(self):
         return ()
 
 
