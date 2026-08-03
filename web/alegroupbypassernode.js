@@ -1,5 +1,4 @@
 import { app } from "../../scripts/app.js";
-import { api } from "../../scripts/api.js";
 
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
@@ -26,14 +25,14 @@ function refreshWidgets(node) {
         "toggle",
         val.title,
         (val.value===MODE_BYPASS) ? true : false,
-        widgetCallback,
-        /*(value) => {
+        /*widgetCallback,*/
+        (value) => {
           // Optional: callback when toggle changes
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
           const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
           gc.value = mode_val;
           ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-        },*/
+        },
         { serialize: true }
       );
       // This hides the checkbox/toggle UI when a link wire is attached.
@@ -111,7 +110,7 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-
+          /*
           const inputSlotName = "dynamic_bool_input";
           const inputSlot = this.addInput(inputSlotName, "BOOLEAN");
           
@@ -119,15 +118,14 @@ app.registerExtension({
               console.log("Widget Callback Executed! State:", value);
               // Add visual modifications here (e.g., node.color)
           };
-
           const boolWidget = this.addWidget("toggle", inputSlotName, false, widgetCallback);
           inputSlot.widget = boolWidget;
-          /*
+          */        
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);
           refreshWidgets(this);
-          */
+        
           /*
           // Initialize counter on the node instance
           this.booleanCount = this.booleanCount || 0;
@@ -198,7 +196,7 @@ app.registerExtension({
           */
           return result;
         }
-      /*
+      
       const origOnConnectionsChange = nodeType.prototype.onConnectionsChange;
       // 2. Override the prototype method for all nodes of this type
       nodeType.prototype.onConnectionsChange = function (side, slot, connect, link_info, output) {
@@ -220,8 +218,7 @@ app.registerExtension({
 
           // Always return the original execution result
           return result;
-      };
-      */
+      };      
     },
     /*
    // Use init() to attach the socket listener early in the boot lifecycle
