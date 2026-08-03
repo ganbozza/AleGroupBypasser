@@ -23,7 +23,7 @@ function findNodeInAllGraphs(currentGraph, nodeId) {
 }
 
 function addBooleanWidgetToNode(node, title, cvalue, key) {
-  return node.addWidget(
+  const boolNode = node.addWidget(
         "toggle",
         title,
         (cvalue===MODE_BYPASS) ? true : false,
@@ -39,6 +39,8 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         */
         { serialize: true }
       );
+    boolNode._ref_hash = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
+    return boolNode;
 }
 
 function booleanWidgetCallback(value, key)
@@ -78,7 +80,8 @@ function refreshWidgets(node) {
       // This hides the checkbox/toggle UI when a link wire is attached.
       */
       //node.inputs[node.inputs.length - 1].widget = boolWidget;
-      node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
+      //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
+        node.inputs[node.inputs.length - 1].widget = { _ref_hash : boolWidget._ref_hash };
                
       updated = true;
     } 
@@ -276,7 +279,8 @@ app.registerExtension({
               boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
             //this.inputs[i].widget = boolWidget;
-            this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
+            //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
+            this.inputs[i].widget = { _ref_hash : boolWidget._ref_hash };
             this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
           }
           /*
@@ -314,7 +318,7 @@ app.registerExtension({
           // 'connect': true if a wire was plugged in, false if a wire was removed
           if (side === 1 && output.node.widgets && output.widget) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
-              const realWidget = output.node.widgets.find((w) => { return w.name===output.widget.name; });
+              const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
               if (connect) {
                 if(link_info)
                  realWidget._inputslot_origin_id = link_info.origin_id;
