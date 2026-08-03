@@ -194,7 +194,7 @@ app.registerExtension({
           const result = originalOnConfigure?.apply(this, arguments);
           
           for(let i=0;i<info.inputs.length;i++) {
-              this.addInput(info.inputs[i].name, info.inputs[i].type);
+              //this.addInput(info.inputs[i].name, info.inputs[i].type);
               const boolWidget = this.addWidget(
                 "toggle",
                 info.inputs[i].name,
@@ -208,7 +208,7 @@ app.registerExtension({
                 },
                 { serialize: true }
               );
-              this.inputs[this.inputs.length - 1].widget = boolWidget;
+              this.inputs[i].widget = boolWidget;
             if(info.inputs[i].link) {
               //boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
