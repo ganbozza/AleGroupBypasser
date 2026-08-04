@@ -41,38 +41,40 @@ class AleGroupBypasserService {
         
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
-          const available_groups = app.graph?._groups || [];
-           for (const group of available_groups) {
-              if(self.group_collections.has(normalizeTitle(group.title))) {
-                  continue;
-              }
-              // add group to collection
-              self.addGroupToCollection(group);
-          }
-          self.processGroupCollection(available_groups);
-            
-          // update widget state in each node
-
-          for (const node of self.nodes) {
-            if(node.widgets) {
-              for(const widget of node.widgets) {
-                const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
-                if(group)
-                {
-                  const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
-                  if(widget.value!==group_toggle_value) {
-                    console.log("Changing value for "+widget.name);
-                  //}
-                
-                  if(widget._inputslot_origin_id) {
-                    const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
-                    const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
-                    if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
-                      slotWidget.value =  group_toggle_value;
+          if (!app.canvas.isDragging) {
+            const available_groups = app.graph?._groups || [];
+             for (const group of available_groups) {
+                if(self.group_collections.has(normalizeTitle(group.title))) {
+                    continue;
+                }
+                // add group to collection
+                self.addGroupToCollection(group);
+            }
+            self.processGroupCollection(available_groups);
+              
+            // update widget state in each node
+  
+            for (const node of self.nodes) {
+              if(node.widgets) {
+                for(const widget of node.widgets) {
+                  const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
+                  if(group)
+                  {
+                    const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
+                    if(widget.value!==group_toggle_value) {
+                      console.log("Changing value for "+widget.name);
+                    //}
+                  
+                    if(widget._inputslot_origin_id) {
+                      const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
+                      const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
+                      if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
+                        slotWidget.value =  group_toggle_value;
+                      }
+                    } else {                  
+                      widget.value = group_toggle_value;
                     }
-                  } else {                  
-                    widget.value = group_toggle_value;
-                  }
+                    }
                   }
                 }
               }
