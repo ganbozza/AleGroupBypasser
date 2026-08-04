@@ -89,12 +89,12 @@ function refreshWidgets(node) {
   if(node.widgets) {
     for(const widget of node.widgets) {
       if(widget._inputslot_origin_id) {
-         var upstreamNode;
-         var upstreamWidget;
+         //var upstreamNode;
+         //var upstreamWidget;
         try {
         //upstreamNode = app.graph.getNodeById(widget._inputslot_origin_id);
-        upstreamNode = findNodeInAllGraphs(app.graph, widget._inputslot_origin_id);
-        upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
+        let upstreamNode = findNodeInAllGraphs(app.graph, widget._inputslot_origin_id);
+        const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
          if (upstreamWidget && typeof upstreamWidget.value !== undefined) {
            const upstreamValue = upstreamWidget.value;
            if(widget.value!=upstreamValue) {
