@@ -324,7 +324,8 @@ app.registerExtension({
               if (realWidget) {
                   if (connect) {
                     if(link_info) {
-                        const link = app.graph.links[link_info.id];
+                        const graphContext = this.graph || app.graph;
+                        const link = graphContext.links[link_info.id];
                         if(link) {
                             realWidget._inputslot_origin_id = link_info.origin_id;
                             if(typeof realWidget.callback === "function") {
