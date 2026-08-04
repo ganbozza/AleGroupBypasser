@@ -385,7 +385,7 @@ app.registerExtension({
                 const upstreamNode = this.graph.getNodeById(link.origin_id);
                 if(upstreamNode) {
                     const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
-                    const localWidget = this.inputs[link.target_slot].widget;
+                    const localWidget = this.widgets.find((w) => { return w._ref_hash===this.inputs[link.target_slot].widget._ref_hash; });
                     if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
                         localWidget.value = upstreamWidget.value;
                         if (typeof localWidget.callback === "function") {
