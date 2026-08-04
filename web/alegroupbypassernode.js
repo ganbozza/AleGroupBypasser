@@ -381,6 +381,7 @@ app.registerExtension({
                     }
                 }
             }
+            /*
             const links = [...app.graph.links.values()].find(m => m.target_id===this.id);
             for(const link of links) {
                 const upstreamNode = this.graph.getNodeById(link.origin_id);
@@ -396,6 +397,7 @@ app.registerExtension({
                     }
                 }
             }
+            */
             return result;
         };
     },
