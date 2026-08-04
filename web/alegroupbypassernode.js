@@ -331,7 +331,7 @@ app.registerExtension({
                             if(typeof realWidget.callback === "function") {
                                 const upstreamNode = graphContext.getNodeById(link.origin_id);
                                 if (upstreamNode) {
-                                  realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
+                                  realWidget.callback(upstreamNode.widgets?.[0].value);
                                 }
                             }
                         }
