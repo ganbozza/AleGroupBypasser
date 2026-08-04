@@ -61,7 +61,7 @@ function refreshWidgets(node) {
 
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-        if (node.widgets && node.widgets.length===node.inputs.length) {
+        if (node.widgets && node.widgets.length==>node.inputs.length) {
           node.addInput(val.title, "BOOLEAN");
         }
         const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
@@ -175,15 +175,15 @@ api.addEventListener("my_custom_node_finished", (event) => {
     }
 });
 */
-function findParentSubgraphNode(nodeInstance) {
-    if (nodeInstance.graph && nodeInstance.graph._subgraph_node) {
-        return nodeInstance.graph._subgraph_node;
+function findParentSubgraphNode(node) {
+    if (node.graph && node.graph._subgraph_node) {
+        return node.graph._subgraph_node;
     }
     // Fallback: search main canvas arrays if initialization is lagging
     if (app.graph && app.graph._nodes) {
         for (const outerNode of app.graph._nodes) {
             if (outerNode.subgraph && outerNode.subgraph._nodes) {
-                if (outerNode.subgraph._nodes.includes(nodeInstance)) {
+                if (outerNode.subgraph._nodes.includes(node)) {
                     return outerNode;
                 }
             }
@@ -193,42 +193,45 @@ function findParentSubgraphNode(nodeInstance) {
 }
 
 // --- Helper: Bind callbacks directly between inner widgets and outer promoted proxies ---
-function syncPromotedWidgetCallback(nodeInstance, slotName) {
-  const localWidget = nodeInstance.widgets?.find(w => w.name === slotName);
+function syncPromotedWidgetCallback(node, slotName) {
+  const localWidget = node.widgets?.find(w => w.name === slotName);
   if (!localWidget) return;
   
-  const parentSubgraphNode = findParentSubgraphNode(nodeInstance);
-  if (!parentSubgraphNode) return;
-  // Locate the newly generated proxy widget exposed on the outer super-node frame
-  const promotedWidget = parentSubgraphNode.widgets?.find(w => w.name === slotName || w.label === slotName);
-  
-  if (promotedWidget && !promotedWidget._is_hijacked) {
-    const origPromotedCallback = promotedWidget.callback;
-  
-    // Hijack the top-level master proxy toggle box safely
-    promotedWidget.callback = function(value) {
-        origPromotedCallback?.apply(this, arguments);
+  const parentSubgraphNode = findParentSubgraphNode(node);
+  if (parentSubgraphNode) {
+      // Locate the newly generated proxy widget exposed on the outer super-node frame
+      const promotedWidget = parentSubgraphNode.widgets?.find(w => w.name === slotName || w.label === slotName);
+      
+      if (promotedWidget && !promotedWidget._is_hijacked) {
+        const origPromotedCallback = promotedWidget.callback;
+      
+        // Hijack the top-level master proxy toggle box safely
+        promotedWidget.callback = function(value) {
+            origPromotedCallback?.apply(this, arguments);
+            
+            // Push the changed state down to our interior node widget
+            localWidget.value = value;
+            
+            // FORCED TRIGGER: Instantly execute custom frontend logic callback
+            if (typeof localWidget.callback === "function") {
+                localWidget.callback(value);
+            }
+        };
         
-        // Push the changed state down to our interior node widget
-        localWidget.value = value;
-        
-        // FORCED TRIGGER: Instantly execute custom frontend logic callback
-        if (typeof localWidget.callback === "function") {
-            localWidget.callback(value);
+        // Mark as hijacked to prevent endless callback attachment stacks
+        promotedWidget._is_hijacked = true;
+      
+        // Foundational immediate value sync upon initial load/promotion
+        if (promotedWidget.value !== undefined && localWidget.value !== promotedWidget.value) {
+            localWidget.value = promotedWidget.value;
+            if (typeof localWidget.callback === "function") {
+                localWidget.callback(promotedWidget.value);
+            }
         }
-    };
-    
-    // Mark as hijacked to prevent endless callback attachment stacks
-    promotedWidget._is_hijacked = true;
-  
-    // Foundational immediate value sync upon initial load/promotion
-    if (promotedWidget.value !== undefined && localWidget.value !== promotedWidget.value) {
-        localWidget.value = promotedWidget.value;
-        if (typeof localWidget.callback === "function") {
-            localWidget.callback(promotedWidget.value);
-        }
-    }
-  }  
+      }
+  } else {
+      
+  }
 }
 
 
