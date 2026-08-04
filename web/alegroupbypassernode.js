@@ -230,6 +230,7 @@ function syncPromotedWidgetCallback(node, slotName) {
         }
       }
   } else {
+
       
   }
 }
@@ -375,6 +376,21 @@ app.registerExtension({
                         localWidget.value = promotedWidget.value;
                         if (typeof localWidget.callback === "function") {
                             localWidget.callback(promotedWidget.value);
+                        }
+                        this.setDirtyCanvas(true, true);
+                    }
+                }
+            }
+            const links = [...app.graph.links.values()].find(m => m.target_id===this.id);
+            for(const link of links) {
+                const upstreamNode = this.graph.getNodeById(link.origin_id);
+                if(upstreamNode) {
+                    const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
+                    const localWidget = this.inputs[link.target_slot].widget;
+                    if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+                        localWidget.value = upstreamWidget.value;
+                        if (typeof localWidget.callback === "function") {
+                            localWidget.callback(upstreamWidget.value);
                         }
                         this.setDirtyCanvas(true, true);
                     }
