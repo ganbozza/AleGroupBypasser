@@ -334,7 +334,7 @@ app.registerExtension({
                                     if (upstreamNode) {
                                       realWidget.callback(upstreamNode.widgets?.[0].value);
                                     }
-                                }, 100);
+                                }, 1000);
                             }
                         }
                     }
