@@ -256,7 +256,9 @@ app.registerExtension({
             
             // Allow ComfyUI subgraph mappings a tiny calculation window to establish links
             setTimeout(() => {
-                syncPromotedWidgetCallback(this);
+                for (let i = 1; i <= this.inputs.length; i++) {
+                    syncPromotedWidgetCallback(this);
+                }
             }, 100);
 
             return result;
@@ -344,7 +346,7 @@ app.registerExtension({
             
             // Ensure callback structures remain bound when components are actively clicked
             for (let i = 1; i <= this.inputs.length; i++) {
-                const slotName = `bool_input_${i}`;
+                const slotName = this.inputs[i].name;
             
                 // Continually attempt to stitch the outer callback if unhijacked
                 syncPromotedWidgetCallback(this);
