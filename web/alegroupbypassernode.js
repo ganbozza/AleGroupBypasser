@@ -329,7 +329,10 @@ app.registerExtension({
                         if(link) {
                             realWidget._inputslot_origin_id = link_info.origin_id;
                             if(typeof realWidget.callback === "function") {
-                              realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
+                                const upstreamNode = graphContext.getNodeById(link.origin_id);
+                                if (upstreamNode) {
+                                  realWidget.callback(app.graph.getNodeById(link_info.origin_id).widgets?.[0].value);
+                                }
                             }
                         }
                     }
