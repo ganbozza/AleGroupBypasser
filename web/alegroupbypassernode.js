@@ -343,7 +343,7 @@ app.registerExtension({
             refreshWidgets(this);
             
             // Ensure callback structures remain bound when components are actively clicked
-            for (let i = 1; i <= this.input.length; i++) {
+            for (let i = 1; i <= this.inputs.length; i++) {
                 const slotName = `bool_input_${i}`;
             
                 // Continually attempt to stitch the outer callback if unhijacked
