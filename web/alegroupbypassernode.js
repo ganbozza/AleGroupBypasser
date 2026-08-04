@@ -61,7 +61,7 @@ function refreshWidgets(node) {
 
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-        if (node.widgets && node.widgets.length>==node.inputs.length) {
+        if (node.widgets && node.widgets.length>=node.inputs.length) {
           node.addInput(val.title, "BOOLEAN");
         }
         const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
