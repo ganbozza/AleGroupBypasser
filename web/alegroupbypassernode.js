@@ -329,7 +329,7 @@ app.registerExtension({
                         if(link) {
                             realWidget._inputslot_origin_id = link_info.origin_id;
                             if(typeof realWidget.callback === "function") {
-                                setTimeout(() => function() {
+                                setTimeout(() => {
                                     const upstreamNode = graphContext.getNodeById(link.origin_id);
                                     if (upstreamNode) {
                                       realWidget.callback(upstreamNode.widgets?.[0].value);
