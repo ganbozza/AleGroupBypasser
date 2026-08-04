@@ -299,7 +299,7 @@ app.registerExtension({
            // --- Hook 4: Link Wire Alteration Fallback ---
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
-          if (side === 1 && this.inputs[slot] && output.widget) {
+          if (side === 1 && this.inputs[slot] && output.widget && output.widget._ref_hash) {
               this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
           }
 
