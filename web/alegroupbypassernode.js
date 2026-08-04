@@ -261,11 +261,11 @@ app.registerExtension({
             setTimeout(() => {
                 const localWidget = this.widgets?.find(w => w.name === "Group");
                 if (!localWidget) return;
-                }
             }, 100);
 
             return result;
-        };
+        }
+        
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
           const result = originalOnConfigure?.apply(this, arguments);
