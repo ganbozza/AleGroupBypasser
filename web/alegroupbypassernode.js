@@ -207,7 +207,7 @@ app.registerExtension({
           refreshWidgets(this);
         // FIX: Instead of checking links via onConnectionsChange, hook directly into the promotion events.
         // This fires precisely when a user hits "Promote to widget".
-        this.on("widget-promoted", (slotName) => {
+        this.addEventListener("widget-promoted", (slotName) => {
             if (slotName.startsWith("bool_input_")) {
                 // Use a short delay buffer to give ComfyUI time to spawn the outer proxy widget layout
                 setTimeout(() => {
