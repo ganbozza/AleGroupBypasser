@@ -88,6 +88,7 @@ function refreshWidgets(node) {
       updated = true;
     } 
   }
+    /*
   if(node.widgets) {
     for(const widget of node.widgets) {
       if(widget._inputslot_origin_id) {
@@ -113,6 +114,7 @@ function refreshWidgets(node) {
       }
     }
   }
+  */
   
   if(updated) {
     node.setSize([node.size[0], node.computeSize()[1]]);
@@ -313,8 +315,12 @@ app.registerExtension({
                   if(upstreamNode) {
                       const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
                       const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
-                      if(upstreamWidget.value!==realWidget.value) {
-                          realWidget.callback(upstreamWidget.value);
+                      if(upstreamWidget && realWidget && upstreamWidget.value!==realWidget.value) {
+                          localWidget.value = promotedWidget.value;
+                          if (typeof localWidget.callback === "function") {
+                              realWidget.callback(upstreamWidget.value);
+                          }
+                          this.setDirtyCanvas(true, true);
                       }
                   }
               }
