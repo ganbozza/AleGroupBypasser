@@ -117,9 +117,11 @@ function refreshWidgets(node) {
     app.graph?.setDirtyCanvas?.(true, true);
   }
   node._refreshInProgress = false;
+  /*
   setTimeout(() => {
     refreshWidgets(node);
   }, 400);
+  */
 }
 
 function bindNode(node) {
@@ -188,154 +190,103 @@ function findParentSubgraphNode(nodeInstance) {
     return null;
 }
 
+// --- Helper: Bind callbacks directly between inner widgets and outer promoted proxies ---
+function syncPromotedWidgetCallback(nodeInstance) {
+  const slotName = 'Group';
+  const localWidget = nodeInstance.widgets?.find(w => w.name === slotName);
+  if (!localWidget) return;
+  
+  const parentSubgraphNode = findParentSubgraphNode(nodeInstance);
+  if (!parentSubgraphNode) return;
+  // Locate the newly generated proxy widget exposed on the outer super-node frame
+  const promotedWidget = parentSubgraphNode.widgets?.find(w => w.name === slotName || w.label === slotName);
+  
+  if (promotedWidget && !promotedWidget._is_hijacked) {
+    const origPromotedCallback = promotedWidget.callback;
+  
+    // Hijack the top-level master proxy toggle box safely
+    promotedWidget.callback = function(value) {
+        origPromotedCallback?.apply(this, arguments);
+        
+        // Push the changed state down to our interior node widget
+        localWidget.value = value;
+        
+        // FORCED TRIGGER: Instantly execute custom frontend logic callback
+        if (typeof localWidget.callback === "function") {
+            localWidget.callback(value);
+        }
+    };
+    
+    // Mark as hijacked to prevent endless callback attachment stacks
+    promotedWidget._is_hijacked = true;
+  
+    // Foundational immediate value sync upon initial load/promotion
+    if (promotedWidget.value !== undefined && localWidget.value !== promotedWidget.value) {
+        localWidget.value = promotedWidget.value;
+        if (typeof localWidget.callback === "function") {
+            localWidget.callback(promotedWidget.value);
+        }
+    }
+  }  
+}
+
+
 app.registerExtension({
     name: "ale.group.bypasser",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (String(nodeData?.name || "") !== "AleGroupBypasser") {
-          //console.log("OK: "+String(nodeData?.name || ""));
           return;
         }
 
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-          /*
-          const inputSlotName = "dynamic_bool_input";
-          const inputSlot = this.addInput(inputSlotName, "BOOLEAN");
-          
-          const widgetCallback = function(value) {
-              console.log("Widget Callback Executed! State:", value);
-              // Add visual modifications here (e.g., node.color)
-          };
-          const boolWidget = this.addWidget("toggle", inputSlotName, false, widgetCallback);
-          inputSlot.widget = boolWidget;
-          */        
+       
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
-          ALEGROUPBYPASSER_SERVICE.registerNode(this);
-          refreshWidgets(this);
-          /*
-          // Initialize counter on the node instance
-          this.booleanCount = this.booleanCount || 0;
-          const node = this;
-          // Function to handle slot generation cleanly
-          this.addDynamicBooleanInput = function(slotIndex) {
-              const inputName = `boolean_${slotIndex}`;
-              
-              // 1. Create the link connection point on the left side
-            node.addInput(inputName, "BOOLEAN");
-
-            // 2. Create the toggle switch widget inside the node body
-            // Arguments: (Widget Type, Name, Default Value, Callback)
-            const boolWidget = node.addWidget(
-                "toggle", 
-                inputName, 
-                false, 
-                function(value) {
-                    console.log("Toggle changed to:", value);
-                }
-            );
-
-            // 3. Link the input slot to the widget.
-            // This hides the checkbox/toggle UI when a link wire is attached.
-            node.inputs[node.inputs.length - 1].widget = boolWidget;
-            
-          };
-
-          // Add the trigger button widget
-          this.addWidget(
-              "button", 
-              "Add Boolean Input", 
-              null, 
-              () => {
-                  this.booleanCount++;
-                  this.addDynamicBooleanInput(this.booleanCount);
-                
-                  // Redraw and scale bounding boxes safely
-                  this.setSize(this.computeSize());
-                  this.setDirtyCanvas(true, true);
-              },
-              { serialize: false } // Do not serialize the button configuration itself
-          );
-          */
+          ALEGROUPBYPASSER_SERVICE.registerNode(this);     
+          
           return result;
-        }
+        };
 
         const origOnAdded = nodeType.prototype.onAdded;
         nodeType.prototype.onAdded = function(graph) {
             const result = origOnAdded?.apply(this, arguments);
             
             // Allow ComfyUI subgraph mappings a tiny calculation window to establish links
-            const count = this.properties?.boolCount || 0;
             setTimeout(() => {
-                const localWidget = this.widgets?.find(w => w.name === "Group");
-                if (!localWidget) return;
-
-                const parentSubgraphNode = findParentSubgraphNode(this);
-                if (!parentSubgraphNode) return;
-                
-                // Locate the newly generated proxy widget exposed on the outer super-node frame
-                const promotedWidget = parentSubgraphNode.widgets?.find(w => w.name === "Group" || w.label === "Group");
+                syncPromotedWidgetCallback(this);
             }, 100);
 
             return result;
-        }
+        };
         
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
-          const result = originalOnConfigure?.apply(this, arguments);
-          
+         
           for(let i=0;i<info.inputs.length;i++) {
 
-            if (!this.widgets || this.widgets.find((w) => { return w._ref_hash===info.inputs[i].widget._ref_hash; })) continue;
+            //if (!this.widgets || this.widgets.find((w) => { return w._ref_hash===info.inputs[i].widget._ref_hash; })) continue;
               
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
             const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
-            /*
-              const boolWidget = this.addWidget(
-                "toggle",
-                info.inputs[i].name,
-                info.widgets_values[i],
-                (value) => {
-                  // Optional: callback when toggle changes
-                  const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-                  const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(info.inputs[i].name.trim().toLowerCase());
-                  gc.value = mode_val;
-                  ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-                },
-                { serialize: true }
-              );
-            */
+
             if(info.inputs[i].link) {
               boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
             }
             //this.inputs[i].widget = boolWidget;
             //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
-            this.inputs[i].widget = { name : info.inputs[i].name, _ref_hash : boolWidget._ref_hash };
             //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
+            this.inputs[i].widget = { name : info.inputs[i].name, _ref_hash : boolWidget._ref_hash };
           }
-          /*
-          // Read how many inputs existed when the workflow was saved
-          if (info.inputs && info.inputs.length > 0) {
-              // Reset the node slot memory to clear any defaults
-              this.inputs = []; 
-              this.booleanCount = 0;
-
-              // Rebuild the programmatic inputs matching the exact count saved in JSON
-              for (const inputInfo of info.inputs) {
-                  if (inputInfo.name.startsWith("boolean_")) {
-                      this.booleanCount++;
-                      this.addDynamicBooleanInput(this.booleanCount);
-                  }
-              }
-              
-              // Ensure size updates after slots are generated
-              this.setSize(this.computeSize());
-          }
-          */
+          
+          const result = originalOnConfigure?.apply(this, arguments);
+          // Ensure size updates after slots are generated
+          this.setSize(this.computeSize());
+          
           return result;
-        }
+        };
       
       const origOnConnectionsChange = nodeType.prototype.onConnectionsChange;
       // 2. Override the prototype method for all nodes of this type
@@ -344,10 +295,14 @@ app.registerExtension({
           // 3. Always run the original LiteGraph/Comfy logic first to prevent UI breaking
           const result = origOnConnectionsChange?.apply(this, arguments);
 
-          // --- Put your custom UI logic below this line ---
-          
+           // --- Hook 4: Link Wire Alteration Fallback ---
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
+          if (side === 1 && this.inputs[slot] && output.widget) {
+              this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
+          }
+
+          /*
           if (side === 1 && output.node && output.node.widgets && output.widget) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
               const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
@@ -376,41 +331,43 @@ app.registerExtension({
                   }
               }
           }
+        */
 
           // Always return the original execution result
           return result;
-      };      
-    },
-    /*
-   // Use init() to attach the socket listener early in the boot lifecycle
-    async init() {
-        console.log("Custom extension initialized. Listening for WebSocket events...");
+      }; 
 
-        api.addEventListener("my_custom_node_finished", (event) => {
-            // ComfyUI pushes payloads into event.detail
-            const data = event.detail; 
-            console.log(">>> WebSocket custom event received! Data:", data);
+      const origOnDrawBackground = nodeType.prototype.onDrawBackground;
+      nodeType.prototype.onDrawBackground = function(ctx) {
+        const result = origOnDrawBackground?.apply(this, arguments);
+        refreshWidgets(this);
+
+        // Ensure callback structures remain bound when components are actively clicked
+        for (let i = 1; i <= 3; i++) {
+            const slotName = `bool_input_${i}`;
             
-            if (!data || !data.node_id) return;
-
-            const targetNode = app.graph.getNodeById(data.node_id);
-            if (targetNode) {
-                const widget = targetNode.widgets.find(w => w.name === "dynamic_bool_input");
-                if (widget) {
-                    // Update frontend state
-                    widget.value = data.resolved_value;
-                    
-                    // Manually fire the callback that ComfyUI naturally silences
-                    if (typeof widget.callback === "function") {
-                        widget.callback(data.resolved_value); 
+            // Continually attempt to stitch the outer callback if unhijacked
+            syncPromotedWidgetCallback(this);
+        
+            const parentNode = findParentSubgraphNode(this);
+            if (parentNode) {
+                const promotedWidget = parentNode.widgets?.find(w => w.name === slotName || w.label === slotName);
+                const localWidget = this.widgets?.find(w => w.name === slotName);
+        
+                if (promotedWidget && localWidget && localWidget.value !== promotedWidget.value) {
+                    localWidget.value = promotedWidget.value;
+                    if (typeof localWidget.callback === "function") {
+                        localWidget.callback(promotedWidget.value);
                     }
-                    
-                    targetNode.setDirtyCanvas(true, true);
+                    this.setDirtyCanvas(true, true);
                 }
             }
-        });
+        }
+      };
+      
+      return result;
     },
-    */
+    
   loadedGraphNode(node) {
     console.log("AAAAA");
   },
