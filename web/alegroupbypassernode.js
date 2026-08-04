@@ -281,9 +281,9 @@ app.registerExtension({
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
             const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
 
-            if(info.inputs[i].link) {
-              boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
-            }
+           // if(info.inputs[i].link) {
+           //   boolWidget._inputslot_origin_id = app.graph.links[info.inputs[i].link].origin_id;
+           // }
             //this.inputs[i].widget = boolWidget;
             //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
             //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
