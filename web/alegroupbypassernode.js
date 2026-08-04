@@ -303,6 +303,17 @@ app.registerExtension({
           // 'connect': true if a wire was plugged in, false if a wire was removed
           if (side === 1 && this.inputs[slot] && output.widget && output.widget._ref_hash) {
               this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
+              if(connect) {
+                  const graphContext = this.graph || app.graph;
+                  const upstreamNode = graphContext.getNodeById(link_info.origin_id);
+                  if(upstreamNode) {
+                      const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
+                      const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
+                      if(upstreamWidget.value!==realWidget.value) {
+                          realWidget.callback(upstreamWidget.value);
+                      }
+                  }
+              }
           }
 
           /*
