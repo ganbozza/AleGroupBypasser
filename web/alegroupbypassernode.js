@@ -261,6 +261,12 @@ app.registerExtension({
             setTimeout(() => {
                 const localWidget = this.widgets?.find(w => w.name === "Group");
                 if (!localWidget) return;
+
+                const parentSubgraphNode = findParentSubgraphNode(this);
+                if (!parentSubgraphNode) return;
+                
+                // Locate the newly generated proxy widget exposed on the outer super-node frame
+                const promotedWidget = parentSubgraphNode.widgets?.find(w => w.name === "Group" || w.label === "Group");
             }, 100);
 
             return result;
