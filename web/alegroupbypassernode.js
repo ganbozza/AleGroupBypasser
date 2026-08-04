@@ -171,11 +171,21 @@ api.addEventListener("my_custom_node_finished", (event) => {
     }
 });
 */
-function slotConnectionChange(connected, origin_id, target_widget) {
-  if(connected)
-  {
-    
-  }
+function findParentSubgraphNode(nodeInstance) {
+    if (nodeInstance.graph && nodeInstance.graph._subgraph_node) {
+        return nodeInstance.graph._subgraph_node;
+    }
+    // Fallback: search main canvas arrays if initialization is lagging
+    if (app.graph && app.graph._nodes) {
+        for (const outerNode of app.graph._nodes) {
+            if (outerNode.subgraph && outerNode.subgraph._nodes) {
+                if (outerNode.subgraph._nodes.includes(nodeInstance)) {
+                    return outerNode;
+                }
+            }
+        }
+    }
+    return null;
 }
 
 app.registerExtension({
