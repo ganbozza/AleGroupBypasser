@@ -337,35 +337,34 @@ app.registerExtension({
           return result;
       }; 
 
-      const origOnDrawBackground = nodeType.prototype.onDrawBackground;
-      nodeType.prototype.onDrawBackground = function(ctx) {
-        const result = origOnDrawBackground?.apply(this, arguments);
-        refreshWidgets(this);
-
-        // Ensure callback structures remain bound when components are actively clicked
-        for (let i = 1; i <= 3; i++) {
-            const slotName = `bool_input_${i}`;
+        const origOnDrawBackground = nodeType.prototype.onDrawBackground;
+        nodeType.prototype.onDrawBackground = function(ctx) {
+            const result = origOnDrawBackground?.apply(this, arguments);
+            refreshWidgets(this);
             
-            // Continually attempt to stitch the outer callback if unhijacked
-            syncPromotedWidgetCallback(this);
-        
-            const parentNode = findParentSubgraphNode(this);
-            if (parentNode) {
-                const promotedWidget = parentNode.widgets?.find(w => w.name === slotName || w.label === slotName);
-                const localWidget = this.widgets?.find(w => w.name === slotName);
-        
-                if (promotedWidget && localWidget && localWidget.value !== promotedWidget.value) {
-                    localWidget.value = promotedWidget.value;
-                    if (typeof localWidget.callback === "function") {
-                        localWidget.callback(promotedWidget.value);
+            // Ensure callback structures remain bound when components are actively clicked
+            for (let i = 1; i <= 3; i++) {
+                const slotName = `bool_input_${i}`;
+            
+                // Continually attempt to stitch the outer callback if unhijacked
+                syncPromotedWidgetCallback(this);
+            
+                const parentNode = findParentSubgraphNode(this);
+                if (parentNode) {
+                    const promotedWidget = parentNode.widgets?.find(w => w.name === slotName || w.label === slotName);
+                    const localWidget = this.widgets?.find(w => w.name === slotName);
+                
+                    if (promotedWidget && localWidget && localWidget.value !== promotedWidget.value) {
+                        localWidget.value = promotedWidget.value;
+                        if (typeof localWidget.callback === "function") {
+                            localWidget.callback(promotedWidget.value);
+                        }
+                        this.setDirtyCanvas(true, true);
                     }
-                    this.setDirtyCanvas(true, true);
                 }
             }
-        }
-      };
-      
-      return result;
+            return result;
+        };
     },
     
   loadedGraphNode(node) {
