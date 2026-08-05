@@ -88,7 +88,7 @@ function refreshWidgets(node) {
       updated = true;
     } 
   }
-
+    if(node.graph) {
     for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
         // upstreamWidget = getUpstreamWidgetById(link, this.graph);
         const localWidget = node.widgets[link.target_slot];
@@ -99,6 +99,7 @@ function refreshWidgets(node) {
                 updated = true;
             }
         }
+    }
     }
     /*
   if(node.widgets) {
