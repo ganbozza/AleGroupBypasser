@@ -322,7 +322,7 @@ app.registerExtension({
           // 'connect': true if a wire was plugged in, false if a wire was removed
           if (side === 1 && this.inputs[slot] && output.widget && output.widget._ref_hash) {
               this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
-              if(connect) {
+              if(connect && link_info) {
                   const graphContext = this.graph || app.graph;
                   const upstreamNode = graphContext.getNodeById(link_info.origin_id);
                   if(upstreamNode) {
