@@ -7,7 +7,7 @@ function normalizeTitle(title) {
   return String(title || "").trim();
 }
 
-function getAllGroups(graphContext = app.graph,) {
+function getAllGroups(graphContext = app.graph) {
   let gatheredGroups = [];
 
   // 1. Grab all groups present in the current graph layer context
