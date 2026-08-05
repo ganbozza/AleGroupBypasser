@@ -19,6 +19,23 @@ class AleGroupBypasserService {
         if (self.initialized) return;
         self.initialized = true;
 
+      // 1. Capture the original LiteGraph layout instantiation method safely
+        const origGraphAdd = LGraph.prototype.add;
+      // 2. Override the baseline graph prototype globally
+        LGraph.prototype.add = function(obj, ...args) {
+            //3. Run the native instantiation system first to ensure LiteGraph registers the object properties
+            const result = origGraphAdd.apply(this, arguments);
+
+          // 4. Retrieve the newly created group (it's the last one in the list)
+          const group = app.graph._groups[app.graph._groups.length - 1];
+          if (group) {
+            // add group to collection
+            self.addGroupToCollection(group);
+          }
+          console.log("A new group is being added to the canvas!");
+          return result;
+        };
+      /*
         if (typeof LGraphCanvas !== "undefined" && LGraphCanvas.onGroupAdd) {
             const originalOnGroupAdd = LGraphCanvas.onGroupAdd;
             LGraphCanvas.onGroupAdd = function(...args) {
@@ -36,6 +53,7 @@ class AleGroupBypasserService {
                 console.log("A new group is being added to the canvas!");
             };
         }
+        */
 
         // Intercept LiteGraph drawing loop
         
