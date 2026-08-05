@@ -404,7 +404,15 @@ app.registerExtension({
             */
             for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
                // upstreamWidget = getUpstreamWidgetById(link, this.graph);
-                upstreamNode = getUpstreamNodeById(link, this.graph);
+                const localWidget = this.widgets[link.target_slot];
+                //const upstreamWidget = getUpstreamWidgetByLink(link, this.graph);
+                const upstreamWidget = (link.origin_id>0) ? this.graph.getNodeById(link.origin_id).widgets[link.origin_slot] : getUpstreamWidgetInSubgraphByLink(link);
+                if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+                   if (typeof localWidget.callback === "function") {
+                            localWidget.callback(upstreamWidget.value);
+                        }
+                        this.setDirtyCanvas(true, true);
+                }
                 //app.graph.nodes[2].subgraph.links===this.graph.links
 
             }
@@ -419,7 +427,9 @@ app.registerExtension({
 });
 
 // inputs[1]._subgraphSlot.linkIds (subgraph punya input yg related dgn link id) dari link id tu boleh tgh node target_id & target_slot
-function getUpstreamNodeById(link, graphContext) {
+// one liner : [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===2))
+function getUpstreamWidgetByLink(link, graphContext) {
+    /*
     if(link.origin_id>0) {
         const upstreamNode = graphContext.getNodeById(link.origin_id);
         const next_link =  [...graphContext.links.values()].filter(m => m.target_id===upstreamNode.id);
@@ -427,11 +437,23 @@ function getUpstreamNodeById(link, graphContext) {
             return getUpstreamNodeById(next_link, graphContext);
         return upstreamNode;
     }
+    */
+    if(link.origin_id>0)
+        return  graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
     // upstream is subgraph
-    return findWidgetInSubgraphByLink(link);
+    return getUpstreamWidgetInSubgraphByLink(link);
 }
-function findWidgetInSubgraphByLink(link, graphContext = app.graph) {
 
+function getUpstreamWidgetInSubgraphByLink(link) {
+
+    const upstreamSubgraph = [...app.graph._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
+    if(upstreamSubgraph) {
+        // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
+        const widgetId = upstreamGraph.inputs[link.origin_slot].widgetId;
+        return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamGraph.inputs[link.origin_slot].widgetId);
+    }
+    /*
+     [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
     if(graphContext.links===link) {
         const subgraphNode = [...app.graph.nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === link);
         return graphContext;
@@ -450,24 +472,7 @@ function findWidgetInSubgraphByLink(link, graphContext = app.graph) {
           }
         }
     }
-
+    */
     return null;
 }
-    // 1. Check the current graph level
-    let node = currentGraph.getNodeById(nodeId);
-    if (node) return node;
-
-    // 2. Iterate through all nodes on this level to find subgraphs
-    for (const topNode of currentGraph._nodes) {
-        // Check if the node acts as a subgraph container
-        if (topNode.subgraph) {
-            // Recursively search inside the subgraph
-            node = findNodeInAllGraphs(topNode.subgraph, nodeId);
-            if (node) return node;
-        }
-    }
-
-    // 3. Return null if not found anywhere in this branch
-    return null;
-}
-
+    
