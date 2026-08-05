@@ -421,10 +421,10 @@ function getUpstreamWidgetById(link, graphContext) {
     if(link.origin_id>0)
         return graphContext.getNodeById(link.origin_id);
     // upstream is subgraph
-    const upstreamGraph = findLinkInAllGraphs()
+    const upstreamGraph = findGraphsWithLink(link)
     return getUpstreamWidgetInSubgraph(link);
 }
-function findLinkInAllGraphs(currentGraph, nodeId) {
+function findGraphsWithLink(link, graphContext = app.graph) {
     // 1. Check the current graph level
     let node = currentGraph.getNodeById(nodeId);
     if (node) return node;
