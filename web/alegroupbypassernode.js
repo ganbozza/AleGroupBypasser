@@ -403,7 +403,11 @@ app.registerExtension({
             }
             */
             for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
+                upstreamWidget = getUpstreamWidgetById(link, this.graph);
+                //app.graph.nodes[2].subgraph.links===this.graph.links
+
             }
+            
             return result;
         };
     },
@@ -413,4 +417,29 @@ app.registerExtension({
   },
 });
 
+function getUpstreamWidgetById(link, graphContext) {
+    if(link.origin_id>0)
+        return graphContext.getNodeById(link.origin_id);
+    // upstream is subgraph
+    const upstreamGraph = findLinkInAllGraphs()
+    return getUpstreamWidgetInSubgraph(link);
+}
+function findLinkInAllGraphs(currentGraph, nodeId) {
+    // 1. Check the current graph level
+    let node = currentGraph.getNodeById(nodeId);
+    if (node) return node;
+
+    // 2. Iterate through all nodes on this level to find subgraphs
+    for (const topNode of currentGraph._nodes) {
+        // Check if the node acts as a subgraph container
+        if (topNode.subgraph) {
+            // Recursively search inside the subgraph
+            node = findNodeInAllGraphs(topNode.subgraph, nodeId);
+            if (node) return node;
+        }
+    }
+
+    // 3. Return null if not found anywhere in this branch
+    return null;
+}
 
