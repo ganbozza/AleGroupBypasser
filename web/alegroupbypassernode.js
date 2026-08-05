@@ -438,9 +438,9 @@ function getUpstreamWidgetByLink(link, graphContext) {
     }
     */
     if(link.origin_id>0) {
-        const nextLink = [...graphContext.links.values()].find(m => m.target_id===link.origin_id)
-        if(nextLink)
-            return getUpstreamWidgetByLink(nextLink, graphContext);
+        const nextUpstreamLink = [...graphContext.links.values()].find(m => m.target_id===link.origin_id)
+        if(nextUpstreamLink)
+            return getUpstreamWidgetByLink(nextUpstreamLink, graphContext);
         return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
     } 
     // upstream is subgraph
@@ -452,7 +452,7 @@ function getUpstreamWidgetInSubgraphByLink(link) {
     const upstreamSubgraph = [...app.graph._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
     if(upstreamSubgraph) {
         // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
-        const widgetId = upstreamGraph.inputs[link.origin_slot].widgetId;
+        const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
         return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamGraph.inputs[link.origin_slot].widgetId);
     }
     /*
