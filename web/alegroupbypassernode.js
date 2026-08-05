@@ -453,7 +453,7 @@ function getUpstreamWidgetInSubgraphByLink(link) {
     if(upstreamSubgraph) {
         // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
         const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
-        return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamGraph.inputs[link.origin_slot].widgetId);
+        return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamSubgraph.inputs[link.origin_slot].widgetId);
     }
     /*
      [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
