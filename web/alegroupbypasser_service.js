@@ -60,7 +60,7 @@ class AleGroupBypasserService {
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
           if (!app.canvas.isDragging) {
-            const available_groups = app.graph?._groups || [];
+            const available_groups = getAllGroups();
              for (const group of available_groups) {
                 if(self.group_collections.has(normalizeTitle(group.title))) {
                     continue;
@@ -108,7 +108,33 @@ class AleGroupBypasserService {
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }
+
+    function getAllGroups(graphContext = app.graph,) {
+      let gatheredGroups = [];
     
+      // 1. Grab all groups present in the current graph layer context
+      if (graphContext._groups && graphContext._groups.length > 0) {
+          for (const group of graphContext._groups) {
+              // We append a helpful 'layer' property so you know exactly where this group lives
+              gatheredGroups.push(group);
+          }
+      }
+    
+      // 2. Scan all nodes in this layer to check for nested Subgraphs
+      if (graphContext._nodes) {
+          for (const node of graphContext._nodes) {
+              // Check if the node contains an internal nested subgraph
+              if (node.subgraph && node.subgraph instanceof LGraph) {    
+                  // Recurse into the sub-graph layer and merge the results
+                  const subGroups = getAllGroups(node.subgraph);
+                  gatheredGroups = gatheredGroups.concat(subGroups);
+              }
+          }
+      }
+    
+      return gatheredGroups;
+    }
+  
     processGroupCollection(available_groups) {
       if(this.group_collections.size > available_groups.length) {
         const ag_titles = [];
