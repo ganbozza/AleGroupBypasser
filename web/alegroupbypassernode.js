@@ -438,7 +438,7 @@ function getUpstreamWidgetByLink(link, graphContext) {
     }
     */
     if(link.origin_id>0) {
-        const nextLink = [...graphContext.links.values()].filter(m => m.target_id===link.origin_id)
+        const nextLink = [...graphContext.links.values()].find(m => m.target_id===link.origin_id)
         if(nextLink.length>0)
             return getUpstreamWidgetByLink(nextLink, graphContext);
         return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
