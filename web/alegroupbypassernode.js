@@ -88,6 +88,18 @@ function refreshWidgets(node) {
       updated = true;
     } 
   }
+
+    for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
+        // upstreamWidget = getUpstreamWidgetById(link, this.graph);
+        const localWidget = node.widgets[link.target_slot];
+        const upstreamWidget = getUpstreamWidgetByLink(link, node.graph);
+        if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+           if (typeof localWidget.callback === "function") {
+                localWidget.callback(upstreamWidget.value);
+                updated = true;
+            }
+        }
+    }
     /*
   if(node.widgets) {
     for(const widget of node.widgets) {
@@ -121,10 +133,9 @@ function refreshWidgets(node) {
     app.graph?.setDirtyCanvas?.(true, true);
   }
   node._refreshInProgress = false;
-  console.log('x');
   setTimeout(() => {
     refreshWidgets(node);
-  }, 400);
+  }, 300);
   
 }
 
@@ -403,19 +414,7 @@ app.registerExtension({
                 }
             }
             */
-            for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
-               // upstreamWidget = getUpstreamWidgetById(link, this.graph);
-                const localWidget = this.widgets[link.target_slot];
-                const upstreamWidget = getUpstreamWidgetByLink(link, this.graph);
-                if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
-                   if (typeof localWidget.callback === "function") {
-                            localWidget.callback(upstreamWidget.value);
-                        }
-                        this.setDirtyCanvas(true, true);
-                }
-                //app.graph.nodes[2].subgraph.links===this.graph.links
 
-            }
             
             return result;
         };
