@@ -440,15 +440,12 @@ function getUpstreamWidgetByLink(link, graphContext) {
     */
     if(link.origin_id>0) {
         const nextLink = [...this.graph.links.values()].filter(m => m.target_id===link.origin_id)
-        if(nextLink.length>0) {
+        if(nextLink.length>0)
             return getUpstreamWidgetByLink(nextLink, graphContext);
-        else {
-           return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
-        }
-    } else {
-        // upstream is subgraph
-        return getUpstreamWidgetInSubgraphByLink(link);
-    }
+        return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
+    } 
+    // upstream is subgraph
+    return getUpstreamWidgetInSubgraphByLink(link);
 }
 
 function getUpstreamWidgetInSubgraphByLink(link) {
