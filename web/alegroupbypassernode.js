@@ -403,7 +403,8 @@ app.registerExtension({
             }
             */
             for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
-                upstreamWidget = getUpstreamWidgetById(link, this.graph);
+               // upstreamWidget = getUpstreamWidgetById(link, this.graph);
+                upstreamNode = getUpstreamNodeById(link, this.graph);
                 //app.graph.nodes[2].subgraph.links===this.graph.links
 
             }
@@ -417,14 +418,41 @@ app.registerExtension({
   },
 });
 
-function getUpstreamWidgetById(link, graphContext) {
-    if(link.origin_id>0)
-        return graphContext.getNodeById(link.origin_id);
+// inputs[1]._subgraphSlot.linkIds (subgraph punya input yg related dgn link id) dari link id tu boleh tgh node target_id & target_slot
+function getUpstreamNodeById(link, graphContext) {
+    if(link.origin_id>0) {
+        const upstreamNode = graphContext.getNodeById(link.origin_id);
+        const next_link =  [...graphContext.links.values()].filter(m => m.target_id===upstreamNode.id);
+        if(next_link)
+            return getUpstreamNodeById(next_link, graphContext);
+        return upstreamNode;
+    }
     // upstream is subgraph
-    const upstreamGraph = findGraphsWithLink(link)
-    return getUpstreamWidgetInSubgraph(link);
+    return findWidgetInSubgraphByLink(link);
 }
-function findGraphsWithLink(link, graphContext = app.graph) {
+function findWidgetInSubgraphByLink(link, graphContext = app.graph) {
+
+    if(graphContext.links===link) {
+        const subgraphNode = [...app.graph.nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === link);
+        return graphContext;
+    }
+    
+    // Iterate through all nodes on this level to find subgraphs
+    if (graphContext._nodes) {
+        for (const node of graphContext._nodes) {
+          // Check if the node contains an internal nested subgraph
+          if (node.subgraph && node.subgraph instanceof LGraph) {    
+              // Recurse into the sub-graph layer and merge the results
+              const upstreamWidget = findWidgetInSubgraphByLink(link, node.subgraph);
+              if(upstreamWidget) {
+                  return upstreamWidget;
+              }
+          }
+        }
+    }
+
+    return null;
+}
     // 1. Check the current graph level
     let node = currentGraph.getNodeById(nodeId);
     if (node) return node;
