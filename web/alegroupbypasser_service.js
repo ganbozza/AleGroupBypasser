@@ -7,6 +7,31 @@ function normalizeTitle(title) {
   return String(title || "").trim();
 }
 
+function getAllGroups(graphContext = app.graph,) {
+  let gatheredGroups = [];
+
+  // 1. Grab all groups present in the current graph layer context
+  if (graphContext._groups && graphContext._groups.length > 0) {
+      for (const group of graphContext._groups) {
+          // We append a helpful 'layer' property so you know exactly where this group lives
+          gatheredGroups.push(group);
+      }
+  }
+
+  // 2. Scan all nodes in this layer to check for nested Subgraphs
+  if (graphContext._nodes) {
+      for (const node of graphContext._nodes) {
+          // Check if the node contains an internal nested subgraph
+          if (node.subgraph && node.subgraph instanceof LGraph) {    
+              // Recurse into the sub-graph layer and merge the results
+              const subGroups = getAllGroups(node.subgraph);
+              gatheredGroups = gatheredGroups.concat(subGroups);
+          }
+      }
+  }
+
+  return gatheredGroups;
+}
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
@@ -26,12 +51,10 @@ class AleGroupBypasserService {
             //3. Run the native instantiation system first to ensure LiteGraph registers the object properties
             const result = origGraphAdd.apply(this, arguments);
 
-          // 4. Retrieve the newly created group (it's the last one in the list)
-          const group = app.graph._groups[app.graph._groups.length - 1];
-          if (group) {
-            // add group to collection
-            self.addGroupToCollection(group);
+          if (obj && obj.constructor && obj.constructor.name === "LGraphGroup") {
+              self.addGroupToCollection(obj);
           }
+
           console.log("A new group is being added to the canvas!");
           return result;
         };
@@ -107,33 +130,7 @@ class AleGroupBypasserService {
  
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
-    }
-
-    function getAllGroups(graphContext = app.graph,) {
-      let gatheredGroups = [];
-    
-      // 1. Grab all groups present in the current graph layer context
-      if (graphContext._groups && graphContext._groups.length > 0) {
-          for (const group of graphContext._groups) {
-              // We append a helpful 'layer' property so you know exactly where this group lives
-              gatheredGroups.push(group);
-          }
-      }
-    
-      // 2. Scan all nodes in this layer to check for nested Subgraphs
-      if (graphContext._nodes) {
-          for (const node of graphContext._nodes) {
-              // Check if the node contains an internal nested subgraph
-              if (node.subgraph && node.subgraph instanceof LGraph) {    
-                  // Recurse into the sub-graph layer and merge the results
-                  const subGroups = getAllGroups(node.subgraph);
-                  gatheredGroups = gatheredGroups.concat(subGroups);
-              }
-          }
-      }
-    
-      return gatheredGroups;
-    }
+    }    
   
     processGroupCollection(available_groups) {
       if(this.group_collections.size > available_groups.length) {
