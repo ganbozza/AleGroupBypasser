@@ -387,7 +387,7 @@ app.registerExtension({
                     }
                 }
             }
-            for(const link of  [...app.graph.links.values()].filter(m => m.target_id===this.id)) {
+            for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
                 const upstreamNode = this.graph.getNodeById(link.origin_id);
                 if(upstreamNode) {
                     const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
