@@ -406,7 +406,7 @@ app.registerExtension({
                // upstreamWidget = getUpstreamWidgetById(link, this.graph);
                 const localWidget = this.widgets[link.target_slot];
                 //const upstreamWidget = getUpstreamWidgetByLink(link, this.graph);
-                const upstreamWidget = (link.origin_id>0) ? this.graph.getNodeById(link.origin_id).widgets[link.origin_slot] : getUpstreamWidgetInSubgraphByLink(link);
+                const upstreamWidget = getUpstreamWidgetByLink; 
                 if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
                    if (typeof localWidget.callback === "function") {
                             localWidget.callback(upstreamWidget.value);
@@ -438,10 +438,17 @@ function getUpstreamWidgetByLink(link, graphContext) {
         return upstreamNode;
     }
     */
-    if(link.origin_id>0)
-        return  graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
-    // upstream is subgraph
-    return getUpstreamWidgetInSubgraphByLink(link);
+    if(link.origin_id>0) {
+        const nextLink = [...this.graph.links.values()].filter(m => m.target_id===link.origin_id)
+        if(nextLink.length>0) {
+            return getUpstreamWidgetByLink(nextLink, graphContext);
+        else {
+           return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
+        }
+    } else {
+        // upstream is subgraph
+        return getUpstreamWidgetInSubgraphByLink(link);
+    }
 }
 
 function getUpstreamWidgetInSubgraphByLink(link) {
