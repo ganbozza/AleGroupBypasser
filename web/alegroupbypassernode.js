@@ -365,7 +365,7 @@ app.registerExtension({
         nodeType.prototype.onDrawBackground = function(ctx) {
             const result = origOnDrawBackground?.apply(this, arguments);
             refreshWidgets(this);
-            
+            /*
             // Ensure callback structures remain bound when components are actively clicked
             for (let i = 0; i < this.inputs.length; i++) {
                 const slotName = this.inputs[i].name;
@@ -400,6 +400,9 @@ app.registerExtension({
                         this.setDirtyCanvas(true, true);
                     }
                 }
+            }
+            */
+            for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
             }
             return result;
         };
