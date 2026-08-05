@@ -121,11 +121,11 @@ function refreshWidgets(node) {
     app.graph?.setDirtyCanvas?.(true, true);
   }
   node._refreshInProgress = false;
-  /*
+  console.log('x');
   setTimeout(() => {
     refreshWidgets(node);
   }, 400);
-  */
+  
 }
 
 function bindNode(node) {
@@ -253,7 +253,8 @@ app.registerExtension({
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);     
-          
+          refreshWidgets(this);
+            
           return result;
         };
 
@@ -364,7 +365,7 @@ app.registerExtension({
         const origOnDrawBackground = nodeType.prototype.onDrawBackground;
         nodeType.prototype.onDrawBackground = function(ctx) {
             const result = origOnDrawBackground?.apply(this, arguments);
-            refreshWidgets(this);
+            //refreshWidgets(this);
             /*
             // Ensure callback structures remain bound when components are actively clicked
             for (let i = 0; i < this.inputs.length; i++) {
