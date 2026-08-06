@@ -84,13 +84,15 @@ function refreshWidgets(node) {
     if(node._refreshInProgress) return;
     node._refreshInProgress = true;
 
-    if (node._groupSignature !== ALEGROUPBYPASSER_SERVICE._groupSignature) {
+    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY];
+    
+    if (node._groupSignature !== signature) {
         let index = 0;
         while ((node.widgets || [])[index]) {
             node.widgets.splice(index,1);
             index += 1;
         }
-        node._groupSignature = ALEGROUPBYPASSER_SERVICE._groupSignature;
+        node._groupSignature = signature;
     }
 
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
