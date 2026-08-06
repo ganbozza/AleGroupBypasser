@@ -30,6 +30,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         title,
         (cvalue===MODE_BYPASS) ? true : false,
         (value) => {
+            ALEGROUPBYPASSER_SERVICE._updatingWidget++;
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
             const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(title.trim().toLowerCase());
             if(gc) {
@@ -45,6 +46,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
                    });
                 }
             }
+            ALEGROUPBYPASSER_SERVICE._updatingWidget--;
         },
           //function(value) { booleanWidgetCallback(value, key); },
       /*
