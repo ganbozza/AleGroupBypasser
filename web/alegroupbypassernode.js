@@ -392,6 +392,16 @@ app.registerExtension({
           if (side === 1 && this.inputs[slot] && output.widget && output.widget._ref_hash) {
               this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
               if(connect && link_info) {
+                    const localWidget = this.widgets[link_info.target_slot];
+                    const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link_info, this.graph);
+                    if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+                       localWidget.value = upstreamWidget.value;
+                       if (typeof localWidget.callback === "function") {
+                            localWidget.callback(upstreamWidget.value);
+                            this.setDirtyCanvas(true, true);
+                        }
+                    }
+                  /*
                   const graphContext = this.graph || app.graph;
                   const upstreamNode = graphContext.getNodeById(link_info.origin_id);
                   if(upstreamNode) {
@@ -405,6 +415,7 @@ app.registerExtension({
                           this.setDirtyCanvas(true, true);
                       }
                   }
+                  */
               }
           }
 
