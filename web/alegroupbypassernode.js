@@ -93,7 +93,7 @@ function refreshWidgets(node) {
         node._groupSignature = ALEGROUPBYPASSER_SERVICE._groupSignature;
     }
 
-    const group_alternate = parseSets(node.properties?.[ALT_KEY]  || "");
+    const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
         // skip exclude groups
