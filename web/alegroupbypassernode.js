@@ -35,7 +35,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
             if(gc) {
                 gc.value = mode_val;
                 ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-                const myAltGroup = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title)];
+                const myAltGroup = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
                 if(myAltGroup) {
                    myAltGroup.forEach((g) => {
                        ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(node.graph?._groups.find((m)=>m.title===g), (mode_val===4) ? 0 : 4, true);
