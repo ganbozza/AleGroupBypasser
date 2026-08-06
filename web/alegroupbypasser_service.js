@@ -95,7 +95,7 @@ class AleGroupBypasserService {
             self.processGroupCollection(available_groups);
               
             // update widget state in each node
-            self.syncNodeWidgetValue();            
+            self.syncNodesWidgetValue();            
           }
           return origDraw.apply(this, args);
         };
