@@ -92,7 +92,7 @@ function refreshWidgets(node) {
     for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
         // upstreamWidget = getUpstreamWidgetById(link, this.graph);
         const localWidget = node.widgets[link.target_slot];
-        const upstreamWidget = getUpstreamWidgetByLink(link, node.graph);
+        const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
         if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
            if (typeof localWidget.callback === "function") {
                 localWidget.callback(upstreamWidget.value);
