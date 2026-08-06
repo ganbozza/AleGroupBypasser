@@ -127,6 +127,7 @@ class AleGroupBypasserService {
                     }
                 }
             }
+          this._updatingWidget = false
         }, ms);    
     }
     
