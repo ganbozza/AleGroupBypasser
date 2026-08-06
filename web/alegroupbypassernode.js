@@ -88,19 +88,7 @@ function refreshWidgets(node) {
       updated = true;
     } 
   }
-    if(node.graph) {
-    for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
-        // upstreamWidget = getUpstreamWidgetById(link, this.graph);
-        const localWidget = node.widgets[link.target_slot];
-        const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
-        if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
-           if (typeof localWidget.callback === "function") {
-                localWidget.callback(upstreamWidget.value);
-                updated = true;
-            }
-        }
-    }
-    }
+
     /*
   if(node.widgets) {
     for(const widget of node.widgets) {
@@ -415,7 +403,19 @@ app.registerExtension({
                 }
             }
             */
-
+            if(this.graph) {
+                for(const link of  [...this.graph.links.values()].filter(m => m.target_id===node.id)) {
+                    // upstreamWidget = getUpstreamWidgetById(link, this.graph);
+                    const localWidget = this.widgets[link.target_slot];
+                    const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, this.graph);
+                    if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+                       if (typeof localWidget.callback === "function") {
+                            localWidget.callback(upstreamWidget.value);
+                            this.setDirtyCanvas(true, true);
+                        }
+                    }
+                }
+            }
             
             return result;
         };
