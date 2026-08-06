@@ -103,7 +103,7 @@ class AleGroupBypasserService {
         console.log("AleGroupBypasser_Service initialized...");
     }
 
-    syncNodesWidgetValue(ms=500) {
+    syncNodesWidgetValue(ms=100) {
         if(this._updatingWidget) return;
         setTimeout(() => {
             for (const node of this.nodes) {
