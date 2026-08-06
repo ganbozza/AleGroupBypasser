@@ -427,7 +427,7 @@ app.registerExtension({
                            localWidget.value = upstreamWidget.value;
                            if (typeof localWidget.callback === "function") {
                                 localWidget.callback(upstreamWidget.value);
-                                updated = true;
+                                this.setDirtyCanvas(true, true);
                             }
                         }
                     }
