@@ -308,11 +308,11 @@ app.registerExtension({
         if (!this.properties || typeof this.properties !== "object") {
             this.properties = {};
         }
-        if (typeof node.properties[ALTERNATE_KEY] !== "string") {
-            node.properties[ALTERNATE_KEY] = "";
+        if (typeof this.properties[ALTERNATE_KEY] !== "string") {
+            this.properties[ALTERNATE_KEY] = "";
         }
-        if (typeof node.properties[EXCLUDE_KEY] !== "string") {
-            node.properties[EXCLUDE_KEY] = "";
+        if (typeof this.properties[EXCLUDE_KEY] !== "string") {
+            this.properties[EXCLUDE_KEY] = "";
         }
 
           bindNode(this);
