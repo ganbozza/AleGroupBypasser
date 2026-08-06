@@ -52,6 +52,7 @@ function booleanWidgetCallback(value, key)
     if(gc) {
         gc.value = mode_val;
         ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+        const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
     }
 }
 
