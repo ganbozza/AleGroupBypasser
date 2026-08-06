@@ -148,7 +148,7 @@ function refreshWidgets(node) {
   }
   */
     
-    if(node.graph) {
+    if(node.graph && node._groupSignature === ALEGROUPBYPASSER_SERVICE.signature) {
         for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const localWidget = node.widgets[link.target_slot];
