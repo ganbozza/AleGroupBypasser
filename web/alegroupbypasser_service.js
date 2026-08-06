@@ -101,7 +101,7 @@ class AleGroupBypasserService {
                   let widget = w;
                   const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
                   if(link) {
-                    widget = getUpstreamWidgetByLink(link, node.graph);
+                    widget = self.getUpstreamWidgetByLink(link, node.graph);
                   }
                   const group = self.group_collections.get(normalizeTitle(w.name).toLowerCase());
                   if(group)
