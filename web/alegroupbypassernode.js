@@ -39,9 +39,8 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
                 if(myAltGroup) {
                    parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title)?.forEach((g) => {
                        ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(node.graph?._groups.find((m)=>m.title===g), (mode_val===4) ? 0 : 4, true);
-                   }
-               });
-                
+                   });
+                }
             }
         },
           //function(value) { booleanWidgetCallback(value, key); },
