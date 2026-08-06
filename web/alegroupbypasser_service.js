@@ -68,24 +68,25 @@ class AleGroupBypasserService {
         setTimeout(() => {
             for (const node of this.nodes) {
               if(this._updatingWidget>1) return;
-                if(node.widgets && node.graph) {
-                    for(const w of node.widgets) {
-                      let widget = w;
-                      const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
-                      if(link) {
-                        widget = this.getUpstreamWidgetByLink(link, node.graph);
-                      }
-                      const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
-                      if(group && widget)
-                      {
-                        const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
-                        if(widget.value!==group_toggle_value) {
-                          //console.log("Changing value for "+w.name);               
-                          widget.value = group_toggle_value;
-                          node.setDirtyCanvas(true, true);
-                        }
+              if(node.widgets && node.graph) {
+                  for(const w of node.widgets) {
+                    let widget = w;
+                    const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
+                    if(link) {
+                      widget = this.getUpstreamWidgetByLink(link, node.graph);
+                    }
+                    const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
+                    if(group && widget)
+                    {
+                      if(this._updatingWidget>1) return;
+                      const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
+                      if(widget.value!==group_toggle_value) {
+                        //console.log("Changing value for "+w.name);               
+                        widget.value = group_toggle_value;
+                        node.setDirtyCanvas(true, true);
                       }
                     }
+                  }
                 }
             }
           this._updatingWidget--;
