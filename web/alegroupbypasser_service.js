@@ -308,10 +308,10 @@ getUpstreamWidgetByLink(link, graphContext) {
         return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
     } 
     // upstream is subgraph
-    return getUpstreamWidgetInSubgraphByLink(link, graphContext);
+    return this.getUpstreamWidgetInSubgraphByLink(link, graphContext);
 }
 
-function getUpstreamWidgetInSubgraphByLink(link, graphContext) {
+getUpstreamWidgetInSubgraphByLink(link, graphContext) {
 
     const upstreamSubgraph = [...graphContext._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
     if(upstreamSubgraph) {
