@@ -97,7 +97,7 @@ function refreshWidgets(node) {
 
     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
         // skip exclude groups
-        if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
+        if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(val.title)) {
               continue;
           }
         if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
