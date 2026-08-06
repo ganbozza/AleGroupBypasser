@@ -29,7 +29,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         "toggle",
         title,
         (cvalue===MODE_BYPASS) ? true : false,
-        (value) {
+        (value) => {
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
             const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
             if(gc) {
