@@ -107,7 +107,7 @@ class AleGroupBypasserService {
         if(this._updatingWidget) return;
         setTimeout(() => {
             for (const node of this.nodes) {
-                if(node.widgets) {
+                if(node.widgets && node.graph) {
                     for(const w of node.widgets) {
                       let widget = w;
                       const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
