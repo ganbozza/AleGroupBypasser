@@ -305,7 +305,7 @@ getUpstreamWidgetByLink(link, graphContext) {
         return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
     } 
     // upstream is subgraph
-    return this.getUpstreamWidgetInSubgraphByLink(link, graphContext);
+    return this.getUpstreamWidgetInSubgraphByLink(link, graphContext._rootGraph);
 }
 
 getUpstreamWidgetInSubgraphByLink(link, graphContext) {
