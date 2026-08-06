@@ -63,7 +63,7 @@ function parseSets(str) {
     // Split on ":" to get every member of this set
     //const members = part.split(":").map((s) => s.trim()).filter(Boolean);
     // only get member that exists in group_collections
-    const groups = part.split(":").map((s) => s.trim()).filter(Boolean).filter(num => ALEGROUPBYPASSER_SERVICE.group_collections.includes(num));
+    const groups = part.split(":").map((s) => s.trim()).filter(Boolean).filter(num => ALEGROUPBYPASSER_SERVICE.group_collections.includes(num.trim().toLowerCase()));
     if (groups.length < 2) continue; // need at least a pair
       const group = groups[0];
       const others = groups.filter((_, j) => j !== 0);
