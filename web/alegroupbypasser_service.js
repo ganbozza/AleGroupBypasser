@@ -63,10 +63,11 @@ class AleGroupBypasserService {
     }
 
     syncNodesWidgetValue(ms=300) {
-        if(this._updatingWidget) return;
-        this._updatingWidget = true;
+        if(this._updatingWidget>0) return;
+        this._updatingWidget++;
         setTimeout(() => {
             for (const node of this.nodes) {
+              if(this._updatingWidget>1) return;
                 if(node.widgets && node.graph) {
                     for(const w of node.widgets) {
                       let widget = w;
@@ -87,7 +88,7 @@ class AleGroupBypasserService {
                     }
                 }
             }
-          this._updatingWidget = false
+          this._updatingWidget--;
         }, ms);    
     }
     
@@ -108,7 +109,7 @@ class AleGroupBypasserService {
           }
         }
       }
-      
+      // sync state in group_collections with group's node mode
       for (const [key, val] of this.group_collections) {
         for (const group of available_groups) {
           if (group.title==val.title) {
