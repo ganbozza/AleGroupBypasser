@@ -94,7 +94,7 @@ function refreshWidgets(node) {
     }
 
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
-    cons exclude_key = node.properties?.[EXCLUDE_KEY];
+    const exclude_key = node.properties?.[EXCLUDE_KEY];
     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
         // skip exclude groups
         if (exclude_key && (new RegExp(exclude_key, "i").exec(val.title))) {
