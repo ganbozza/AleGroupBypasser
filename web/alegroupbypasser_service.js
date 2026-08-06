@@ -98,6 +98,10 @@ class AleGroupBypasserService {
             for (const node of self.nodes) {
               if(node.widgets) {
                 for(const widget of node.widgets) {
+                  const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(widget.name)]?.link);
+                  if(link) {
+                    
+                  }
                   const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
                   if(group)
                   {
