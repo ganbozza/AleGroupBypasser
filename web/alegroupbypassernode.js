@@ -39,6 +39,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
                 if(myAltGroup) {
                     const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
                    myAltGroup.forEach((g) => {
+                       const ag = available_groups;
                        ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(node.graph?._groups.find((m)=>m.title===g), (mode_val===4) ? 0 : 4, true);
                    });
                 }
