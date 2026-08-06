@@ -76,7 +76,7 @@ class AleGroupBypasserService {
                 self.addGroupToCollection(group);
             }
             self.processGroupCollection(available_groups);
-              
+            self._groupSignature = available_groups.map((entry) => entry.key).join("|");
             // update widget state in each node
             self.syncNodesWidgetValue();            
           }
