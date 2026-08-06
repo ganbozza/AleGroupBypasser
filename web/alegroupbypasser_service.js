@@ -120,7 +120,8 @@ class AleGroupBypasserService {
                         const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
                         if(widget.value!==group_toggle_value) {
                           console.log("Changing value for "+w.name);               
-                          widget.value = group_toggle_value;                           
+                          widget.value = group_toggle_value;
+                          node.setDirtyCanvas(true, true);
                         }
                       }
                     }
