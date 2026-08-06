@@ -87,11 +87,7 @@ function refreshWidgets(node) {
     const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY];
     
     if (node._groupSignature !== signature) {
-        let index = 0;
-        while ((node.widgets || [])[index]) {
-            node.widgets.splice(index,1);
-            index += 1;
-        }
+        node.widgets = [];
         node._groupSignature = signature;
     }
 
