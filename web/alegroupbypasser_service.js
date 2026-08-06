@@ -105,6 +105,7 @@ class AleGroupBypasserService {
 
     syncNodesWidgetValue(ms=1500) {
         if(this._updatingWidget) return;
+        this._updatingWidget = true;
         setTimeout(() => {
             for (const node of this.nodes) {
                 if(node.widgets && node.graph) {
