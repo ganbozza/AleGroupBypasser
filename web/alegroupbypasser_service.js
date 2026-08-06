@@ -97,28 +97,29 @@ class AleGroupBypasserService {
   
             for (const node of self.nodes) {
               if(node.widgets) {
-                for(const widget of node.widgets) {
-                  const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(widget.name)]?.link);
+                for(const w of node.widgets) {
+                  let widget = w;
+                  const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
                   if(link) {
-                    
+                    widget = getUpstreamWidgetByLink(link, node.graph);
                   }
-                  const group = self.group_collections.get(normalizeTitle(widget.name).toLowerCase());
+                  const group = self.group_collections.get(normalizeTitle(w.name).toLowerCase());
                   if(group)
                   {
                     const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
                     if(widget.value!==group_toggle_value) {
-                      console.log("Changing value for "+widget.name);
+                      console.log("Changing value for "+w.name);
                     //}
                   
-                    if(widget._inputslot_origin_id) {
-                      const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
-                      const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
-                      if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
-                        slotWidget.value =  group_toggle_value;
-                      }
-                    } else {                  
+                    //if(widget._inputslot_origin_id) {
+                    //  const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
+                    //  const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
+                    //  if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
+                    //    slotWidget.value =  group_toggle_value;
+                    //  }
+                    //} else {                  
                       widget.value = group_toggle_value;
-                    }
+                    //}
                     }
                   }
                 }
@@ -287,6 +288,64 @@ class AleGroupBypasserService {
             });
         });
     }
+
+  // inputs[1]._subgraphSlot.linkIds (subgraph punya input yg related dgn link id) dari link id tu boleh tgh node target_id & target_slot
+// one liner : [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===2))
+function getUpstreamWidgetByLink(link, graphContext) {
+    /*
+    if(link.origin_id>0) {
+        const upstreamNode = graphContext.getNodeById(link.origin_id);
+        const next_link =  [...graphContext.links.values()].filter(m => m.target_id===upstreamNode.id);
+        if(next_link)
+            return getUpstreamNodeById(next_link, graphContext);
+        return upstreamNode;
+    }
+    */
+    if(link.origin_id>0) {
+        const nextUpstreamLink = [...graphContext.links.values()].find(m => m.target_id===link.origin_id)
+        if(nextUpstreamLink)
+            return getUpstreamWidgetByLink(nextUpstreamLink, graphContext);
+        return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
+    } 
+    // upstream is subgraph
+    return getUpstreamWidgetInSubgraphByLink(link, graphContext);
+}
+
+function getUpstreamWidgetInSubgraphByLink(link, graphContext) {
+
+    const upstreamSubgraph = [...graphContext._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
+    if(upstreamSubgraph) {
+        // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
+        const nextUpstreamLink = upstreamSubgraph.inputs[link.origin_slot].link;
+        if (nextUpstreamLink) {
+            return getUpstreamWidgetByLink(upstreamSubgraph.graph.links.get(nextUpstreamLink), upstreamSubgraph.graph);
+        }
+        const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
+        return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamSubgraph.inputs[link.origin_slot].widgetId);
+    }
+    /*
+     [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
+    if(graphContext.links===link) {
+        const subgraphNode = [...app.graph.nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === link);
+        return graphContext;
+    }
+    
+    // Iterate through all nodes on this level to find subgraphs
+    if (graphContext._nodes) {
+        for (const node of graphContext._nodes) {
+          // Check if the node contains an internal nested subgraph
+          if (node.subgraph && node.subgraph instanceof LGraph) {    
+              // Recurse into the sub-graph layer and merge the results
+              const upstreamWidget = findWidgetInSubgraphByLink(link, node.subgraph);
+              if(upstreamWidget) {
+                  return upstreamWidget;
+              }
+          }
+        }
+    }
+    */
+    return null;
+}
 }
 
 export const ALEGROUPBYPASSER_SERVICE = new AleGroupBypasserService();
