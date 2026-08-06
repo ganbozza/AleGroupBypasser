@@ -67,7 +67,7 @@ class AleGroupBypasserService {
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
           if (!app.canvas.isDragging) {
-            const available_groups = getAllGroups();
+            const available_groups = [...new Set(getAllGroups())]; // make it unique
              for (const group of available_groups) {
                 if(self.group_collections.has(normalizeTitle(group.title))) {
                     continue;
