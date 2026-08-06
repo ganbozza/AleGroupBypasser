@@ -84,6 +84,15 @@ function refreshWidgets(node) {
     if(node._refreshInProgress) return;
     node._refreshInProgress = true;
 
+    if (node._groupSignature !== ALEGROUPBYPASSER_SERVICE._groupSignature) {
+        let index = 0;
+        while ((node.widgets || [])[index]) {
+            node.widgets.splice(index,1);
+            index += 1;
+        }
+        node._groupSignature = ALEGROUPBYPASSER_SERVICE._groupSignature;
+    }
+
     const group_alternate = parseSets(node.properties?.[ALT_KEY]  || "");
 
     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
@@ -148,7 +157,7 @@ function refreshWidgets(node) {
   }
   */
     
-    if(node.graph && node._groupSignature === ALEGROUPBYPASSER_SERVICE.signature) {
+    if(node.graph) {
         for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const localWidget = node.widgets[link.target_slot];
