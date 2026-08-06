@@ -54,30 +54,13 @@ class AleGroupBypasserService {
 
           if (obj && obj.constructor && obj.constructor.name === "LGraphGroup") {
               self.addGroupToCollection(obj);
+              console.log("A new group is being added to the canvas!");
           }
 
-          console.log("A new group is being added to the canvas!");
+          
           return result;
         };
-      /*
-        if (typeof LGraphCanvas !== "undefined" && LGraphCanvas.onGroupAdd) {
-            const originalOnGroupAdd = LGraphCanvas.onGroupAdd;
-            LGraphCanvas.onGroupAdd = function(...args) {
 
-                // 3. Execute the original logic so the group is actually created
-                originalOnGroupAdd.apply(this, args);
-
-                // 4. Retrieve the newly created group (it's the last one in the list)
-                const group = app.graph._groups[app.graph._groups.length - 1];
-
-                if (group) {
-                    // add group to collection
-                    self.addGroupToCollection(group);
-                }
-                console.log("A new group is being added to the canvas!");
-            };
-        }
-        */
 
         // Intercept LiteGraph drawing loop
         
@@ -120,7 +103,7 @@ class AleGroupBypasserService {
                       {
                         const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
                         if(widget.value!==group_toggle_value) {
-                          console.log("Changing value for "+w.name);               
+                          //console.log("Changing value for "+w.name);               
                           widget.value = group_toggle_value;
                           node.setDirtyCanvas(true, true);
                         }
