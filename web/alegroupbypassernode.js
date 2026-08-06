@@ -2,6 +2,7 @@ import { app } from "../../scripts/app.js";
 
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
+const EXCLUDE_KEY = "Exclude Group";
 const ALTERNATE_KEY = "Alternate Group";
 
 function findNodeInAllGraphs(currentGraph, nodeId) {
@@ -55,75 +56,69 @@ function booleanWidgetCallback(value, key)
 }
 
 function parseSets(str) {
-  const map = new Map();
-  if (!str?.trim()) return map;
+  const group_map = new Map();
+  if (!str?.trim()) return group_map;
 
   for (const part of str.split(",")) {
     // Split on ":" to get every member of this set
-    const members = part.split(":").map((s) => s.trim()).filter(Boolean);
-    if (members.length < 2) continue; // need at least a pair
-
-      const member = members[0];
-      const others = members.filter((_, j) => j !== 0);
-    
-      if (map.has(member)) {
-        const entry = map.get(member);
-        for (const o of others) {
-          if (!entry.includes(o)) entry.push(o);
+    //const members = part.split(":").map((s) => s.trim()).filter(Boolean);
+    // only get member that exists in group_collections
+    const groups = part.split(":").map((s) => s.trim()).filter(Boolean).filter(num => ALEGROUPBYPASSER_SERVICE.group_collections.includes(num));
+    if (groups.length < 2) continue; // need at least a pair
+      const group = groups[0];
+      const others = groups.filter((_, j) => j !== 0);
+        if (group_map.has(group)) {
+            const entry = group_map.get(group);
+            for (const o of others) {
+              if (!entry.includes(o)) entry.push(o);
+            }
+        } else {
+            group_map.set(group, others) ;
         }
-      } else {
-        map.set(member, others) ;
-      }
   }
-  return map;
-}
-
-function collectGroups() {
-
-    var grp_cl = [];
-    var grp_alt = [];
-    
-     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-         
-     }
+  return group_map;
 }
 
 function refreshWidgets(node) {
-  var updated = false;
-  if(node._refreshInProgress) return;
-  node._refreshInProgress = true;
+    var updated = false;
+    if(node._refreshInProgress) return;
+    node._refreshInProgress = true;
 
-    const { group_collections, group_alternate } = collectGroups();
-        
-  for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-    if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-        if ((!node.widgets && !node.inputs.length) || (node.widgets && node.widgets.length===node.inputs.length)){
-          node.addInput(val.title, "BOOLEAN");
-        }
-        const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
-      /*
-      const boolWidget = node.addWidget(
-        "toggle",
-        val.title,
-        (val.value===MODE_BYPASS) ? true : false,
-        (value) => {
-          // Optional: callback when toggle changes
-          const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
-          gc.value = mode_val;
-          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-        },
-        { serialize: true }
-      );
-      // This hides the checkbox/toggle UI when a link wire is attached.
-      */
-      //node.inputs[node.inputs.length - 1].widget = boolWidget;
-      //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
-      node.inputs[node.inputs.length - 1].widget = {  name : val.title, _ref_hash : boolWidget._ref_hash };
-               
-      updated = true;
-    } 
-  }
+    const group_alternate = parseSets(node.properties?.[ALT_KEY]  || "");
+
+    for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
+        // skip exclude groups
+        if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
+              continue;
+          }
+        if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
+            if ((!node.widgets && !node.inputs.length) || (node.widgets && node.widgets.length===node.inputs.length)){
+              node.addInput(val.title, "BOOLEAN");
+            }
+            const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
+          /*
+          const boolWidget = node.addWidget(
+            "toggle",
+            val.title,
+            (val.value===MODE_BYPASS) ? true : false,
+            (value) => {
+              // Optional: callback when toggle changes
+              const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+              const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+              gc.value = mode_val;
+              ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+            },
+            { serialize: true }
+          );
+          // This hides the checkbox/toggle UI when a link wire is attached.
+          */
+          //node.inputs[node.inputs.length - 1].widget = boolWidget;
+          //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
+          node.inputs[node.inputs.length - 1].widget = {  name : val.title, _ref_hash : boolWidget._ref_hash };
+                   
+          updated = true;
+        } 
+      }
 
     /*
   if(node.widgets) {
@@ -304,9 +299,13 @@ app.registerExtension({
         if (!this.properties || typeof this.properties !== "object") {
             this.properties = {};
         }
-        if (typeof node.properties[ALT_KEY] !== "string") {
-            node.properties[ALT_KEY] = "";
+        if (typeof node.properties[ALTERNATE_KEY] !== "string") {
+            node.properties[ALTERNATE_KEY] = "";
         }
+        if (typeof node.properties[EXCLUDE_KEY] !== "string") {
+            node.properties[EXCLUDE_KEY] = "";
+        }
+
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);     
