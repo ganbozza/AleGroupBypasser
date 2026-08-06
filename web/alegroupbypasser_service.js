@@ -291,7 +291,7 @@ class AleGroupBypasserService {
 
   // inputs[1]._subgraphSlot.linkIds (subgraph punya input yg related dgn link id) dari link id tu boleh tgh node target_id & target_slot
 // one liner : [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===2))
-function getUpstreamWidgetByLink(link, graphContext) {
+getUpstreamWidgetByLink(link, graphContext) {
     /*
     if(link.origin_id>0) {
         const upstreamNode = graphContext.getNodeById(link.origin_id);
@@ -304,7 +304,7 @@ function getUpstreamWidgetByLink(link, graphContext) {
     if(link.origin_id>0) {
         const nextUpstreamLink = [...graphContext.links.values()].find(m => m.target_id===link.origin_id)
         if(nextUpstreamLink)
-            return getUpstreamWidgetByLink(nextUpstreamLink, graphContext);
+            return this.getUpstreamWidgetByLink(nextUpstreamLink, graphContext);
         return graphContext.getNodeById(link.origin_id).widgets[link.origin_slot];
     } 
     // upstream is subgraph
@@ -318,7 +318,7 @@ function getUpstreamWidgetInSubgraphByLink(link, graphContext) {
         // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
         const nextUpstreamLink = upstreamSubgraph.inputs[link.origin_slot].link;
         if (nextUpstreamLink) {
-            return getUpstreamWidgetByLink(upstreamSubgraph.graph.links.get(nextUpstreamLink), upstreamSubgraph.graph);
+            return this.getUpstreamWidgetByLink(upstreamSubgraph.graph.links.get(nextUpstreamLink), upstreamSubgraph.graph);
         }
         const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
         return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamSubgraph.inputs[link.origin_slot].widgetId);
