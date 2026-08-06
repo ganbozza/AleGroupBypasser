@@ -179,7 +179,7 @@ class AleGroupBypasserService {
     processNodeInsideGroup(group, mode, is_set=false) {
          if (app.canvas.isDragging)
             return;
-
+        try {
         for (const node of group.graph.nodes) {
             const nodeBounding = node.getBounding();
             const nodeCenter = nodeBounding &&
@@ -200,6 +200,9 @@ class AleGroupBypasserService {
                   }
                 }
             }
+        }
+        }catch(e) {
+          console.log('e');
         }
         //if(!is_set)
         //  console.log("all bypassed...");
