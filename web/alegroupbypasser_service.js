@@ -7,31 +7,7 @@ function normalizeTitle(title) {
   return String(title || "").trim();
 }
 
-function getAllGroups(graphContext = app.graph) {
-  let gatheredGroups = [];
 
-  // 1. Grab all groups present in the current graph layer context
-  if (graphContext._groups && graphContext._groups.length > 0) {
-      for (const group of graphContext._groups) {
-          // We append a helpful 'layer' property so you know exactly where this group lives
-          gatheredGroups.push(group);
-      }
-  }
-
-  // 2. Scan all nodes in this layer to check for nested Subgraphs
-  if (graphContext._nodes) {
-      for (const node of graphContext._nodes) {
-          // Check if the node contains an internal nested subgraph
-          if (node.subgraph && node.subgraph instanceof LGraph) {    
-              // Recurse into the sub-graph layer and merge the results
-              const subGroups = getAllGroups(node.subgraph);
-              gatheredGroups = gatheredGroups.concat(subGroups);
-          }
-      }
-  }
-
-  return gatheredGroups;
-}
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
@@ -296,41 +272,66 @@ getUpstreamWidgetByLink(link, graphContext) {
     return this.getUpstreamWidgetInSubgraphByLink(link, graphContext._rootGraph);
 }
 
-getUpstreamWidgetInSubgraphByLink(link, graphContext) {
-
-    const upstreamSubgraph = [...graphContext._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
-    if(upstreamSubgraph) {
-        // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
-        const nextUpstreamLink = upstreamSubgraph.inputs[link.origin_slot].link;
-        if (nextUpstreamLink) {
-            return this.getUpstreamWidgetByLink(upstreamSubgraph.graph.links.get(nextUpstreamLink), upstreamSubgraph.graph);
+    getUpstreamWidgetInSubgraphByLink(link, graphContext) {
+        const upstreamSubgraph = [...graphContext._nodes.values()].filter(n => n.subgraph).find((n) => [...n.subgraph.links.values()].find((l)=>l===link));
+        if(upstreamSubgraph) {
+          // takyah kut ni : const inputSlot = inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
+          const nextUpstreamLink = upstreamSubgraph.inputs[link.origin_slot].link;
+          if (nextUpstreamLink) {
+              return this.getUpstreamWidgetByLink(upstreamSubgraph.graph.links.get(nextUpstreamLink), upstreamSubgraph.graph);
+          }
+          const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
+          return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamSubgraph.inputs[link.origin_slot].widgetId);
         }
-        const widgetId = upstreamSubgraph.inputs[link.origin_slot].widgetId;
-        return upstreamSubgraph.widgets.find((w)=>w.widgetId===upstreamSubgraph.inputs[link.origin_slot].widgetId);
+        /*
+        [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
+        if(graphContext.links===link) {
+          const subgraphNode = [...app.graph.nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === link);
+          return graphContext;
+        }
+        
+        // Iterate through all nodes on this level to find subgraphs
+        if (graphContext._nodes) {
+          for (const node of graphContext._nodes) {
+            // Check if the node contains an internal nested subgraph
+            if (node.subgraph && node.subgraph instanceof LGraph) {    
+                // Recurse into the sub-graph layer and merge the results
+                const upstreamWidget = findWidgetInSubgraphByLink(link, node.subgraph);
+                if(upstreamWidget) {
+                    return upstreamWidget;
+                }
+            }
+          }
+        }
+        */
+        return null;
     }
-    /*
-     [...app.graph._nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === app.graph.nodes[2].subgraph.links).inputs.find((i)=>i._subgraphSlot.linkIds.find(li => li===link.id))
-    if(graphContext.links===link) {
-        const subgraphNode = [...app.graph.nodes.values()].filter(m => m.subgraph).find((m) => m.subgraph.links === link);
-        return graphContext;
-    }
-    
-    // Iterate through all nodes on this level to find subgraphs
-    if (graphContext._nodes) {
-        for (const node of graphContext._nodes) {
-          // Check if the node contains an internal nested subgraph
-          if (node.subgraph && node.subgraph instanceof LGraph) {    
-              // Recurse into the sub-graph layer and merge the results
-              const upstreamWidget = findWidgetInSubgraphByLink(link, node.subgraph);
-              if(upstreamWidget) {
-                  return upstreamWidget;
+
+    getAllGroups(graphContext = app.graph) {
+        let gatheredGroups = [];
+        
+        // 1. Grab all groups present in the current graph layer context
+        if (graphContext._groups && graphContext._groups.length > 0) {
+          for (const group of graphContext._groups) {
+              // We append a helpful 'layer' property so you know exactly where this group lives
+              gatheredGroups.push(group);
+          }
+        }
+        
+        // 2. Scan all nodes in this layer to check for nested Subgraphs
+        if (graphContext._nodes) {
+          for (const node of graphContext._nodes) {
+              // Check if the node contains an internal nested subgraph
+              if (node.subgraph && node.subgraph instanceof LGraph) {    
+                  // Recurse into the sub-graph layer and merge the results
+                  const subGroups = this.getAllGroups(node.subgraph);
+                  gatheredGroups = gatheredGroups.concat(subGroups);
               }
           }
         }
+        
+        return gatheredGroups;
     }
-    */
-    return null;
-}
 }
 
 export const ALEGROUPBYPASSER_SERVICE = new AleGroupBypasserService();
