@@ -35,7 +35,8 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
             if(gc) {
                 gc.value = mode_val;
                 ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-                const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
+                parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title)?.forEach((g)=>{ALEGROUPBYPASSER_SERVICE.group_collections.get(g.trim().toLowerCase()).value = (mode_val===4) ? 0 : 4;})
+                
             }
         },
           //function(value) { booleanWidgetCallback(value, key); },
