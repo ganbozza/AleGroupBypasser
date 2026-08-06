@@ -35,6 +35,7 @@ function getAllGroups(graphContext = app.graph) {
 class AleGroupBypasserService {
     constructor() {
         this.initialized = false;
+        this._updatingWidget = false;
         this.nodes = new Set();
         this.group_collections = new Map();
     }
@@ -94,37 +95,7 @@ class AleGroupBypasserService {
             self.processGroupCollection(available_groups);
               
             // update widget state in each node
-  
-            for (const node of self.nodes) {
-              if(node.widgets) {
-                for(const w of node.widgets) {
-                  let widget = w;
-                  const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
-                  if(link) {
-                    widget = self.getUpstreamWidgetByLink(link, node.graph);
-                  }
-                  const group = self.group_collections.get(normalizeTitle(w.name).toLowerCase());
-                  if(group)
-                  {
-                    const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
-                    if(widget.value!==group_toggle_value) {
-                      console.log("Changing value for "+w.name);
-                    //}
-                  
-                    //if(widget._inputslot_origin_id) {
-                    //  const slotNode = app.graph.getNodeById(widget._inputslot_origin_id);
-                    //  const slotWidget = slotNode.widgets?.find(w => w.type === "toggle" || w.name === "value") || slotNode.widgets?.[0];
-                    //  if (slotWidget && slotWidget.value !== undefined && slotWidget.value!==group_toggle_value) {
-                    //    slotWidget.value =  group_toggle_value;
-                    //  }
-                    //} else {                  
-                      widget.value = group_toggle_value;
-                    //}
-                    }
-                  }
-                }
-              }
-            }
+            self.syncNodeWidgetValue();            
           }
           return origDraw.apply(this, args);
         };
@@ -132,7 +103,32 @@ class AleGroupBypasserService {
         console.log("AleGroupBypasser_Service initialized...");
     }
 
- 
+    syncNodesWidgetValue(ms=500) {
+        if(this._updatingWidget) return;
+        setTimeout(() = > {
+            for (const node of this.nodes) {
+                if(node.widgets) {
+                    for(const w of node.widgets) {
+                      let widget = w;
+                      const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
+                      if(link) {
+                        widget = this.getUpstreamWidgetByLink(link, node.graph);
+                      }
+                      const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
+                      if(group && widget)
+                      {
+                        const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
+                        if(widget.value!==group_toggle_value) {
+                          console.log("Changing value for "+w.name);               
+                          widget.value = group_toggle_value;                           
+                        }
+                      }
+                    }
+                }
+            }
+        }, ms);    
+    }
+    
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }    
