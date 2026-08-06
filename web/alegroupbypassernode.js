@@ -404,7 +404,7 @@ app.registerExtension({
             }
             */
             if(this.graph) {
-                for(const link of  [...this.graph.links.values()].filter(m => m.target_id===node.id)) {
+                for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
                     // upstreamWidget = getUpstreamWidgetById(link, this.graph);
                     const localWidget = this.widgets[link.target_slot];
                     const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, this.graph);
