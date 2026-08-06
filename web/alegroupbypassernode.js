@@ -2,6 +2,7 @@ import { app } from "../../scripts/app.js";
 
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
+const ALTERNATE_KEY = "Alternate Group";
 
 function findNodeInAllGraphs(currentGraph, nodeId) {
     // 1. Check the current graph level
@@ -53,12 +54,47 @@ function booleanWidgetCallback(value, key)
     }
 }
 
+function parseSets(str) {
+  const map = new Map();
+  if (!str?.trim()) return map;
+
+  for (const part of str.split(",")) {
+    // Split on ":" to get every member of this set
+    const members = part.split(":").map((s) => s.trim()).filter(Boolean);
+    if (members.length < 2) continue; // need at least a pair
+
+      const member = members[0];
+      const others = members.filter((_, j) => j !== 0);
+    
+      if (map.has(member)) {
+        const entry = map.get(member);
+        for (const o of others) {
+          if (!entry.includes(o)) entry.push(o);
+        }
+      } else {
+        map.set(member, others) ;
+      }
+  }
+  return map;
+}
+
+function collectGroups() {
+
+    var grp_cl = [];
+    var grp_alt = [];
+    
+     for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
+         
+     }
+}
+
 function refreshWidgets(node) {
   var updated = false;
   if(node._refreshInProgress) return;
   node._refreshInProgress = true;
-  
 
+    const { group_collections, group_alternate } = collectGroups();
+        
   for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
     if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
         if ((!node.widgets && !node.inputs.length) || (node.widgets && node.widgets.length===node.inputs.length)){
@@ -264,7 +300,13 @@ app.registerExtension({
         const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
         nodeType.prototype.onNodeCreated = function () {
           const result = originalOnNodeCreated?.apply(this, arguments);
-       
+            
+        if (!this.properties || typeof this.properties !== "object") {
+            this.properties = {};
+        }
+        if (typeof node.properties[ALT_KEY] !== "string") {
+            node.properties[ALT_KEY] = "";
+        }
           bindNode(this);
           ALEGROUPBYPASSER_SERVICE.init();
           ALEGROUPBYPASSER_SERVICE.registerNode(this);     
