@@ -440,7 +440,7 @@ app.registerExtension({
     },
     
   loadedGraphNode(node) {
-    console.log("AAAAA");
+    //console.log("AAAAA");
   },
 });
 
