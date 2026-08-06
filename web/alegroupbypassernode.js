@@ -35,12 +35,13 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
             if(gc) {
                 gc.value = mode_val;
                 ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
-                const myAltGroup = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
-                if(myAltGroup) {
+                const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
+                if(myAltGroupNames) {
                     const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
-                   myAltGroup.forEach((g) => {
-                       const ag = available_groups;
-                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(node.graph?._groups.find((m)=>m.title===g), (mode_val===4) ? 0 : 4, true);
+                   myAltGroupNames.forEach((alt_group_name) => {
+                       for(const group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
+                           ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, (mode_val===4) ? 0 : 4, true);
+                       }
                    });
                 }
             }
