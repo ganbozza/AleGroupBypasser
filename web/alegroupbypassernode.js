@@ -32,7 +32,21 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         (value) => {
             ALEGROUPBYPASSER_SERVICE._updatingWidget++;
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-            const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(title.trim().toLowerCase());
+            ALEGROUPBYPASSER_SERVICE.group_collections.get(title.trim().toLowerCase()).value = mode_val;
+            const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
+            for(const group of available_groups.filter((available_group)=>available_group.title==title)) {
+               ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, mode_val, true);
+            }
+            const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
+            if(myAltGroupNames.length>0) {
+                myAltGroupNames.forEach((alt_group_name) => {
+                   for(const group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
+                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, (mode_val===4) ? 0 : 4, true);
+                   }
+                });
+            }
+            
+            /*
             if(gc) {
                 gc.value = mode_val;
                 ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
@@ -46,6 +60,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
                    });
                 }
             }
+            */
             ALEGROUPBYPASSER_SERVICE._updatingWidget--;
         },
           //function(value) { booleanWidgetCallback(value, key); },
