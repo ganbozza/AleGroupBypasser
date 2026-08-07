@@ -10,10 +10,15 @@ function normalizeTitle(title) {
 
 class AleGroupBypasserService {
   constructor() {
-      this.initialized = false;
-      this._updatingWidget = false;
-      this.nodes = new Set();
-      this.group_collections = new Map();
+    this.initialized = false;
+    this._updatingWidget = false;
+    this.nodes = new Set();
+    this.group_collections = new Map();
+    this.ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
+                                    sensitivity: "base",
+                                    numeric: true,
+                                  });
+    
   }
   
   init() {
