@@ -76,7 +76,7 @@ function addBooleanWidgetToNode(node, group) {
         */
         { serialize: true }
       );
-    boolNode._hash_ref = group.hashref;
+    boolNode._hash_ref = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
     return boolNode;
 }
 /*
