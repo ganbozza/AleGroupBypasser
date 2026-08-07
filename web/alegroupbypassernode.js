@@ -147,9 +147,8 @@ function refreshWidgets(node) {
             if(link_num!==null) {
                 node.inputs[slot].link = link_num;
                 node.graph.getLink(link_num).target_slot = slot;
-            } else {
-                node.inputs[slot].widget = {  name : gval.title, _hash_ref : gval.hashref };
             }
+            node.inputs[slot].widget = {  name : gval.title, _hash_ref : gval.hashref };
             updated = true;
         }
         /*
