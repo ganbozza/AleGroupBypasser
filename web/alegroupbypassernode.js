@@ -4,6 +4,7 @@ import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
 const MODE_BYPASS = 4;
 const EXCLUDE_KEY = "Exclude Group";
 const ALTERNATE_KEY = "Alternate Group";
+const MATCH_KEY = "Match Group";
 
 function findNodeInAllGraphs(currentGraph, nodeId) {
     // 1. Check the current graph level
@@ -134,6 +135,11 @@ function refreshWidgets(node) {
 
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
+    /*
+    const service_groups_collection = [...ALEGROUPBYPASSER_SERVICE.group_collections.values()].sort(
+        (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
+      );
+      */
     for(const [gkey, gval] of ALEGROUPBYPASSER_SERVICE.group_collections) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
         try {
@@ -394,6 +400,9 @@ app.registerExtension({
             
         if (!this.properties || typeof this.properties !== "object") {
             this.properties = {};
+        }
+        if (typeof this.properties[MATCH_KEY] !== "string") {
+            this.properties[MATCH_KEY] = "";
         }
         if (typeof this.properties[ALTERNATE_KEY] !== "string") {
             this.properties[ALTERNATE_KEY] = "";
