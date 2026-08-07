@@ -78,7 +78,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
     boolNode._ref_hash = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
     return boolNode;
 }
-
+/*
 function booleanWidgetCallback(value, key)
 {
     const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
@@ -89,6 +89,7 @@ function booleanWidgetCallback(value, key)
         const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
     }
 }
+*/
 
 function parseSets(str) {
   const group_map = new Map();
