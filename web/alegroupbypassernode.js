@@ -196,7 +196,7 @@ function refreshWidgets(node) {
     if(node.graph) {
         for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
-            input_widget = node.inputs[link.target_slot].widget;
+            const input_widget = node.inputs[link.target_slot].widget;
             if(!input_widget) continue;            
             const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._ref_hash===input_widget._refhash);
             const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
