@@ -143,10 +143,11 @@ function refreshWidgets(node) {
             const boolWidget = addBooleanWidgetToNode(node, gval);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
             node.addInput(gval.title, "BOOLEAN", link_num);
+            const slot = node.inputs.length-1;
             if(link_num!==null) {
-                node.graph.getLink(link_num).target_slot = node.inputs.length-1;
+                node.graph.getLink(link_num).target_slot = slot;
             } else {
-                node.inputs[node.inputs.length - 1].widget = {  name : gval.title, _ref_hash : gval.hashref };
+                node.inputs[slot].widget = {  name : gval.title, _ref_hash : gval.hashref };
             }
             updated = true;
         }
