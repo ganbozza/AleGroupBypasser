@@ -25,20 +25,20 @@ function findNodeInAllGraphs(currentGraph, nodeId) {
     return null;
 }
 
-function addBooleanWidgetToNode(node, group) {
+function addBooleanWidgetToNode(node, title, default_value, key) {
   const boolNode = node.addWidget(
         "toggle",
-        group.title,
-        (group.value===MODE_BYPASS) ? true : false,
+        title,
+        (default_value===MODE_BYPASS) ? true : false,
         (value) => {
             ALEGROUPBYPASSER_SERVICE._updatingWidget++;
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-            ALEGROUPBYPASSER_SERVICE.group_collections.get(group.key).value = mode_val;
+            ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = mode_val;
             const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
-            for(const _group of available_groups.filter((available_group)=>available_group.title==group.title)) {
+            for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
                ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, mode_val, true);
             }
-            const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(group.title))];
+            const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
             if(myAltGroupNames.length>0) {
                 myAltGroupNames.forEach((alt_group_name) => {
                    for(const _group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
@@ -151,7 +151,7 @@ function refreshWidgets(node) {
           continue;
         }
         if(!node.widgets || !node.widgets.find((w) => w.title === gval.title)) {
-            const boolWidget = addBooleanWidgetToNode(node, gval);
+            const boolWidget = addBooleanWidgetToNode(node, gval.title, gval.value, gval.key);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title)?.link || null;
             node.addInput(gval.title, "BOOLEAN");
             const slot = node.inputs.length-1;
@@ -438,7 +438,7 @@ app.registerExtension({
          
           for(let i=0;i<info.inputs.length;i++) {              
               const key = info.inputs[i].name.trim().toLowerCase();
-              const boolWidget = addBooleanWidgetToNode(this, new Map([[key, { key, title : info.inputs[i].name, value : info.widgets_values[i]}]]));
+              const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].widget.name, info.widgets_values[i], ALEGROUPBYPASSER_SERVICE.nameToKey(info.inputs[i].widget.name));
               this.inputs[i].widget = { name : info.inputs[i].name, _hash_ref : boolWidget._hash_ref };
               
               /*
