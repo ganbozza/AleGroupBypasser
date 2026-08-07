@@ -30,7 +30,7 @@ class AleGroupBypasserService {
 
           if (obj && obj.constructor && obj.constructor.name === "LGraphGroup") {
               self.addGroupToCollection(obj);
-              console.log("A new group is being added to the canvas!");
+              console.log("A new group is being added to the collection!");
           }
 
           
@@ -43,7 +43,7 @@ class AleGroupBypasserService {
         const origDraw = LGraphCanvas.prototype.draw;
         LGraphCanvas.prototype.draw = function(...args) {
           if (!app.canvas.isDragging) {
-            const available_groups = [...new Set(self.getAllGroups())]; // make it unique
+            const available_groups = [...new Set(self.getAllGroups())]; // new Set() to make returned array unique
              for (const group of available_groups) {
                 if(self.group_collections.has(normalizeTitle(group.title))) {
                     continue;
@@ -53,7 +53,7 @@ class AleGroupBypasserService {
             }
             self.processGroupCollection(available_groups);
             self._groupSignature = [...self.group_collections.keys()].join("|");
-            // update widget state in each node
+            // update widget state in each bypasser node to follow group_collection state
             self.syncNodesWidgetValue();            
           }
           return origDraw.apply(this, args);
@@ -133,7 +133,7 @@ class AleGroupBypasserService {
         const key = title.toLowerCase();
         if(!this.group_collections.has(key)) {
             this.group_collections.set(key, {
-                key,
+                /*key,*/
                 title,
                 value : MODE_BYPASS
             }); 
