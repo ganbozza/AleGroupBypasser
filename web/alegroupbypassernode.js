@@ -150,16 +150,16 @@ function refreshWidgets(node) {
         } catch (e) {
           continue;
         }
-        if(!node.widgets || !node.widgets.find((w) => w._hash_ref === gval.hashref)) {
+        if(!node.widgets || !node.widgets.find((w) => w.title === gval.title)) {
             const boolWidget = addBooleanWidgetToNode(node, gval);
-            const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
+            const link_num = prev_inputs.find((p)=>p.widget.name===gval.title)?.link || null;
             node.addInput(gval.title, "BOOLEAN");
             const slot = node.inputs.length-1;
             if(link_num!==null) {
                 node.inputs[slot].link = link_num;
                 node.graph.getLink(link_num).target_slot = slot;
             }
-            node.inputs[slot].widget = {  name : gval.title, _hash_ref : gval.hashref };
+            node.inputs[slot].widget = {  name : gval.title, _hash_ref : boolWidget._hash_ref };
             updated = true;
         }
         /*
@@ -436,8 +436,12 @@ app.registerExtension({
         const originalOnConfigure = nodeType.prototype.onConfigure;
         nodeType.prototype.onConfigure = function (info) {
          
-          for(let i=0;i<info.inputs.length;i++) {
-
+          for(let i=0;i<info.inputs.length;i++) {              
+              const key = info.inputs[i].name.trim().toLowerCase();
+              const boolWidget = addBooleanWidgetToNode(this, new Map([[key, { key, title : info.inputs[i].name, value : info.widgets_values[i]}]]));
+              this.inputs[i].widget = { name : info.inputs[i].name, _hash_ref : boolWidget._hash_ref };
+              
+              /*
             if (this.widgets && this.widgets.find((w) => { return w._hash_ref===info.inputs[i].widget._hash_ref; })) continue;
               
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
@@ -451,7 +455,7 @@ app.registerExtension({
             //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
             this.inputs[i].widget = { name : info.inputs[i].name, _hash_ref : boolWidget._hash_ref };
           }
-          
+          */
           const result = originalOnConfigure?.apply(this, arguments);
           // Ensure size updates after slots are generated
           this.setSize(this.computeSize());
