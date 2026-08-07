@@ -44,6 +44,7 @@ class AleGroupBypasserService {
       LGraphCanvas.prototype.draw = function(...args) {
         if (!app.canvas.isDragging) {
           const available_groups = [...new Set(self.getAllGroups())]; // new Set() to make returned array unique
+          self.group_collections = self.group_collections.filter(group => available_groups.includes(group)); // remove non-existent group in group_collection
            for (const group of available_groups) {
               if(self.group_collections.has(normalizeTitle(group.title))) {
                   continue;
