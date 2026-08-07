@@ -143,13 +143,13 @@ function refreshWidgets(node) {
     for(const [gkey, gval] of service_groups_collection) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
         try {
-          if ((node.properties?.[EXCLUDE_KEY].trim().length>0) && (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title))) {
+            if (((node.properties?.[MATCH_KEY].trim().length>0) && (!new RegExp(node.properties?.[MATCH_KEY], "i").exec(gval.title))) ||
+                ((node.properties?.[EXCLUDE_KEY].trim().length>0) && (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title)))) {
               continue;
-          }
-      } catch (e) {
-          console.error(e);
+            }
+        } catch (e) {
           continue;
-      }
+        }
         if(!node.widgets || !node.widgets.find((w) => w._hash_ref === gval.hashref)) {
             const boolWidget = addBooleanWidgetToNode(node, gval);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
