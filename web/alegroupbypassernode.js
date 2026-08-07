@@ -135,12 +135,12 @@ function refreshWidgets(node) {
 
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
-    /*
+    
     const service_groups_collection = [...ALEGROUPBYPASSER_SERVICE.group_collections.values()].sort(
-        (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
-      );
-      */
-    for(const [gkey, gval] of ALEGROUPBYPASSER_SERVICE.group_collections) {
+                                        (a, b) => ALEGROUPBYPASSER_SERVICE.ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
+                                      );
+    
+    for(const [gkey, gval] of service_groups_collection) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
         try {
           if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title)) {
