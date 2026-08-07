@@ -9,89 +9,110 @@ function normalizeTitle(title) {
 
 
 class AleGroupBypasserService {
-    constructor() {
-        this.initialized = false;
-        this._updatingWidget = false;
-        this.nodes = new Set();
-        this.group_collections = new Map();
-    }
-
-    init() {
-        const self = this;
-        if (self.initialized) return;
-        self.initialized = true;
-
-      // 1. Capture the original LiteGraph layout instantiation method safely
-        const origGraphAdd = LGraph.prototype.add;
-      // 2. Override the baseline graph prototype globally
-        LGraph.prototype.add = function(obj, ...args) {
-            //3. Run the native instantiation system first to ensure LiteGraph registers the object properties
-            const result = origGraphAdd.apply(this, arguments);
-
-          if (obj && obj.constructor && obj.constructor.name === "LGraphGroup") {
-              self.addGroupToCollection(obj);
-              console.log("A new group is being added to the collection!");
-          }
-
-          
-          return result;
-        };
-
-
-        // Intercept LiteGraph drawing loop
+  constructor() {
+      this.initialized = false;
+      this._updatingWidget = false;
+      this.nodes = new Set();
+      this.group_collections = new Map();
+  }
+  
+  init() {
+      const self = this;
+      if (self.initialized) return;
+      self.initialized = true;
+  
+    // 1. Capture the original LiteGraph layout instantiation method safely
+      const origGraphAdd = LGraph.prototype.add;
+    // 2. Override the baseline graph prototype globally
+      LGraph.prototype.add = function(obj, ...args) {
+          //3. Run the native instantiation system first to ensure LiteGraph registers the object properties
+          const result = origGraphAdd.apply(this, arguments);
+  
+        if (obj && obj.constructor && obj.constructor.name === "LGraphGroup") {
+            self.addGroupToCollection(obj);
+            console.log("A new group is being added to the collection!");
+        }
+  
         
-        const origDraw = LGraphCanvas.prototype.draw;
-        LGraphCanvas.prototype.draw = function(...args) {
-          if (!app.canvas.isDragging) {
-            const available_groups = [...new Set(self.getAllGroups())]; // new Set() to make returned array unique
-             for (const group of available_groups) {
-                if(self.group_collections.has(normalizeTitle(group.title))) {
-                    continue;
-                }
-                // add group to collection
-                self.addGroupToCollection(group);
-            }
-            self.processGroupCollection(available_groups);
-            self._groupSignature = [...self.group_collections.keys()].join("|");
-            // update widget state in each bypasser node to follow group_collection state
-            self.syncNodesWidgetValue();            
+        return result;
+      };
+  
+  
+      // Intercept LiteGraph drawing loop
+      
+      const origDraw = LGraphCanvas.prototype.draw;
+      LGraphCanvas.prototype.draw = function(...args) {
+        if (!app.canvas.isDragging) {
+          const available_groups = [...new Set(self.getAllGroups())]; // new Set() to make returned array unique
+           for (const group of available_groups) {
+              if(self.group_collections.has(normalizeTitle(group.title))) {
+                  continue;
+              }
+              // add group to collection
+              self.addGroupToCollection(group);
           }
-          return origDraw.apply(this, args);
-        };
-        
-        console.log("AleGroupBypasser_Service initialized...");
-    }
+          self.processGroupCollection(available_groups);
+          self._groupSignature = [...self.group_collections.keys()].join("|");
+          // update widget state in each bypasser node to follow group_collection state
+          self.syncNodesWidgetValue();            
+        }
+        return origDraw.apply(this, args);
+      };
+      
+      console.log("AleGroupBypasser_Service initialized...");
+  }
 
-    syncNodesWidgetValue(ms=300) {
-        if(this._updatingWidget>0) return;
-        this._updatingWidget++;
-        setTimeout(() => {
-            for (const node of this.nodes) {
-              if(this._updatingWidget>1) return;
-              if(node.widgets && node.graph) {
-                  for(const w of node.widgets) {
-                    let widget = w;
-                    const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
-                    if(link) {
-                      widget = this.getUpstreamWidgetByLink(link, node.graph);
-                    }
-                    const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
-                    if(group && widget)
-                    {
-                      if(this._updatingWidget>1) return;
-                      const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
-                      if(widget.value!==group_toggle_value) {
-                        //console.log("Changing value for "+w.name);               
-                        widget.value = group_toggle_value;
-                        node.setDirtyCanvas(true, true);
-                      }
+  addGroupToCollection(group) {
+    const title = normalizeTitle(group.title);
+    if(!title) { 
+      return; 
+    }
+    const key = title.toLowerCase();
+    if(!this.group_collections.has(key)) {
+        this.group_collections.set(key, {
+            /*key,*/
+          hashref :  [...Array(12)].map(() => Math.random().toString(36)[2]).join(''),
+            title,
+            value : MODE_BYPASS
+        }); 
+    }
+  /*
+    if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
+      this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
+    }
+  */  
+  }
+  
+  syncNodesWidgetValue(ms=300) {
+      if(this._updatingWidget>0) return;
+      this._updatingWidget++;
+      setTimeout(() => {
+          for (const node of this.nodes) {
+            if(this._updatingWidget>1) return;
+            if(node.widgets && node.graph) {
+                for(const w of node.widgets) {
+                  let widget = w;
+                  const link = [...node.graph.links.values()].find((l)=>l.id===node.inputs[node.findInputSlot(w.name)]?.link);
+                  if(link) {
+                    widget = this.getUpstreamWidgetByLink(link, node.graph);
+                  }
+                  const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
+                  if(group && widget)
+                  {
+                    if(this._updatingWidget>1) return;
+                    const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
+                    if(widget.value!==group_toggle_value) {
+                      //console.log("Changing value for "+w.name);               
+                      widget.value = group_toggle_value;
+                      node.setDirtyCanvas(true, true);
                     }
                   }
                 }
-            }
-          this._updatingWidget--;
-        }, ms);    
-    }
+              }
+          }
+        this._updatingWidget--;
+      }, ms);    
+  }
     
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
@@ -125,26 +146,6 @@ class AleGroupBypasserService {
       }
     }
       
-    addGroupToCollection(group) {
-        const title = normalizeTitle(group.title);
-        if(!title) { 
-          return; 
-        }
-        const key = title.toLowerCase();
-        if(!this.group_collections.has(key)) {
-            this.group_collections.set(key, {
-                /*key,*/
-              hashref :  [...Array(12)].map(() => Math.random().toString(36)[2]).join(''),
-                title,
-                value : MODE_BYPASS
-            }); 
-        }
-    /*
-        if (this.group_collections.get(key).value === MODE_BYPASS) { // ignore if group already in active state
-          this.group_collections.get(key).value =  (this.processNodeInsideGroup(group, MODE_BYPASS)) ? MODE_ACTIVE : MODE_BYPASS;
-        }
-      */  
-    }
 
     updateNodeInsideGroupByTitle(title, mode) {
        const available_groups = app.graph?._groups || [];
