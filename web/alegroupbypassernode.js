@@ -101,6 +101,7 @@ function parseSets(str) {
 
 function refreshWidgets(node) {
     var updated = false;
+    var reevaluate_value = false;
     if(node._refreshInProgress) return;
     node._refreshInProgress = true;
 
@@ -108,6 +109,7 @@ function refreshWidgets(node) {
     
     if (node._groupSignature !== signature) {
         node.widgets = [];
+        reevaluate_value = true;
         node._groupSignature = signature;
     }
 
@@ -174,16 +176,31 @@ function refreshWidgets(node) {
     }
   }
   */
-    
+    var seen = [];
     if(node.graph) {
         for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const localWidget = node.widgets[link.target_slot];
             const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
-            if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
+            if(upstreamWidget && localWidget) {
+                if (localWidget.value!=upstreamWidget.value || (reevaluate_value && group_alternate.has(localWidget.title))) {
+                    seen.push(localWidget.title);
+                    setWidgetValue(localWidget, upstreamWidget.value);
+                    updated = true;
+                /*
                localWidget.value = upstreamWidget.value;
                if (typeof localWidget.callback === "function") {
                     localWidget.callback(upstreamWidget.value);
+                    updated = true;
+                }
+                */
+                }
+            }
+        }
+        if(reevaluate_value) {
+            for(const widget of node.widgets) {
+                if(group_alternate.has(widget.title) && (!seen.includes(widget.title))) {                    
+                    setWidgetValue(widget, widget.value);
                     updated = true;
                 }
             }
@@ -199,6 +216,15 @@ function refreshWidgets(node) {
     refreshWidgets(node);
   }, 100);
   
+}
+
+function setWidgetValue(widget, value=null) {
+    if(value)
+        widget.value = value;
+
+    if (typeof widget.callback === "function") {
+        widget.callback(widget.value);
+    }
 }
 
 function bindNode(node) {
