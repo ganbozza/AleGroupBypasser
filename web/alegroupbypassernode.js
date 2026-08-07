@@ -135,10 +135,15 @@ function refreshWidgets(node) {
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     for(const [gkey, gval] of ALEGROUPBYPASSER_SERVICE.group_collections) {
-        // skip exclude groups
-        if (node.properties?.[EXCLUDE_KEY].split(":").includes(gval.title)) {
+        // skip exclude groups (using regexp, i.e : ^Sampler #$
+        try {
+          if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title)) {
               continue;
           }
+      } catch (e) {
+          console.error(e);
+          continue;
+      }
         if(!node.widgets || !node.widgets.find((w) => w._hash_ref === gval.hashref)) {
             const boolWidget = addBooleanWidgetToNode(node, gval);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
