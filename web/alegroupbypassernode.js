@@ -136,7 +136,7 @@ function refreshWidgets(node) {
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     
-    const service_groups_collection = [...ALEGROUPBYPASSER_SERVICE.group_collections.values()].sort(
+    const service_groups_collection = [...ALEGROUPBYPASSER_SERVICE.group_collections.entries()].sort(
                                         (a, b) => ALEGROUPBYPASSER_SERVICE.ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
                                       );
     
