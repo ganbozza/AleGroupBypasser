@@ -43,7 +43,7 @@ class AleGroupBypasserService {
       const origDraw = LGraphCanvas.prototype.draw;
       LGraphCanvas.prototype.draw = function(...args) {
         if (!app.canvas.isDragging) {
-          const available_groups = [...new Set(self.getAllGroups())]; // new Set() to make returned array unique
+          const available_groups = self.getAllGroups().filter((item, index, self) => self.findIndex(t => t.title === item.title) === index); // contains unique array
           // remove non-existent group in group_collection
           self.group_collections = new Map([...self.group_collections].filter(([_, val]) => available_groups.some(b => b.title === val.title))); 
            for (const group of available_groups) {
