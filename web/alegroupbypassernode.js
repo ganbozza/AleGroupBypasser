@@ -123,7 +123,7 @@ function refreshWidgets(node) {
     var prev_inputs = [];
     node._refreshInProgress = true;
 
-    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY];
+    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY]+"|"+node.properties?.[MATCH_KEY];
     
     if (node._groupSignature !== signature) {
         prev_inputs = node.inputs;
