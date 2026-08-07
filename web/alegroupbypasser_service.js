@@ -119,7 +119,11 @@ class AleGroupBypasserService {
         this._updatingWidget--;
       }, ms);    
   }
-    
+  
+  nameToKey(name) {
+    return name.trim().toLowerCase();
+  }
+  
     findWidget(node, name) {
       return (node.widgets || []).find((widget) => widget.name === name);
     }    
