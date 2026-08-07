@@ -198,7 +198,7 @@ function refreshWidgets(node) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const input_widget = node.inputs[link.target_slot].widget;
             if(!input_widget) continue;            
-            const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._ref_hash===input_widget._refhash);
+            const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._ref_hash===input_widget._ref_hash);
             const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
             if(upstreamWidget && localWidget) {
                 if (localWidget.value!=upstreamWidget.value || (reevaluate_value && group_alternate.has(localWidget.title))) {
