@@ -47,7 +47,7 @@ class AleGroupBypasserService {
           // remove non-existent group in group_collection
           self.group_collections = new Map([...self.group_collections].filter(([_, val]) => available_groups.some(b => b.title === val.title))); 
            for (const group of available_groups) {
-              if(self.group_collections.has(normalizeTitle(group.title))) {
+              if(self.group_collections.has(normalizeTitle(group.title).toLowerCase())) {
                   continue;
               }
               // add group to collection
