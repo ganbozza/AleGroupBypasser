@@ -37,7 +37,7 @@ function addBooleanWidgetToNode(node, group) {
             for(const _group of available_groups.filter((available_group)=>available_group.title==group.title)) {
                ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, mode_val, true);
             }
-            const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
+            const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(group.title))];
             if(myAltGroupNames.length>0) {
                 myAltGroupNames.forEach((alt_group_name) => {
                    for(const _group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
