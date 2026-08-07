@@ -75,7 +75,7 @@ function addBooleanWidgetToNode(node, group) {
         */
         { serialize: true }
       );
-    boolNode._ref_hash = group.hashref;
+    boolNode._hash_ref = group.hashref;
     return boolNode;
 }
 /*
@@ -139,7 +139,7 @@ function refreshWidgets(node) {
         if (node.properties?.[EXCLUDE_KEY].split(":").includes(gval.title)) {
               continue;
           }
-        if(!node.widgets || !node.widgets.find((w) => w._ref_hash === gval.hashref)) {
+        if(!node.widgets || !node.widgets.find((w) => w._hash_ref === gval.hashref)) {
             const boolWidget = addBooleanWidgetToNode(node, gval);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
             node.addInput(gval.title, "BOOLEAN", link_num);
@@ -147,7 +147,7 @@ function refreshWidgets(node) {
             if(link_num!==null) {
                 node.graph.getLink(link_num).target_slot = slot;
             } else {
-                node.inputs[slot].widget = {  name : gval.title, _ref_hash : gval.hashref };
+                node.inputs[slot].widget = {  name : gval.title, _hash_ref : gval.hashref };
             }
             updated = true;
         }
@@ -178,7 +178,7 @@ function refreshWidgets(node) {
           //node.inputs[node.inputs.length - 1].widget = boolWidget;
           //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
         /*
-          node.inputs[node.inputs.length - 1].widget = {  name : gval.title, _ref_hash : boolWidget._ref_hash };
+          node.inputs[node.inputs.length - 1].widget = {  name : gval.title, _hash_ref : boolWidget._hash_ref };
               
           updated = true;
         } 
@@ -218,7 +218,7 @@ function refreshWidgets(node) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const input_widget = node.inputs[link.target_slot].widget;
             if(!input_widget) continue;            
-            const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._ref_hash===input_widget._ref_hash);
+            const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._hash_ref===input_widget._hash_ref);
             const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
             if(upstreamWidget && localWidget) {
                 if (localWidget.value!=upstreamWidget.value || (reevaluate_value && group_alternate.has(localWidget.title))) {
@@ -424,7 +424,7 @@ app.registerExtension({
          
           for(let i=0;i<info.inputs.length;i++) {
 
-            if (this.widgets && this.widgets.find((w) => { return w._ref_hash===info.inputs[i].widget._ref_hash; })) continue;
+            if (this.widgets && this.widgets.find((w) => { return w._hash_ref===info.inputs[i].widget._hash_ref; })) continue;
               
             //this.addInput(info.inputs[i].name, info.inputs[i].type);
             const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].name, info.widgets_values[i], info.inputs[i].name.trim().toLowerCase());
@@ -435,7 +435,7 @@ app.registerExtension({
             //this.inputs[i].widget = boolWidget;
             //this.inputs[i].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
             //this.inputs[i].widget.callback = function(value) { booleanWidgetCallback(value, info.inputs[i].name.trim().toLowerCase()); };
-            this.inputs[i].widget = { name : info.inputs[i].name, _ref_hash : boolWidget._ref_hash };
+            this.inputs[i].widget = { name : info.inputs[i].name, _hash_ref : boolWidget._hash_ref };
           }
           
           const result = originalOnConfigure?.apply(this, arguments);
@@ -455,8 +455,8 @@ app.registerExtension({
            // --- Hook 4: Link Wire Alteration Fallback ---
           // 'side' or 'type': 1 = Input (Left side), 2 = Output (Right side)
           // 'connect': true if a wire was plugged in, false if a wire was removed
-          if (side === 1 && this.inputs[slot] && output.widget && output.widget._ref_hash) {
-              this.inputs[slot].widget = { name: this.inputs[slot].name, _ref_hash : output.widget._ref_hash };
+          if (side === 1 && this.inputs[slot] && output.widget && output.widget._hash_ref) {
+              this.inputs[slot].widget = { name: this.inputs[slot].name, _hash_ref : output.widget._hash_ref };
               if(connect && link_info) {
                     const localWidget = this.widgets[link_info.target_slot];
                     const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link_info, this.graph);
@@ -472,7 +472,7 @@ app.registerExtension({
                   const upstreamNode = graphContext.getNodeById(link_info.origin_id);
                   if(upstreamNode) {
                       const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
-                      const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
+                      const realWidget = output.node.widgets.find((w) => { return w._hash_ref===output.widget._hash_ref; });
                       if(upstreamWidget && realWidget && upstreamWidget.value!==realWidget.value) {
                           localWidget.value = promotedWidget.value;
                           if (typeof localWidget.callback === "function") {
@@ -488,7 +488,7 @@ app.registerExtension({
           /*
           if (side === 1 && output.node && output.node.widgets && output.widget) { 
               //this.slotConnectionChange(connect, link_info.origin_id, output_widget);
-              const realWidget = output.node.widgets.find((w) => { return w._ref_hash===output.widget._ref_hash; });
+              const realWidget = output.node.widgets.find((w) => { return w._hash_ref===output.widget._hash_ref; });
               if (realWidget) {
                   if (connect) {
                     if(link_info) {
@@ -550,7 +550,7 @@ app.registerExtension({
                 const upstreamNode = this.graph.getNodeById(link.origin_id);
                 if(upstreamNode) {
                     const upstreamWidget = upstreamNode.widgets?.[0] || upstreamNode.widgets?.find(w => w.type === "toggle" || w.name === "value");
-                    const localWidget = this.widgets.find((w) => { return w._ref_hash===this.inputs[link.target_slot].widget._ref_hash; });
+                    const localWidget = this.widgets.find((w) => { return w._hash_ref===this.inputs[link.target_slot].widget._hash_ref; });
                     if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
                         localWidget.value = upstreamWidget.value;
                         if (typeof localWidget.callback === "function") {
