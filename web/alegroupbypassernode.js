@@ -125,6 +125,7 @@ function refreshWidgets(node) {
     
     if (node._groupSignature !== signature) {
         node.widgets = [];
+        node.inputs = [];
         reevaluate_value = true;
         node._groupSignature = signature;
     }
