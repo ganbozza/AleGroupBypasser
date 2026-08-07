@@ -34,7 +34,7 @@ function addBooleanWidgetToNode(node, group) {
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
             ALEGROUPBYPASSER_SERVICE.group_collections.get(group.key).value = mode_val;
             const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
-            for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
+            for(const _group of available_groups.filter((available_group)=>available_group.title==group.title)) {
                ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, mode_val, true);
             }
             const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
