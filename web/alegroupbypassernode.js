@@ -24,24 +24,24 @@ function findNodeInAllGraphs(currentGraph, nodeId) {
     return null;
 }
 
-function addBooleanWidgetToNode(node, title, cvalue, key) {
+function addBooleanWidgetToNode(node, group) {
   const boolNode = node.addWidget(
         "toggle",
-        title,
-        (cvalue===MODE_BYPASS) ? true : false,
+        group.title,
+        (group.value===MODE_BYPASS) ? true : false,
         (value) => {
             ALEGROUPBYPASSER_SERVICE._updatingWidget++;
             const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-            ALEGROUPBYPASSER_SERVICE.group_collections.get(title.trim().toLowerCase()).value = mode_val;
+            ALEGROUPBYPASSER_SERVICE.group_collections.get(group.key).value = mode_val;
             const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
-            for(const group of available_groups.filter((available_group)=>available_group.title==title)) {
-               ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, mode_val, true);
+            for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
+               ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, mode_val, true);
             }
             const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
             if(myAltGroupNames.length>0) {
                 myAltGroupNames.forEach((alt_group_name) => {
-                   for(const group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
-                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, (mode_val===4) ? 0 : 4, true);
+                   for(const _group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
+                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, (mode_val===4) ? 0 : 4, true);
                    }
                 });
             }
@@ -75,7 +75,7 @@ function addBooleanWidgetToNode(node, title, cvalue, key) {
         */
         { serialize: true }
       );
-    boolNode._ref_hash = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
+    boolNode._ref_hash = group.hashref;
     return boolNode;
 }
 /*
@@ -116,14 +116,16 @@ function parseSets(str) {
 }
 
 function refreshWidgets(node) {
+    if(node._refreshInProgress) return;
     var updated = false;
     var reevaluate_value = false;
-    if(node._refreshInProgress) return;
+    var prev_inputs = [];
     node._refreshInProgress = true;
 
     const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY];
     
     if (node._groupSignature !== signature) {
+        prev_inputs = node.inputs;
         node.widgets = [];
         node.inputs = [];
         reevaluate_value = true;
@@ -132,16 +134,30 @@ function refreshWidgets(node) {
 
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
-    for(const [key, val] of ALEGROUPBYPASSER_SERVICE.group_collections) {
+    for(const [gkey, gval] of ALEGROUPBYPASSER_SERVICE.group_collections) {
         // skip exclude groups
-        if (node.properties?.[EXCLUDE_KEY].split(":").includes(val.title)) {
+        if (node.properties?.[EXCLUDE_KEY].split(":").includes(gval.title)) {
               continue;
           }
-        if(!node.widgets || !node.widgets.find((w) => w.name === val.title)) {
-            if ((!node.widgets && !node.inputs.length) || (node.widgets && node.widgets.length===node.inputs.length)){
-              node.addInput(val.title, "BOOLEAN");
+        if(!node.widgets || !node.widgets.find((w) => w._ref_hash === gval.hashref)) {
+            const boolWidget = addBooleanWidgetToNode(node, gval);
+            const link_num = prev_inputs.find((p)=>p.widget.name===gval.title && p.widget._hash_ref===gval.hashref)?.link || null;
+            node.addInput(gval.title, "BOOLEAN", link_num);
+            if(link_num!==null) {
+                node.graph.getLink(link_num).target_slot = node.inputs.length-1;
+            } else {
+                node.inputs[node.inputs.length - 1].widget = {  name : gval.title, _ref_hash : gval.hashref };
             }
-            const boolWidget = addBooleanWidgetToNode(node, val.title, val.value, key);
+            updated = true;
+        }
+        /*
+        if(!node.widgets || !node.widgets.find((w) => w.name === gval.title)) {
+            //if ((!node.widgets && !node.inputs.length) || (node.widgets && node.widgets.length===node.inputs.length)){
+            //  node.addInput(val.title, "BOOLEAN");
+            //}
+            if(prev_inputs.length===0) node.addInput(val.title, "BOOLEAN");
+            const boolWidget = addBooleanWidgetToNode(node, gval);
+        */
           /*
           const boolWidget = node.addWidget(
             "toggle",
@@ -160,10 +176,12 @@ function refreshWidgets(node) {
           */
           //node.inputs[node.inputs.length - 1].widget = boolWidget;
           //node.inputs[node.inputs.length - 1].widget = JSON.parse(JSON.stringify(boolWidget, (key, value) => key === '_node' ? undefined : value));
-          node.inputs[node.inputs.length - 1].widget = {  name : val.title, _ref_hash : boolWidget._ref_hash };
-                   
+        /*
+          node.inputs[node.inputs.length - 1].widget = {  name : gval.title, _ref_hash : boolWidget._ref_hash };
+              
           updated = true;
         } 
+        */
       }
 
     /*
