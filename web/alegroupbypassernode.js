@@ -235,7 +235,7 @@ function refreshWidgets(node) {
 }
 
 function setWidgetValue(widget, value=null) {
-    if(value)
+    if(value!==null)
         widget.value = value;
 
     if (typeof widget.callback === "function") {
