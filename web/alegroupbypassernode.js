@@ -143,7 +143,7 @@ function refreshWidgets(node) {
     for(const [gkey, gval] of service_groups_collection) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
         try {
-          if (!node.properties?.[EXCLUDE_KEY] && new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title)) {
+          if ((node.properties?.[EXCLUDE_KEY].trim().length>0) && (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(gval.title))) {
               continue;
           }
       } catch (e) {
