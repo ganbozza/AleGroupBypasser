@@ -136,9 +136,9 @@ function refreshWidgets(node) {
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     
-    const service_groups_collection = [...ALEGROUPBYPASSER_SERVICE.group_collections.values()].sort(
-                                        (a, b) => ALEGROUPBYPASSER_SERVICE.ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
-                                      );
+    const service_groups_collection = new Map([...ALEGROUPBYPASSER_SERVICE.group_collections.entries()].sort(
+                                        (a, b) => ALEGROUPBYPASSER_SERVICE.ALPHABETICAL_COLLATOR.compare(a[1].title, b[1].title) || a[1].key.localeCompare(b[1].key),
+                                      ));
     
     for(const [gkey, gval] of service_groups_collection) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
