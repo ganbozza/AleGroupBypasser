@@ -70,7 +70,7 @@ class AleGroupBypasserService {
     const key = title.toLowerCase();
     if(!this.group_collections.has(key)) {
         this.group_collections.set(key, {
-            /*key,*/
+            key,
           hashref :  [...Array(12)].map(() => Math.random().toString(36)[2]).join(''),
             title,
             value : MODE_BYPASS
