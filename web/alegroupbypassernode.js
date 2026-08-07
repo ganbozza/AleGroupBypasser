@@ -104,7 +104,7 @@ function refreshWidgets(node) {
     if(node._refreshInProgress) return;
     node._refreshInProgress = true;
 
-    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY];
+    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY];
     
     if (node._groupSignature !== signature) {
         node.widgets = [];
