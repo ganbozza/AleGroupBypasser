@@ -79,7 +79,9 @@ class AleGroupBypasserService {
         this.group_collections.set(key, {
             key,
             title,
-            value : true
+            value : true,
+            hasActiveNodes : true,
+            hasNonActiveNodes : true
         }); 
     }
   /*
@@ -142,13 +144,27 @@ class AleGroupBypasserService {
       }
       // sync state in group_collections with group's node mode
       for (const [key, val] of this.group_collections) {
+        val.hasActiveNodes = false;
+        val.hasNonActiveNodes = false;
         for (const group of available_groups) {
           if (group.title==val.title) {
-             val.value = this.processNodeInsideGroup(group, MODE_ACTIVE);
-             break;
+             if(this.processNodeInsideGroup(group, MODE_ACTIVE)) {
+               val.hasActiveNodes = true;
+             } else {
+               val.hasNonActiveNodes = true
+             }
+            if(val.hasActiveNodes && val.hasNonActiveNodes) {
+               break;
+            }
           }
         }
       }
+      for (const [key, val] of this.group_collections) {
+        if((val.value && !val.hasActiveNodes) || (!val.value && !val.hasNonActiveNodes)) {
+          val.value = (val.value===true) ? false : true;
+        }
+      }
+
     }
       
 
