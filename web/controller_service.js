@@ -104,12 +104,12 @@ class AleGroupControllerService {
                   if(link) {
                     widget = this.getUpstreamWidgetByLink(link, node.graph);
                   }
-                  const group = this.group_collections.get(normalizeTitle(w.name).toLowerCase());
+                  const group = this.group_collections.get(this.nameToKey(w.name));
                   if(group && widget)
                   {
                     if(this._updatingWidget>1) return;
                     if(widget.value!==group.value) {
-                      //console.log("Changing value for "+w.name);               
+                      console.log("Changing value for "+w.name);               
                       widget.value = group.value;
                       node.setDirtyCanvas(true, true);
                     }
