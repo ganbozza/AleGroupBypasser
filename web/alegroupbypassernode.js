@@ -29,10 +29,10 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
   const boolNode = node.addWidget(
         "toggle",
         title,
-        (default_value===MODE_BYPASS) ? true : false,
+        (default_value===MODE_BYPASS) ? false : true,
         (value) => {
             ALEGROUPBYPASSER_SERVICE._updatingWidget++;
-            const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
+            const mode_val = (value===false) ? MODE_BYPASS : LiteGraph.ALWAYS;
             ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = mode_val;
             const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
             for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
