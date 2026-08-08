@@ -8,7 +8,7 @@ function normalizeTitle(title) {
 }
 
 
-class AleGroupBypasserService {
+class AleGroupControllerService {
   constructor() {
     this.initialized = false;
     this._updatingWidget = false;
@@ -66,7 +66,7 @@ class AleGroupBypasserService {
         return origDraw.apply(this, args);
       };
       
-      console.log("AleGroupBypasser_Service initialized...");
+      console.log("AleGroupController_Service initialized...");
   }
 
   addGroupToCollection(group) {
@@ -356,4 +356,4 @@ getUpstreamWidgetByLink(link, graphContext) {
     }
 }
 
-export const ALEGROUPBYPASSER_SERVICE = new AleGroupBypasserService();
+export const ALEGROUPCONTROLLER_SERVICE = new AleGroupControllerService();
