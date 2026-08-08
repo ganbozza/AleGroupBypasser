@@ -1,10 +1,12 @@
 import { app } from "../../scripts/app.js";
 
 import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
+const MODE_MUTE = 2;
 const MODE_BYPASS = 4;
-const EXCLUDE_KEY = "Exclude Group";
-const ALTERNATE_KEY = "Alternate Group";
-const MATCH_KEY = "Match Group";
+const EXCLUDE_KEY = "Exclude Groups";
+const ALTERNATE_KEY = "Alternate Groups";
+const MATCH_KEY = "Match Groups";
+const MUTE_KEY = "Mute Groups";
 
 function findNodeInAllGraphs(currentGraph, nodeId) {
     // 1. Check the current graph level
@@ -25,14 +27,18 @@ function findNodeInAllGraphs(currentGraph, nodeId) {
     return null;
 }
 
+function getBypassOrMute(node, group_name) {
+    return (node.properties?.[ALTERNATE_KEY].split(",").includes(group_name)) ? MODE_MUTE : MODE_BYPASS;
+}
+
 function addBooleanWidgetToNode(node, title, default_value, key) {
   const boolNode = node.addWidget(
         "toggle",
         title,
-        (default_value===MODE_BYPASS) ? false : true,
+        (default_value===LiteGraph.ALWAYS) ? true : false,
         (value) => {
             ALEGROUPBYPASSER_SERVICE._updatingWidget++;
-            const mode_val = (value===false) ? MODE_BYPASS : LiteGraph.ALWAYS;
+            const mode_val = (value===true) ? LiteGraph.ALWAYS : getBypassOrMute(node, title);
             ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = mode_val;
             const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
             for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
@@ -42,7 +48,7 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
             if(myAltGroupNames.length>0) {
                 myAltGroupNames.forEach((alt_group_name) => {
                    for(const _group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
-                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, (mode_val===4) ? 0 : 4, true);
+                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, ((mode_val!==LiteGraph.ALWAYS) ? LiteGraph.ALWAYS : getBypassOrMute(node, _group.title)), true);
                    }
                 });
             }
@@ -411,6 +417,9 @@ app.registerExtension({
         }
         if (typeof this.properties[EXCLUDE_KEY] !== "string") {
             this.properties[EXCLUDE_KEY] = "";
+        }
+        if (typeof this.properties[MUTE_KEY] !== "string") {
+            this.properties[MUTE_KEY] = "";
         }
 
           bindNode(this);
