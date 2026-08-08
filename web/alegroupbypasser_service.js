@@ -2,6 +2,7 @@ import { app } from "../../scripts/app.js";
 
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
+const MODE_MUTE = 2;
 
 function normalizeTitle(title) {
   return String(title || "").trim();
@@ -145,10 +146,10 @@ class AleGroupBypasserService {
       for (const [key, val] of this.group_collections) {
         for (const group of available_groups) {
           if (group.title==val.title) {
-            const hasActiveNode = this.processNodeInsideGroup(group, MODE_BYPASS);
-            if((val.value===MODE_BYPASS && hasActiveNode) || (val.value===MODE_ACTIVE && !hasActiveNode))
+            const hasActiveNode = this.processNodeInsideGroup(group, MODE_ACTIVE);
+            if(val.value===MODE_ACTIVE && !hasActiveNode)
             {
-              val.value = (val.value===MODE_BYPASS) ? MODE_ACTIVE : MODE_BYPASS;
+              val.value = (val.value===MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
               break;
             }
           }
@@ -180,12 +181,10 @@ class AleGroupBypasserService {
                     nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
                     nodeCenter[1] >= grouBounds[1] &&
                     nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
-                    if(node.mode!==mode) {
-                      if(is_set) {
+                    if(!is_set && node.mode===mode) {
+                      return true;
+                    } else if (is_set && node.mode!==mode) {
                         node.mode = mode;
-                      } else {
-                        //console.log("found opposite of mode : "+mode+" ...");
-                        return true;
                     }
                   }
                 }
