@@ -1,4 +1,4 @@
-class AleGroupBypasser:
+class AleGroupController:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {}}
@@ -12,9 +12,9 @@ class AleGroupBypasser:
 
 
 NODE_CLASS_MAPPINGS = {
-    "AleGroupBypasser": AleGroupBypasser,
+    "AleGroupController": AleGroupController,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "AleGroupBypasser": "Ale Group Bypasser",
+    "AleGroupController": "Ale Group Controller",
 }
