@@ -48,10 +48,10 @@ class AleGroupBypasserService {
       const origDraw = LGraphCanvas.prototype.draw;
       LGraphCanvas.prototype.draw = function(...args) {
         if (!app.canvas.isDragging) {
-          const available_groups = self.getAllGroups().filter((item, index, self) => self.findIndex(t => t.title === item.title) === index); // contains unique array
+          const available_groups = self.getAllGroups();
           // remove non-existent group in group_collection
           self.group_collections = new Map([...self.group_collections].filter(([_, val]) => available_groups.some(b => b.title === val.title))); 
-           for (const group of available_groups) {
+           for (const group of available_groups.filter((item, index, self) => self.findIndex(t => t.title === item.title) === index) /* contains unique array*/) {
               if(self.group_collections.has(normalizeTitle(group.title).toLowerCase())) {
                   continue;
               }
