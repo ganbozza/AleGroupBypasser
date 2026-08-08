@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 
-import { ALEGROUPBYPASSER_SERVICE } from "./alegroupbypasser_service.js";
+import { ALEGROUPCONTROLLER_SERVICE } from "./controller_service.js";
 const MODE_MUTE = 2;
 const MODE_BYPASS = 4;
 const EXCLUDE_KEY = "Exclude Groups";
@@ -37,18 +37,18 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
         title,
         default_value,
         (value) => {
-            ALEGROUPBYPASSER_SERVICE._updatingWidget++;
+            ALEGROUPCOTROLLER_SERVICE._updatingWidget++;
             //const mode_val = (value===true) ? LiteGraph.ALWAYS : getBypassOrMute(node, title);
-            ALEGROUPBYPASSER_SERVICE.group_collections.get(key).value = value;
-            const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
+            ALEGROUPCONTROLLER_SERVICE.group_collections.get(key).value = value;
+            const available_groups = ALEGROUPCONTROLLER_SERVICE.getAllGroups();
             for(const _group of available_groups.filter((available_group)=>available_group.title==title)) {
-               ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, (value===true) ? LiteGraph.ALWAYS : getBypassOrMute(node, title), true);
+               ALEGROUPCONTROLLER_SERVICE.processNodeInsideGroup(_group, (value===true) ? LiteGraph.ALWAYS : getBypassOrMute(node, title), true);
             }
             const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
             if(myAltGroupNames.length>0) {
                 myAltGroupNames.forEach((alt_group_name) => {
                    for(const _group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
-                       ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(_group, ((value===false) ? LiteGraph.ALWAYS : getBypassOrMute(node, title)), true);
+                       ALEGROUPCONTROLLER_SERVICE.processNodeInsideGroup(_group, ((value===false) ? LiteGraph.ALWAYS : getBypassOrMute(node, title)), true);
                    }
                 });
             }
@@ -56,28 +56,28 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
             /*
             if(gc) {
                 gc.value = mode_val;
-                ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+                ALEGROUPCONTROLLER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
                 const myAltGroupNames = [...new Set(parseSets(node.properties?.[ALTERNATE_KEY]  || "").get(title))];
                 if(myAltGroupNames.length>0) {
-                    const available_groups = ALEGROUPBYPASSER_SERVICE.getAllGroups();
+                    const available_groups = ALEGROUPCONTROLLER_SERVICE.getAllGroups();
                    myAltGroupNames.forEach((alt_group_name) => {
                        for(const group of available_groups.filter((available_group)=>available_group.title==alt_group_name)) {
-                           ALEGROUPBYPASSER_SERVICE.processNodeInsideGroup(group, (mode_val===4) ? 0 : 4, true);
+                           ALEGROUPCONTROLLER_SERVICE.processNodeInsideGroup(group, (mode_val===4) ? 0 : 4, true);
                        }
                    });
                 }
             }
             */
-            ALEGROUPBYPASSER_SERVICE._updatingWidget--;
+            ALEGROUPCONTROLLER_SERVICE._updatingWidget--;
         },
           //function(value) { booleanWidgetCallback(value, key); },
       /*
         (value) => {
           // Optional: callback when toggle changes
           const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-          const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+          const gc = ALEGROUPCONTROLLER_SERVICE.group_collections.get(key);
           gc.value = mode_val;
-          ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+          ALEGROUPCONTROLLER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         },
         */
         { serialize: true, title: title }
@@ -89,10 +89,10 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
 function booleanWidgetCallback(value, key)
 {
     const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-    const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+    const gc = ALEGROUPCONTROLLER_SERVICE.group_collections.get(key);
     if(gc) {
         gc.value = mode_val;
-        ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+        ALEGROUPCONTROLLER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
     }
 }
@@ -106,7 +106,7 @@ function parseSets(str) {
     // Split on ":" to get every member of this set
     //const members = part.split(":").map((s) => s.trim()).filter(Boolean);
     // only get member that exists in group_collections
-    const groups = part.split(":").map((s) => s.trim()).filter(Boolean).filter(num => ALEGROUPBYPASSER_SERVICE.group_collections.has(num.trim().toLowerCase()));
+    const groups = part.split(":").map((s) => s.trim()).filter(Boolean).filter(num => ALEGROUPCONTROLLER_SERVICE.group_collections.has(num.trim().toLowerCase()));
     if (groups.length < 2) continue; // need at least a pair
       const group = groups[0];
       const others = groups.filter((_, j) => j !== 0);
