@@ -130,7 +130,7 @@ function refreshWidgets(node) {
     node._refreshInProgress = true;
 
     if(node.graph) {
-    const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY]+"|"+node.properties?.[MATCH_KEY];
+    const signature = ALEGROUPCONTROLLER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY]+"|"+node.properties?.[MATCH_KEY];
     
     if (node._groupSignature !== signature) {
         prev_inputs = node.inputs;
@@ -143,8 +143,8 @@ function refreshWidgets(node) {
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     
-    const service_groups_collection = new Map([...ALEGROUPBYPASSER_SERVICE.group_collections.entries()].sort(
-                                        (a, b) => ALEGROUPBYPASSER_SERVICE.ALPHABETICAL_COLLATOR.compare(a[1].title, b[1].title) || a[1].key.localeCompare(b[1].key),
+    const service_groups_collection = new Map([...ALEGROUPCONTROLLER_SERVICE.group_collections.entries()].sort(
+                                        (a, b) => ALEGROUPCONTROLLER_SERVICE.ALPHABETICAL_COLLATOR.compare(a[1].title, b[1].title) || a[1].key.localeCompare(b[1].key),
                                       ));
     
     for(const [gkey, gval] of service_groups_collection) {
@@ -185,9 +185,9 @@ function refreshWidgets(node) {
             (value) => {
               // Optional: callback when toggle changes
               const mode_val = (value===true) ? MODE_BYPASS : LiteGraph.ALWAYS;
-              const gc = ALEGROUPBYPASSER_SERVICE.group_collections.get(key);
+              const gc = ALEGROUPCONTROLLER_SERVICE.group_collections.get(key);
               gc.value = mode_val;
-              ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
+              ALEGROUPCONTROLLER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
             },
             { serialize: true }
           );
@@ -237,7 +237,7 @@ function refreshWidgets(node) {
             const input_widget = node.inputs[link.target_slot].widget;
             if(!input_widget) continue;            
             const localWidget = node.widgets?.find((w)=>w.name===input_widget.name && w._hash_ref===input_widget._hash_ref);
-            const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
+            const upstreamWidget = ALEGROUPCONTROLLER_SERVICE.getUpstreamWidgetByLink(link, node.graph);
             if(upstreamWidget && localWidget) {
                 if (localWidget.value!=upstreamWidget.value || (reevaluate_value && group_alternate.has(localWidget.title))) {
                     seen.push(localWidget.name);
@@ -293,7 +293,7 @@ function bindNode(node) {
   const originalOnRemoved = node.onRemoved;
   node.onRemoved = function () {
     // Clean up service references safely when deleted from canvas
-    ALEGROUPBYPASSER_SERVICE.unregisterNode(this);
+    ALEGROUPCONTROLLER_SERVICE.unregisterNode(this);
     return originalOnRemoved?.apply(this, arguments);
   };
 
@@ -395,10 +395,10 @@ function syncPromotedWidgetCallback(node, slotName) {
 
 
 app.registerExtension({
-    name: "ale.group.bypasser",
+    name: "ale.group.controller",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
-        if (String(nodeData?.name || "") !== "AleGroupBypasser") {
+        if (String(nodeData?.name || "") !== "AleGroupController") {
           return;
         }
 
@@ -423,8 +423,8 @@ app.registerExtension({
         }
 
           bindNode(this);
-          ALEGROUPBYPASSER_SERVICE.init();
-          ALEGROUPBYPASSER_SERVICE.registerNode(this);     
+          ALEGROUPCONTROLLER_SERVICE.init();
+          ALEGROUPCONTROLLER_SERVICE.registerNode(this);     
           refreshWidgets(this);
             
           return result;
@@ -448,7 +448,7 @@ app.registerExtension({
         nodeType.prototype.onConfigure = function (info) {
          
           for(let i=0;i<info.inputs.length;i++) {              
-              const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].widget.name, info.widgets_values[i], ALEGROUPBYPASSER_SERVICE.nameToKey(info.inputs[i].widget.name));
+              const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].widget.name, info.widgets_values[i], ALEGROUPCONTROLLER_SERVICE.nameToKey(info.inputs[i].widget.name));
               this.inputs[i].widget = { name : info.inputs[i].widget.name, _hash_ref : boolWidget._hash_ref };
           }
               /*
@@ -487,7 +487,7 @@ app.registerExtension({
               this.inputs[slot].widget = { name: this.inputs[slot].name, _hash_ref : output.widget._hash_ref };
               if(connect && link_info) {
                     const localWidget = this.widgets[link_info.target_slot];
-                    const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link_info, this.graph);
+                    const upstreamWidget = ALEGROUPCONTROLLER_SERVICE.getUpstreamWidgetByLink(link_info, this.graph);
                     if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
                        localWidget.value = upstreamWidget.value;
                        if (typeof localWidget.callback === "function") {
@@ -594,7 +594,7 @@ app.registerExtension({
                 for(const link of  [...this.graph.links.values()].filter(m => m.target_id===this.id)) {
                     // upstreamWidget = getUpstreamWidgetById(link, this.graph);
                     const localWidget = this.widgets[link.target_slot];
-                    const upstreamWidget = ALEGROUPBYPASSER_SERVICE.getUpstreamWidgetByLink(link, this.graph);
+                    const upstreamWidget = ALEGROUPCONTROLLER_SERVICE.getUpstreamWidgetByLink(link, this.graph);
                     if(upstreamWidget && localWidget && localWidget.value!=upstreamWidget.value) {
                        localWidget.value = upstreamWidget.value;
                        if (typeof localWidget.callback === "function") {
