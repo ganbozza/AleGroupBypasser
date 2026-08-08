@@ -117,7 +117,7 @@ function parseSets(str) {
 }
 
 function refreshWidgets(node) {
-    if(node._refreshInProgress) return;
+    if(node._refreshInProgress || !node.graph) return;
     var updated = false;
     var reevaluate_value = false;
     var prev_inputs = [];
