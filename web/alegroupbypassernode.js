@@ -437,10 +437,9 @@ app.registerExtension({
         nodeType.prototype.onConfigure = function (info) {
          
           for(let i=0;i<info.inputs.length;i++) {              
-              const key = info.inputs[i].name.trim().toLowerCase();
               const boolWidget = addBooleanWidgetToNode(this, info.inputs[i].widget.name, info.widgets_values[i], ALEGROUPBYPASSER_SERVICE.nameToKey(info.inputs[i].widget.name));
               this.inputs[i].widget = { name : info.inputs[i].name, _hash_ref : boolWidget._hash_ref };
-              
+          }
               /*
             if (this.widgets && this.widgets.find((w) => { return w._hash_ref===info.inputs[i].widget._hash_ref; })) continue;
               
