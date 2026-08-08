@@ -74,7 +74,7 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
           ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         },
         */
-        { serialize: true }
+        { serialize: true, title: title }
       );
     boolNode._hash_ref = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
     return boolNode;
