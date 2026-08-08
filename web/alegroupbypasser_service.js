@@ -145,8 +145,8 @@ class AleGroupBypasserService {
       for (const [key, val] of this.group_collections) {
         for (const group of available_groups) {
           if (group.title==val.title) {
-            const hasOppositeNode = this.processNodeInsideGroup(group, MODE_ACTIVE);
-            if((val.value===MODE_ACTIVE && hasOppositeNode) || (val.value===MODE_BYPASS && !hasOppositeNode))
+            const hasActiveNode = this.processNodeInsideGroup(group, MODE_BYPASS);
+            if((val.value===MODE_BYPASS && hasActiveNode) || (val.value===MODE_ACTIVE && !hasActiveNode))
             {
               val.value = (val.value===MODE_BYPASS) ? MODE_ACTIVE : MODE_BYPASS;
               break;
