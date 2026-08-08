@@ -74,7 +74,7 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
           ALEGROUPBYPASSER_SERVICE.updateNodeInsideGroupByTitle(gc.title, mode_val);
         },
         */
-        { serialize: true }
+        { serialize: true, title: title }
       );
     boolNode._hash_ref = [...Array(12)].map(() => Math.random().toString(36)[2]).join('');
     return boolNode;
@@ -151,7 +151,7 @@ function refreshWidgets(node) {
         } catch (e) {
           continue;
         }
-        if(!node.widgets || !node.widgets.find((w) => w.title === gval.title)) {
+        if(!node.widgets || !node.widgets.find((w) => w.options.title === gval.title)) {
             const boolWidget = addBooleanWidgetToNode(node, gval.title, gval.value, gval.key);
             const link_num = prev_inputs.find((p)=>p.widget.name===gval.title)?.link || null;
             node.addInput(gval.title, "BOOLEAN");
