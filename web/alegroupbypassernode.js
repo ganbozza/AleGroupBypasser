@@ -117,12 +117,13 @@ function parseSets(str) {
 }
 
 function refreshWidgets(node) {
-    if(node._refreshInProgress || !node.graph) return;
+    if(node._refreshInProgress) return;
     var updated = false;
     var reevaluate_value = false;
     var prev_inputs = [];
     node._refreshInProgress = true;
 
+    if(node.graph) {
     const signature = ALEGROUPBYPASSER_SERVICE._groupSignature+"|"+node.properties?.[EXCLUDE_KEY]+"|"+node.properties?.[ALTERNATE_KEY]+"|"+node.properties?.[MATCH_KEY];
     
     if (node._groupSignature !== signature) {
@@ -224,7 +225,7 @@ function refreshWidgets(node) {
   }
   */
     var seen = [];
-    if(node.graph) {
+    //if(node.graph) {
         for(const link of  [...node.graph.links.values()].filter(m => m.target_id===node.id)) {
             // upstreamWidget = getUpstreamWidgetById(link, this.graph);
             const input_widget = node.inputs[link.target_slot].widget;
@@ -254,12 +255,13 @@ function refreshWidgets(node) {
                 }
             }
         }
-    }
-    
+    //}
+
   if(updated) {
     node.setSize([node.size[0], node.computeSize()[1]]);
     app.graph?.setDirtyCanvas?.(true, true);
   }
+    }
   node._refreshInProgress = false;
   setTimeout(() => {
     refreshWidgets(node);
