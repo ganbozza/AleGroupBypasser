@@ -170,19 +170,18 @@ class AleGroupBypasserService {
             const nodeCenter = nodeBounding &&
                 [nodeBounding[0] + nodeBounding[2] * 0.5, nodeBounding[1] + nodeBounding[3] * 0.5];
             if (nodeCenter) {
-                const grouBounds = group._bounding;
-                if (nodeCenter[0] >= grouBounds[0] &&
-                    nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
-                    nodeCenter[1] >= grouBounds[1] &&
-                    nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
-                    if(!is_set && node.mode===mode) {
-                      return true;
-                    } else if (is_set && node.mode!==mode) {
-                        node.mode = mode;
-                    }
+              const grouBounds = group._bounding;
+              if (nodeCenter[0] >= grouBounds[0] &&
+                  nodeCenter[0] < grouBounds[0] + grouBounds[2] &&
+                  nodeCenter[1] >= grouBounds[1] &&
+                  nodeCenter[1] < grouBounds[1] + grouBounds[3]) {
+                  if(!is_set && node.mode===mode) {
+                    return true;
+                  } else if (is_set && node.mode!==mode) {
+                      node.mode = mode;
                   }
-                }
-            }
+              }
+          }
         }
         }catch(e) {
           console.log('e');
