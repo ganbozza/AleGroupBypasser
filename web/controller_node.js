@@ -37,7 +37,7 @@ function addBooleanWidgetToNode(node, title, default_value, key) {
         title,
         default_value,
         (value) => {
-            ALEGROUPCOTROLLER_SERVICE._updatingWidget++;
+            ALEGROUPCONTROLLER_SERVICE._updatingWidget++;
             //const mode_val = (value===true) ? LiteGraph.ALWAYS : getBypassOrMute(node, title);
             ALEGROUPCONTROLLER_SERVICE.group_collections.get(key).value = value;
             const available_groups = ALEGROUPCONTROLLER_SERVICE.getAllGroups();
