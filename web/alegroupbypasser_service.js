@@ -79,7 +79,7 @@ class AleGroupBypasserService {
         this.group_collections.set(key, {
             key,
             title,
-            value : MODE_BYPASS
+            value : MODE_ACTIVE
         }); 
     }
   /*
@@ -106,7 +106,7 @@ class AleGroupBypasserService {
                   if(group && widget)
                   {
                     if(this._updatingWidget>1) return;
-                    const group_toggle_value = (group.value===MODE_ACTIVE) ? false : true;
+                    const group_toggle_value = (group.value===MODE_ACTIVE) ? true : false;
                     if(widget.value!==group_toggle_value) {
                       //console.log("Changing value for "+w.name);               
                       widget.value = group_toggle_value;
@@ -145,8 +145,8 @@ class AleGroupBypasserService {
       for (const [key, val] of this.group_collections) {
         for (const group of available_groups) {
           if (group.title==val.title) {
-            const hasActiveNode = this.processNodeInsideGroup(group, MODE_BYPASS);
-            if((val.value===MODE_BYPASS && hasActiveNode) || (val.value===MODE_ACTIVE && !hasActiveNode))
+            const hasOppositeNode = this.processNodeInsideGroup(group, MODE_ACTIVE);
+            if((val.value===MODE_ACTIVE && hasOppositeNode) || (val.value===MODE_BYPASS && !hasOppositeNode))
             {
               val.value = (val.value===MODE_BYPASS) ? MODE_ACTIVE : MODE_BYPASS;
               break;
