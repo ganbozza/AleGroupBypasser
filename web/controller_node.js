@@ -7,6 +7,7 @@ const EXCLUDE_KEY = "Exclude Groups";
 const ALTERNATE_KEY = "Alternate Groups";
 const MATCH_KEY = "Match Groups";
 const MUTE_KEY = "Mute Groups";
+const SORT_A_KEY = "Sort Alphanumeric";
 
 function findNodeInAllGraphs(currentGraph, nodeId) {
     // 1. Check the current graph level
@@ -143,9 +144,14 @@ function refreshWidgets(node) {
     const group_alternate = parseSets(node.properties?.[ALTERNATE_KEY]  || "");
 
     
-    const service_groups_collection = new Map([...ALEGROUPCONTROLLER_SERVICE.group_collections.entries()].sort(
+    let service_groups_collection;
+    if (node.properties?.[SORT_A_KEY]) {
+        service_groups_collection = new Map([...ALEGROUPCONTROLLER_SERVICE.group_collections.entries()].sort(
                                         (a, b) => ALEGROUPCONTROLLER_SERVICE.ALPHABETICAL_COLLATOR.compare(a[1].title, b[1].title) || a[1].key.localeCompare(b[1].key),
                                       ));
+    } else {
+        service_groups_collection = ALEGROUPCONTROLLER_SERVICE.group_collections;
+    }
     
     for(const [gkey, gval] of service_groups_collection) {
         // skip exclude groups (using regexp, i.e : ^Sampler #$
@@ -410,6 +416,10 @@ app.registerExtension({
         if (!this.properties || typeof this.properties !== "object") {
             this.properties = {};
         }
+        if (typeof this.properties[SORT_A_KEY] !== "boolean") {
+            this.properties[SORT_A_KEY] = true;
+        }
+
         if (typeof this.properties[MATCH_KEY] !== "string") {
             this.properties[MATCH_KEY] = "";
         }
