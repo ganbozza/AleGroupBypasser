@@ -28,7 +28,7 @@ function findNodeInAllGraphs(currentGraph, nodeId) {
 }
 
 function getBypassOrMute(node, group_name) {
-    return (node.properties?.[ALTERNATE_KEY].split(",").includes(group_name)) ? MODE_MUTE : MODE_BYPASS;
+    return (node.properties?.[MUTE_KEY].split(",").includes(group_name)) ? MODE_MUTE : MODE_BYPASS;
 }
 
 function addBooleanWidgetToNode(node, title, default_value, key) {
