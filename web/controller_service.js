@@ -195,6 +195,7 @@ class AleGroupControllerService {
                     return true;
                   } else if (is_set && node.mode!==mode) {
                       node.mode = mode;
+                      node.setDirtyCanvas(true, true);
                   }
               }
           }
