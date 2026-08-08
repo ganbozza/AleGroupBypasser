@@ -2,7 +2,6 @@ import { app } from "../../scripts/app.js";
 
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
-const MODE_MUTE = 2;
 
 function normalizeTitle(title) {
   return String(title || "").trim();
@@ -80,7 +79,7 @@ class AleGroupBypasserService {
         this.group_collections.set(key, {
             key,
             title,
-            value : MODE_ACTIVE
+            value : true
         }); 
     }
   /*
@@ -107,10 +106,9 @@ class AleGroupBypasserService {
                   if(group && widget)
                   {
                     if(this._updatingWidget>1) return;
-                    const group_toggle_value = (group.value===MODE_ACTIVE) ? true : false;
-                    if(widget.value!==group_toggle_value) {
+                    if(widget.value!==group.value) {
                       //console.log("Changing value for "+w.name);               
-                      widget.value = group_toggle_value;
+                      widget.value = group.value;
                       node.setDirtyCanvas(true, true);
                     }
                   }
@@ -146,12 +144,8 @@ class AleGroupBypasserService {
       for (const [key, val] of this.group_collections) {
         for (const group of available_groups) {
           if (group.title==val.title) {
-            const hasActiveNode = this.processNodeInsideGroup(group, MODE_ACTIVE);
-            if(val.value===MODE_ACTIVE && !hasActiveNode)
-            {
-              val.value = (val.value===MODE_ACTIVE) ? MODE_ACTIVE : MODE_BYPASS;
-              break;
-            }
+             val.value = this.processNodeInsideGroup(group, MODE_ACTIVE);
+             break;
           }
         }
       }
